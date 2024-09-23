@@ -5,6 +5,14 @@
 }
 
 
+
+.label-width {
+    width: 100px;
+    display: inline-block;
+}
+
+
+
 .team-side-left {
     background-color: #dadada; 
 }
