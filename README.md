@@ -54,7 +54,3 @@ Example: `http://localhost:8080/heroes1.html`
 - Node.js
 - React
 - Bootstrap
-
-## License
-
-This project is licensed under the MIT License.
