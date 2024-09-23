@@ -1,0 +1,9 @@
+{
+    "maps": ["Busan", "Hanamura", "Hollywood", "Ilios", "King's Row", "Lijiang Tower", "Nepal", "Numbani", "Oasis", "Temple of Anubis", "Volskaya Industries", "Watchpoint: Gibraltar"],
+    "roles": ["Tank", "Damage", "Support"],
+    "heroes": {
+        "Tank": ["D.Va", "Orisa", "Reinhardt", "Roadhog", "Sigma", "Winston", "Wrecking Ball", "Zarya"],
+        "Damage": ["Ashe", "Bastion", "Doomfist", "Echo", "Genji", "Hanzo", "Junkrat", "McCree", "Mei", "Pharah", "Reaper", "Soldier: 76", "Sombra", "Symmetra", "Torbjörn", "Tracer", "Widowmaker"],
+        "Support": ["Ana", "Baptiste", "Brigitte", "Lucio", "Mercy", "Moira", "Zenyatta"]
+    }
+}

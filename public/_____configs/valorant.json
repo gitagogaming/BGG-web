@@ -1,0 +1,10 @@
+{
+    "maps": ["Ascent", "Bind", "Breeze", "Haven", "Icebox", "Split"],
+    "roles": ["Duelist", "Controller", "Sentinel", "Initiator"],
+    "heroes": {
+        "Duelist": ["Jett", "Phoenix", "Reyna", "Raze", "Yoru", "Neon"],
+        "Controller": ["Brimstone", "Omen", "Viper", "Astra", "Harbor"],
+        "Sentinel": ["Cypher", "Sage", "Killjoy", "Chamber"],
+        "Initiator": ["Sova", "Breach", "Skye", "KAY/O", "Fade", "Gekko"]
+    }
+}

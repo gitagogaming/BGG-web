@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+
+<head>
+  <script>
+    async function loadHeroConfigs() {
+      let heroDict = {};
+
+      // Fetch the list of .hero files
+      let heroFilesResponse = await fetch(`http://localhost:8080/getHeroFiles`);
+      let heroFiles = await heroFilesResponse.json(); // Assuming the response is a JSON array of file names
+
+      console.log("Hero Files", heroFiles);
+
+      for (let heroFile of heroFiles) {
+        // Fetch the .hero file
+        let heroConfigResponse = await fetch(`../scoreboard/Heroes/${heroFile}`);
+        let heroConfigText = await heroConfigResponse.text();
+
+        // Parse the XML content to extract the Hero Name and IconPath
+        let parser = new DOMParser();
+        let xmlDoc = parser.parseFromString(heroConfigText, "application/xml");
+        let heroName = xmlDoc.getElementsByTagName("Name")[0].textContent.trim();
+        let iconPath = xmlDoc.getElementsByTagName("IconPath")[0].textContent.trim();
+
+        // Store in dictionary
+        heroDict[heroName] = {
+          fileName: heroFile,
+          name: heroName,
+          iconPath: `../scoreboard${iconPath}`
+        };
+      }
+
+      console.log("Hero Configs", heroDict);
+      return heroDict;
+    }
+
+    // console.log("HELP ME", HELPME)
+    // let HERO_CONFIGS = {
+    //   "Ana": {
+    //     "fileName": "Ana.hero",
+    //     "name": "Ana",
+    //     "iconPath": "../scoreboard\\Heroes\\Ana.png"
+    //   },
+    //   "Ashe": {
+    //     "fileName": "Ashe.hero",
+    //     "name": "Ashe",
+    //     "iconPath": "../scoreboard\\Heroes\\Ashe.png"
+    //   },
+    //   "Baptiste": {
+    //     "fileName": "Baptiste.hero",
+    //     "name": "Baptiste",
+    //     "iconPath": "../scoreboard\\Heroes\\Baptiste.png"
+    //   },
+    //   "Bastion": {
+    //     "fileName": "Bastion.hero",
+    //     "name": "Bastion",
+    //     "iconPath": "../scoreboard\\Heroes\\Bastion.png"
+    //   },
+    //   "Brigitte": {
+    //     "fileName": "Brigitte.hero",
+    //     "name": "Brigitte",
+    //     "iconPath": "../scoreboard\\Heroes\\Brigitte.png"
+    //   },
+    //   "ButtonPusher": {
+    //     "fileName": "button-pusher.hero",
+    //     "name": "ButtonPusher",
+    //     "iconPath": "../scoreboard\\Heroes\\button-pusher.jpg"
+    //   },
+    //   "Cassidy": {
+    //     "fileName": "Cassidy.hero",
+    //     "name": "Cassidy",
+    //     "iconPath": "../scoreboard\\Heroes\\Cassidy.png"
+    //   },
+    //   "D.Va": {
+    //     "fileName": "D.Va.hero",
+    //     "name": "D.Va",
+    //     "iconPath": "../scoreboard\\Heroes\\D.Va.png"
+    //   },
+    //   "Doomfist": {
+    //     "fileName": "Doomfist.hero",
+    //     "name": "Doomfist",
+    //     "iconPath": "../scoreboard\\Heroes\\Doomfist.png"
+    //   },
+    //   "Echo": {
+    //     "fileName": "Echo.hero",
+    //     "name": "Echo",
+    //     "iconPath": "../scoreboard\\Heroes\\Echo.png"
+    //   },
+    //   "Genji": {
+    //     "fileName": "Genji.hero",
+    //     "name": "Genji",
+    //     "iconPath": "../scoreboard\\Heroes\\Genji.png"
+    //   },
+    //   "Hanzo": {
+    //     "fileName": "Hanzo.hero",
+    //     "name": "Hanzo",
+    //     "iconPath": "../scoreboard\\Heroes\\Hanzo.png"
+    //   },
+    //   "JunkerQueen": {
+    //     "fileName": "JunkerQueen.hero",
+    //     "name": "JunkerQueen",
+    //     "iconPath": "../scoreboard\\Heroes\\JunkerQueen.png"
+    //   },
+    //   "Junkrat": {
+    //     "fileName": "Junkrat.hero",
+    //     "name": "Junkrat",
+    //     "iconPath": "../scoreboard\\Heroes\\Junkrat.png"
+    //   },
+    //   "Kiriko": {
+    //     "fileName": "Kiriko.hero",
+    //     "name": "Kiriko",
+    //     "iconPath": "../scoreboard\\Heroes\\Kiriko.png"
+    //   },
+    //   "LifeWeaver": {
+    //     "fileName": "LifeWeaver.hero",
+    //     "name": "LifeWeaver",
+    //     "iconPath": "../scoreboard\\Heroes\\LifeWeaver.png"
+    //   },
+    //   "Lúcio": {
+    //     "fileName": "Lúcio.hero",
+    //     "name": "Lúcio",
+    //     "iconPath": "../scoreboard\\Heroes\\Lúcio.png"
+    //   },
+    //   "Mei": {
+    //     "fileName": "Mei.hero",
+    //     "name": "Mei",
+    //     "iconPath": "../scoreboard\\Heroes\\Mei.png"
+    //   },
+    //   "Mercy": {
+    //     "fileName": "Mercy.hero",
+    //     "name": "Mercy",
+    //     "iconPath": "../scoreboard\\Heroes\\Mercy.png"
+    //   },
+    //   "Moira": {
+    //     "fileName": "Moira.hero",
+    //     "name": "Moira",
+    //     "iconPath": "../scoreboard\\Heroes\\Moira.png"
+    //   },
+    //   "Orisa": {
+    //     "fileName": "Orisa.hero",
+    //     "name": "Orisa",
+    //     "iconPath": "../scoreboard\\Heroes\\Orisa.png"
+    //   },
+    //   "Pharah": {
+    //     "fileName": "Pharah.hero",
+    //     "name": "Pharah",
+    //     "iconPath": "../scoreboard\\Heroes\\Pharah.png"
+    //   },
+    //   "Ramattra": {
+    //     "fileName": "Ramattra.hero",
+    //     "name": "Ramattra",
+    //     "iconPath": "../scoreboard\\Heroes\\Ramattra.png"
+    //   },
+    //   "Reaper": {
+    //     "fileName": "Reaper.hero",
+    //     "name": "Reaper",
+    //     "iconPath": "../scoreboard\\Heroes\\Reaper.png"
+    //   },
+    //   "Reinhardt": {
+    //     "fileName": "Reinhardt.hero",
+    //     "name": "Reinhardt",
+    //     "iconPath": "../scoreboard\\Heroes\\Reinhardt.png"
+    //   },
+    //   "Roadhog": {
+    //     "fileName": "Roadhog.hero",
+    //     "name": "Roadhog",
+    //     "iconPath": "../scoreboard\\Heroes\\Roadhog.png"
+    //   },
+    //   "Sigma": {
+    //     "fileName": "Sigma.hero",
+    //     "name": "Sigma",
+    //     "iconPath": "../scoreboard\\Heroes\\Sigma.png"
+    //   },
+    //   "Sojourn": {
+    //     "fileName": "Sojourn.hero",
+    //     "name": "Sojourn",
+    //     "iconPath": "../scoreboard\\Heroes\\Sojourn.png"
+    //   },
+    //   "Soldier: 76": {
+    //     "fileName": "Soldier-_76.hero",
+    //     "name": "Soldier: 76",
+    //     "iconPath": "../scoreboard\\Heroes\\Soldier-_76.png"
+    //   },
+    //   "Sombra": {
+    //     "fileName": "Sombra.hero",
+    //     "name": "Sombra",
+    //     "iconPath": "../scoreboard\\Heroes\\Sombra.png"
+    //   },
+    //   "Symmetra": {
+    //     "fileName": "Symmetra.hero",
+    //     "name": "Symmetra",
+    //     "iconPath": "../scoreboard\\Heroes\\Symmetra.png"
+    //   },
+    //   "Torbjörn": {
+    //     "fileName": "Torbjörn.hero",
+    //     "name": "Torbjörn",
+    //     "iconPath": "../scoreboard\\Heroes\\Torbjörn.png"
+    //   },
+    //   "Tracer": {
+    //     "fileName": "Tracer.hero",
+    //     "name": "Tracer",
+    //     "iconPath": "../scoreboard\\Heroes\\Tracer.png"
+    //   },
+    //   "Widowmaker": {
+    //     "fileName": "Widowmaker.hero",
+    //     "name": "Widowmaker",
+    //     "iconPath": "../scoreboard\\Heroes\\Widowmaker.png"
+    //   },
+    //   "Winston": {
+    //     "fileName": "Winston.hero",
+    //     "name": "Winston",
+    //     "iconPath": "../scoreboard\\Heroes\\Winston.png"
+    //   },
+    //   "Wrecking Ball": {
+    //     "fileName": "Wrecking_Ball.hero",
+    //     "name": "Wrecking Ball",
+    //     "iconPath": "../scoreboard\\Heroes\\Wrecking_Ball.png"
+    //   },
+    //   "Zarya": {
+    //     "fileName": "Zarya.hero",
+    //     "name": "Zarya",
+    //     "iconPath": "../scoreboard\\Heroes\\Zarya.png"
+    //   },
+    //   "Zenyatta": {
+    //     "fileName": "Zenyatta.hero",
+    //     "name": "Zenyatta",
+    //     "iconPath": "../scoreboard\\Heroes\\Zenyatta.png"
+    //   }
+    // };
+  </script>
+  <style>
+    /* div.templateoverlay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 1920px;
+    height: 1080px;
+    background-image: url("templates/teamlayout.jpg");
+    opacity: 0.5;
+  } */
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      margin: 0px auto;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      overflow: hidden;
+      /*      object-position: 82% 50%; */
+    }
+
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url("fonts/Rajdhani/Rajdhani-Bold.ttf") format('TrueType');
+      font-weight: bold;
+    }
+
+    @font-face {
+      font-family: 'Rajdhani';
+      src: url("fonts/Rajdhani/Rajdhani-Regular.ttf") format('TrueType');
+      font-weight: normal;
+    }
+
+    div {
+      -webkit-animation-timing-function: ease-out;
+    }
+
+    @-webkit-keyframes leftmove {
+
+      0% {
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+        left: -200px;
+      }
+
+      100% {
+        clip-path: polygon(0% 0, 100% 0%, 100% 100%, 0% 100%);
+        left: 0px;
+      }
+
+      /* from {
+      left: -3840px;
+    }
+
+    to {
+      left: 0px;
+    } */
+    }
+
+    @keyframes topmove {
+      0% {
+        top: -150px;
+      }
+
+      100% {
+        top: 30px;
+      }
+    }
+
+    @keyframes bottommove {
+      0% {
+        top: 1080px;
+      }
+
+      100% {
+        top: 850px;
+      }
+    }
+
+    @-webkit-keyframes slideease {
+      0% {
+        left: -1820px;
+      }
+
+      50% {
+        left: 80px;
+      }
+
+      100% {
+        left: 100px;
+      }
+    }
+
+    @keyframes stingerwipe {
+      0% {
+        clip-path: polygon(0 0, 100% 0%, 100% 100%, 0% 100%);
+      }
+
+      100% {
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+      }
+    }
+
+    @keyframes herowipe {
+      0% {
+        clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);
+      }
+
+      100% {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      }
+    }
+
+    @keyframes roleslide {
+      0% {
+        clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%);
+      }
+
+      100% {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      }
+    }
+
+    @keyframes bganimate1 {
+      0% {
+        left: 0px;
+      }
+
+      100% {
+        left: -2000px;
+      }
+    }
+
+    @keyframes bganimate2 {
+      0% {
+        left: 2000px;
+      }
+
+      100% {
+        left: 0px;
+      }
+    }
+
+    @keyframes slideright {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(0px);
+      }
+    }
+
+    @keyframes slideleft {
+      0% {
+        transform: translateX(100%);
+      }
+
+      100% {
+        transform: translateX(0px);
+      }
+    }
+
+    div.tournament {
+      animation: slideright 1s;
+      animation-fill-mode: backwards;
+      animation-delay: 1s;
+    }
+
+    div.channel {
+      animation: slideleft 1s;
+      animation-fill-mode: backwards;
+      animation-delay: 1s;
+    }
+
+    div.stingerlogo {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 1920px;
+      height: 1080px;
+      vertical-align: middle;
+      background-color: #27AAE1;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(127, 127, 127, 0), rgba(0, 0, 0, 0.3));
+      animation: stingerwipe 0.5s;
+      animation-fill-mode: forwards;
+      animation-delay: 1.5s;
+
+    }
+
+    div.stingerlogo span.logo {
+      width: 1720px;
+      height: 880px;
+      position: absolute;
+      top: 100px;
+      left: 100px;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: slideease 2s;
+      animation-fill-mode: forwards;
+      animation-delay: 0s;
+      -webkit-animation-timing-function: cubic-bezier(0, 0, 0, 1);
+      /* -webkit-filter: drop-shadow(0 0 8px black); */
+    }
+
+    div.altcolor {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 1920px;
+      height: 1080px;
+      vertical-align: middle;
+      background-color: white;
+      animation: stingerwipe 0.5s;
+      animation-fill-mode: forwards;
+      animation-delay: 1.55s;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(127, 127, 127, 0), rgba(0, 0, 0, 0.3));
+    }
+
+    div.top {
+      animation: topmove 1.34s;
+      animation-fill-mode: backwards;
+      animation-delay: 0.5s;
+    }
+
+    div.hero1 {
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.0s;
+    }
+
+    div.hero2 {
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.2s;
+    }
+
+    div.hero3 {
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.4s;
+    }
+
+    div.hero4 {
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.6s;
+    }
+
+    div.hero5 {
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.8s;
+    }
+
+    div.hero1,
+    div.hero2,
+    div.hero3,
+    div.hero4,
+    div.hero5 {
+      width: 453px;
+      height: 254px;
+      left: 0px;
+      top: 100px;
+      /* border-style: solid;
+    border-width: 0px 0px 0px 10px;
+    border-color: green; */
+      vertical-align: middle;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: absolute;
+      clip-path: polygon(0% 0, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    div.bglogo {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 1920px;
+      height: 1080px;
+      background-size: 100% auto;
+      background-repeat: repeat-x;
+      background-position: center;
+      /* -webkit-filter: drop-shadow(0 0 40px black) grayscale(100%); */
+      opacity: 0.2;
+    }
+
+    div.bglogo1 {
+      animation: bganimate1 60s linear infinite;
+    }
+
+    div.bglogo2 {
+      animation: bganimate2 60s linear infinite;
+    }
+
+
+    div.top {
+      position: absolute;
+      top: 30px;
+      left: 230px;
+      width: 1453px;
+      height: 132px;
+      background-color: #000000;
+      border-style: solid;
+      border-width: 0px 0px 0px 7px;
+      border-color: #333333 #333333 #333333 #8cba11;
+      clip-path: polygon(0% 0, 100% 0%, 100% 100%, 0% 100%);
+
+      /* transform: skewX(-15deg); */
+    }
+
+
+    div.top span.logo {
+      width: 132px;
+      height: 112px;
+      position: absolute;
+      top: 10px;
+      left: 30px;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      /* -webkit-filter: drop-shadow(0 0 5px black); */
+      clip-path: polygon(-10% 0, 110% 0%, 110% 100%, -10% 100%);
+
+      /* transform: skewX(15deg); */
+    }
+
+    span.teamname {
+      margin: 0;
+      position: absolute;
+      top: 17px;
+      left: 200px;
+      font-family: 'Rajdhani';
+      text-transform: uppercase;
+      /* text-shadow: 0px 0px 15px #000000; */
+      font-size: 5em;
+      /* transform: skewX(-15deg); */
+    }
+
+    div.bottom {
+      position: absolute;
+      top: 464px;
+      left: -9px;
+      width: 100%;
+      height: 230px;
+      /* background-color: #27AAE1;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(127, 127, 127, 0), rgba(0, 0, 0, 0.3)); */
+      vertical-align: middle;
+      /* transform: skewX(-15deg); */
+    }
+
+    div.bottom div.player div.playertype div.rolecolor {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 80px;
+      height: 80px;
+      background-color: black;
+
+      -webkit-mask-position: center;
+      -webkit-mask-size: 60%;
+      -webkit-mask-repeat: no-repeat;
+    }
+
+    div.rolecolor {
+      /* transform: skewX(15deg); */
+    }
+
+    div.bottom div {
+      width: 447px;
+      height: 74px;
+      text-align: left;
+      margin: 0;
+      font-family: 'Rajdhani';
+      font-weight: bold;
+      font-variant-ligatures: none;
+      text-transform: uppercase;
+      /* text-shadow: 0px 0px 7px #000000; */
+      font-size: 2.5em;
+      position: absolute;
+      /*      transform: translate(-50%, 0%); */
+    }
+
+    div.bottom div span.battletag {
+      position: absolute;
+      left: 15px;
+      top: 13px;
+    }
+
+    div.bottom div span.fullname {
+      position: absolute;
+      right: 15px;
+      top: 20px;
+      font-weight: normal;
+      font-size: 0.7em;
+    }
+
+    div.bottom div.player {
+      background-color: #000000;
+      border-style: solid;
+      border-width: 0px 0px 0px 7px;
+      border-color: #333333 #333333 #333333 #8cba11;
+    }
+
+    div.bottom div.player1 {
+      left: 239px;
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.1s;
+    }
+
+    div.bottom div.player2 {
+      left: 743px;
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.3s;
+    }
+
+    div.bottom div.player3 {
+      left: 1247px;
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.5s;
+    }
+
+    div.bottom div.player4 {
+      left: 491px;
+      top: 411px;
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.7s;
+    }
+
+    div.bottom div.player5 {
+      left: 995px;
+      top: 411px;
+      animation: herowipe 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 1.9s;
+    }
+
+    div.bottom div.player div.playertype {
+      width: 80px;
+      height: 80px;
+      /* background-position: center;
+    background-size: 60%;
+    background-repeat: no-repeat; */
+      transform: translate(359px, -103px);
+      /* -webkit-filter: drop-shadow(0 0 3px black); */
+      animation: roleslide 0.5s;
+      animation-fill-mode: backwards;
+      animation-delay: 2.5s;
+      background-color: #000000;
+      border-style: solid;
+      border-width: 0px 0px 0px 7px;
+      border-color: #333333 #333333 #333333 #8cba11;
+    }
+
+    div.heroes {
+      /* transform: skewX(-15deg); */
+      position: relative;
+      left: -9px;
+    }
+
+    div.hero {
+      clip-path: polygon(0% 0, 100% 0%, 100% 100%, 0% 100%);
+      /* border-style: solid;
+    border-width: 0px 0px 0px 7px;
+    border-color: #333333 #333333 #333333 #8cba11; */
+    }
+
+    img {
+      /* transform: skewX(15deg); */
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(0% 0, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    div.hero1 {
+      transform: translate(239px, 87px);
+    }
+
+    div.hero2 {
+      transform: translate(743px, 87px);
+    }
+
+    div.hero3 {
+      transform: translate(1247px, 87px);
+    }
+
+    div.hero4 {
+      transform: translate(491px, 498px);
+    }
+
+    div.hero5 {
+      transform: translate(995px, 498px);
+    }
+
+    div.footer {
+      position: absolute;
+      left: 0px;
+      top: 950px;
+      width: 1870px;
+      clip-path: polygon(0% 0, 100% 0%, 100% 100%, 0% 100%);
+      display: flex;
+      /* YEAH THIS IS HUGE */
+      flex-direction: row;
+      align-items: center;
+      /* YEAH THIS IS HUGE */
+      justify-content: center;
+      /* YEAH THIS IS HUGE */
+      padding: 25px;
+    }
+
+    div.tournament {
+      flex: 1 1 0;
+      height: 80px;
+      background-position: left;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    div.channel {
+      flex: 1 1 0;
+      height: 80px;
+      background-position: right;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    @keyframes tagline {
+      0% {
+        clip-path: polygon(0% -100%, 0 -100%, 0% 200%, 0% 200%);
+        transform: translateX(50%)
+          /* skewX(-15deg) */
+        ;
+      }
+
+      100% {
+        clip-path: polygon(0% -100%, 100% -100%, 100% 200%, 0% 200%);
+        transform: translateX(0%)
+          /* skewX(-15deg) */
+        ;
+      }
+    }
+
+    div.tagline {
+      min-width: 375px;
+      animation: tagline .5s;
+      animation-fill-mode: backwards;
+      animation-delay: 2s;
+      /* transform: skewX(-15deg); */
+    }
+
+    span.tertiary {
+      font-size: 1.8em;
+      border-style: solid;
+      font-weight: bold;
+      text-align: center;
+      font-family: 'Rajdhani';
+      text-transform: uppercase;
+      padding: 3px 15px 2px 15px;
+      border-width: 0px 6px 0px 6px;
+      background-color: black;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    const previousHeroData = {};
+
+    
+    async function initialize() {
+      let HERO_CONFIGS = await loadHeroConfigs();
+
+      async function interval() {
+        // SET team to 1 for left, 2 for right.
+        let team = 1;
+
+        let teamJson = await fetch(`http://localhost:8080/getValue?path=teams.team${team}`);
+        let teamData = await teamJson.json();
+
+
+        /// -- WHAT IS COLOR THEME COMING FROM?  IS THIS FROM THE GENERAL TAB?  IF SO WHY ONLY 3... IM SO CONFUSED
+        let colortheme1txt = await fetch('../scoreboard/general/colortheme1.txt');
+        colortheme1txt = await colortheme1txt.text();
+        let colortheme2txt = await fetch('../scoreboard/general/colortheme2.txt');
+        colortheme2txt = await colortheme2txt.text();
+        let colortheme3txt = await fetch('../scoreboard/general/colortheme3.txt');
+        colortheme3txt = await colortheme3txt.text();
+
+        $('body').css("border-color", (colortheme3txt));
+        $('span.fullname').css("color", (colortheme3txt));
+        $('div.top, div.player').css("color", (colortheme2txt));
+        $('div.player, div.playertype, div.top').css("background-color", (colortheme1txt));
+        $('div.rolecolor').css("background-color", (colortheme2txt));
+
+        $('span.tertiary').css("background-color", (colortheme1txt));
+        $('span.tertiary').css("color", (colortheme2txt));
+        $('span.tertiary').css("border-color", (colortheme3txt));
+
+        let teamLogoUrl = teamData.teamLogoUrl;
+        // console.log(`Original TeamLogoUrl: ${teamLogoUrl}`);
+
+        if (teamLogoUrl !== "") {
+          // const encodedTeamLogoUrl = encodeURIComponent(teamLogoUrl);
+          // console.log(`Encoded TeamLogoUrl: ${encodedTeamLogoUrl}`);
+
+          // const imageUrl = `/uploads/teamLogos/${encodedTeamLogoUrl}`;
+          // console.log(`Image URL: ${imageUrl}`);
+
+          // if (teamLogoUrl instanceof Blob) {
+          //   // Create an object URL from the Blob
+          //   console.log('Blob detected');
+          //   imageUrl = URL.createObjectURL(teamLogoUrl);
+          // } else {
+            // Use the URL directly if it's not a Blob
+            // console.log('Not a Blob');
+            imageUrl = teamLogoUrl;
+          // }
+
+
+          document.querySelector(".teamlogo").style.backgroundImage = `url('${imageUrl}')`;
+          $('.teamname').css("left", "200px");
+          $('.teamlogo').css("display", "inherit");
+        } else {
+          $('.teamname').css("left", "30px");
+          $('.teamlogo').css("display", "none");
+        }
+
+        t1nametxt = teamData.teamName;
+        let regex = "";
+        [
+          "gaming", "team", "e-?sports", "house", "academy", "uni(versity)?", "state", "tech", "and", "the", "of", "eu",
+        ].forEach((value) => {
+          regex += "|(" + value + ")";
+        });
+        regex = "\\b(" + regex.substring(1) + ")\\b";
+
+        let teamformatted = "<div><b>" + t1nametxt.replace(
+          new RegExp(regex, "gi"), "</b>$1<b>")
+          .replace(/&/gi, "</b>&<b>") + "</b></div>";
+        $('.teamname').html(teamformatted);
+
+        let t1colortxt = teamData.teamColor;
+        let color = t1colortxt;
+        $('div').css("border-color", color);
+
+        for (let i = 0; i < 6; ++i) {
+          let heroName = teamData.players[i].hero.trim();
+          let heroInfo = HERO_CONFIGS[heroName];
+
+          let imgUrl = heroInfo ? heroInfo.iconPath : "https://placehold.co/600x400?text=%F0%9F%94%8D";
+
+          let node = $(`#teamplayer${i + 1}hero img`);
+          if (node.length === 0) {
+            console.error(`Element #teamplayer${i + 1}hero img not found`);
+            continue;
+          }
+          if (node.attr("src") !== imgUrl) {
+            node.attr("src", imgUrl);
+          }
+
+          let t1p1roletxt = teamData.players[i].role;
+
+          ///// ----------- was this code for the 6th player???
+          // let t1p6infotxt = await fetch('../scoreboard/match1/t' + team + 'p' + (i + 1) + 'info.txt');
+          // t1p6infotxt = await t1p6infotxt.text();
+          // $("#teamplayer" + (i + 1) + "role div.rolecolor").css("-webkit-mask-image", "url(\"../scoreboard/roles/" + (t1p1roletxt).replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") + ".png\")");
+          // let check2 = (t1p6infotxt).replace(/\n/gi, "").replace(/\r/gi, "");
+          // let unformat2 = (t1p6infotxt)
+          // let node2 = $("#teamplayer" + (i + 1) + "name");
+          // if (check2 != "") {
+          //   node2.text(unformat2);
+          // } else {
+          //   node2.text(t1p1roletxt);
+          // }
+
+          $("#teamplayer" + (i + 1) + "role div.rolecolor").css("-webkit-mask-image", "url(\"../scoreboard/roles/" + (t1p1roletxt).replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") + ".png\")");
+          let node2 = $("#teamplayer" + (i + 1) + "name");
+          node2.text(t1p1roletxt);
+
+          let t1p6nametxt = teamData.players[i].playerName;
+          let check = (t1p6nametxt).replace(/\n/gi, "").replace(/\r/gi, "");
+          let unformat = (t1p6nametxt)
+
+          let node1 = $("#teamplayer" + (i + 1) + "battletag");
+          if (check != "") {
+            node1.text(unformat);
+          } else {
+            node1.text("Player " + (i + 1));
+          }
+        }
+
+        // Ive absolutely no idea what this is doing or the purpose behind it?
+        // for (let g = 0; g < 2; ++g) {
+        //   let data = await fetch("../scoreboard/general/image" + ((g * 14) + 1) + ".png");
+        //   data = await data.arrayBuffer();
+        //   let bytes = new Uint8Array(data);
+        //   let str = "";
+        //   for (let b of bytes) {
+        //     str += String.fromCharCode(b);
+        //   }
+        //   document.querySelector(".image" + (g + 1)).style.backgroundImage = "url(data:image/jpeg;base64," + btoa(str) + ")";
+        // }
+      }
+
+      const initialDelay = 100;
+      setTimeout(() => {
+        interval(); 
+        setInterval(interval, 1000); 
+      }, initialDelay);
+    }
+
+    document.addEventListener('DOMContentLoaded', initialize);
+  </script>
+</head>
+
+<body>
+  <div class="heroes">
+    <div class="hero1" id="teamplayer1hero">
+      <div class="hero"><img></img></div>
+    </div>
+    <div class="hero2" id="teamplayer2hero">
+      <div class="hero"><img></img></div>
+    </div>
+    <div class="hero3" id="teamplayer3hero">
+      <div class="hero"><img></img></div>
+    </div>
+    <div class="hero4" id="teamplayer4hero">
+      <div class="hero"><img></img></div>
+    </div>
+    <div class="hero5" id="teamplayer5hero">
+      <div class="hero"><img></img></div>
+    </div>
+    
+  </div>
+
+  <div class="top" id="teamcolor">
+    <span class="logo teamlogo"></span>
+    <span class="teamname" id="teamname"></span>
+    <span class="org"></span>
+  </div>
+
+  <div class="bottom" id="teamcolorbottom">
+    <div class="player player1">
+      <div class="playertype" id="teamplayer1role">
+        <div class="rolecolor"></div>
+      </div>
+      <span class="battletag" id="teamplayer1battletag"></span>
+      <span class="fullname" id="teamplayer1name"></span>
+    </div>
+    <div class="player player2">
+      <div class="playertype" id="teamplayer2role">
+        <div class="rolecolor"></div>
+      </div>
+      <span class="battletag" id="teamplayer2battletag"></span>
+      <span class="fullname" id="teamplayer2name"></span>
+    </div>
+    <div class="player player3">
+      <div class="playertype" id="teamplayer3role">
+        <div class="rolecolor"></div>
+      </div>
+      <span class="battletag" id="teamplayer3battletag"></span>
+      <span class="fullname" id="teamplayer3name"></span>
+    </div>
+    <div class="player player4">
+      <div class="playertype" id="teamplayer4role">
+        <div class="rolecolor"></div>
+      </div>
+      <span class="battletag" id="teamplayer4battletag"></span>
+      <span class="fullname" id="teamplayer4name"></span>
+    </div>
+    <div class="player player5">
+      <div class="playertype" id="teamplayer5role">
+        <div class="rolecolor"></div>
+      </div>
+      <span class="battletag" id="teamplayer5battletag"></span>
+      <span class="fullname" id="teamplayer5name"></span>
+    </div>
+    
+  </div>
+</body>

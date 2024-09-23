@@ -1,0 +1,182 @@
+{
+  "teams": {
+    "team1": {
+      "teamName": "THE TEAM LEFT",
+      "teamInfo": "Some team info",
+      "teamLogo": "streamer-setup.jpg",
+      "teamLogoUrl": "blob:http://localhost:8080/419776eb-9eb8-4eca-9223-6b47a81329d1",
+      "teamScore": 0,
+      "teamColor": "#ee00ff",
+      "teamGroup": "A",
+      "players": [
+        {
+          "player": "P1",
+          "playerName": "test",
+          "hero": "Reinhardt",
+          "role": "Tank",
+          "info": "Gtag",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P2",
+          "playerName": "Yoooooo",
+          "hero": "Junkrat",
+          "role": "DPS",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P3",
+          "playerName": "Player3",
+          "hero": "Echo",
+          "role": "DPS",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P4",
+          "playerName": "GITAGO",
+          "hero": "Lúcio",
+          "role": "Support",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P5",
+          "playerName": "THEGUY",
+          "hero": "Brigitte",
+          "role": "Support",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P6",
+          "playerName": "fasfaf",
+          "hero": "Baptiste",
+          "role": "Support",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        }
+      ]
+    },
+    "team2": {
+      "teamName": "Mock Team 2fff",
+      "teamInfo": "Some team info",
+      "teamLogo": "OIG3.jpg",
+      "teamLogoUrl": "blob:http://localhost:8080/cc37751f-a0ba-492d-a5e1-c3925b97ceb4",
+      "teamScore": 0,
+      "teamColor": "#37c70f",
+      "teamGroup": "B",
+      "players": [
+        {
+          "player": "P1",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P2",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P3",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P4",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P5",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "P6",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        }
+      ]
+    }
+  },
+  "maps": {
+    "selectedMap": "",
+    "mapData": [
+      {
+        "map": "Map 1",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "Map 2",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "Map 3",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "Map 4",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "Map 5",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "Map 6",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "Map 7",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      }
+    ]
+  },
+  "currentGame": "Overwatch"
+}
