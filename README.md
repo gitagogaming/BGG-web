@@ -43,7 +43,7 @@ my-react-app
 2. Navigate to the project directory: `cd my-react-app`
 3. Install dependencies: `npm install`
 4. Start the application: `npm start`
-5. Start the Dev Server: `node ./src/server.js`
+5. Start the Dev Server: `node ./server.js`
 6. Navigate to `http://localhost:8080`
 
 **Pages are now accessible as usual..**<br/>
