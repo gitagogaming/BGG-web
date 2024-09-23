@@ -1,10 +1,10 @@
 {
   "teams": {
     "team1": {
-      "teamName": "THE TEAM LEFT",
+      "teamName": "HMMMMMsss",
       "teamInfo": "Some team info",
-      "teamLogo": "streamer-setup.jpg",
-      "teamLogoUrl": "blob:http://localhost:8080/419776eb-9eb8-4eca-9223-6b47a81329d1",
+      "teamLogo": "OIG3.jpg",
+      "teamLogoUrl": "blob:http://localhost:8080/27343ca6-8416-4db8-b846-d1232f4cf065",
       "teamScore": 0,
       "teamColor": "#ee00ff",
       "teamGroup": "A",
@@ -21,7 +21,7 @@
         {
           "player": "P2",
           "playerName": "Yoooooo",
-          "hero": "Junkrat",
+          "hero": "Doomfist",
           "role": "DPS",
           "info": "",
           "image": null,

@@ -42,8 +42,8 @@ my-react-app
 1. Clone the repository: `git clone <repository-url>`
 2. Navigate to the project directory: `cd my-react-app`
 3. Install dependencies: `npm install`
-4. Start the application: `npm start`
-5. Start the Dev Server: `node ./server.js`
+4. Start the Dev Server: `node ./server.js`
+5. Start the application: `npm start`
 6. Navigate to `http://localhost:8080`
 
 **Pages are now accessible as usual..**<br/>

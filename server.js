@@ -9,8 +9,11 @@ const { createProxyMiddleware } = require('http-proxy-middleware'); // Proxy mid
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+const isProduction = false
 // Determine if we're in production mode
-const isProduction = false;
+// If running production, use npm run build and then node server.js will run everything as needed 
+// If dev then run npm start and then node server.js will run the dev enviroment.. 
+// ingore the localhost:3000 window and use 8080 instead for dash.
 
 // Middleware setup
 app.use(cors());
@@ -22,56 +25,11 @@ const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
 
 // Ensure the directory exists
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+    fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // Use memory storage for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
-
-
-// // File upload route - Original
-// app.post('/upload', upload.single('teamLogo'), (req, res) => {
-//     if (!req.file) {
-//         return res.status(400).json({ message: 'No file uploaded' });
-//     }
-
-//     const teamName = req.body.teamName || 'default';
-//     const fileExtension = path.extname(req.file.originalname);
-//     const filename = `${teamName}${fileExtension}`;
-//     const filepath = path.join(uploadDir, filename);
-
-//     fs.access(filepath, fs.constants.F_OK, (err) => {
-//         if (!err) {
-//             console.log(`File ${filename} already exists, skipping overwrite.`);
-//             return res.status(200).json({
-//                 message: 'File already exists, skipping overwrite',
-//                 filename: filename,
-//                 path: filepath,
-//                 teamName: teamName
-//             });
-//         } else {
-//             fs.writeFile(filepath, req.file.buffer, (err) => {
-//                 if (err) {
-//                     console.error('Error saving file:', err);
-//                     return res.status(500).json({ message: 'Error saving file' });
-//                 }
-
-//                 console.log(`File saved: ${filename}`);
-
-//                 res.status(200).json({
-//                     message: 'File uploaded successfully',
-//                     filename: filename,
-//                     path: filepath,
-//                     teamName: teamName
-//                 });
-//             });
-//         }
-//     });
-// });
-
-
-// File upload route
-
 
 app.post('/upload', upload.single('teamLogo'), (req, res) => {
     if (!req.file) {
@@ -101,12 +59,11 @@ app.post('/upload', upload.single('teamLogo'), (req, res) => {
     });
 });
 
-
 // JSON data update route
 let jsonData = {};
 app.post('/update-json', (req, res) => {
     jsonData = req.body;
-    const filePath = path.join(__dirname, 'matchData.json');
+    const filePath = path.join(__dirname, 'public', 'matchData.json');
 
     fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
         if (err) {
@@ -117,8 +74,6 @@ app.post('/update-json', (req, res) => {
     });
 });
 
-
-
 // Endpoint to serve the full JSON data
 app.get('/getFullJson', (req, res) => {
     console.log('GET /getFullJson');
@@ -127,7 +82,7 @@ app.get('/getFullJson', (req, res) => {
 
 // Serving hero files
 app.get('/getHeroFiles', (req, res) => {
-    const heroesDir = path.join(__dirname, './public/Scoreboard/Heroes');
+    const heroesDir = path.join(__dirname, 'public/Scoreboard/Heroes');
     fs.readdir(heroesDir, (err, files) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to read directory' });
@@ -161,11 +116,6 @@ app.get('/getValue', (req, res) => {
     }
 });
 
-
-
-
-
-
 // In production, serve the built React app
 if (isProduction) {
     app.use(express.static(path.join(__dirname, 'build')));
@@ -175,14 +125,14 @@ if (isProduction) {
         res.sendFile(path.join(__dirname, 'build', 'index.html'));
     });
 } else {
-    // Setting up the 'dev' enviroment
-    console.log("Dont forget to start the dev server with npm start");
+    // Setting up the 'dev' environment
+    console.log("Don't forget to start the dev server with npm start");
 
     // Serving static HTML files from the public/html directory
-    app.use(express.static(path.join(__dirname, './public/html')));
+    app.use(express.static(path.join(__dirname, 'public/html')));
 
     app.get('/matchData.json', (req, res) => {
-        const filePath = path.join(__dirname, 'matchData.json');
+        const filePath = path.join(__dirname, 'public', 'matchData.json');
         res.sendFile(filePath);
     });
 
@@ -194,18 +144,10 @@ if (isProduction) {
     );
 }
 
-
-
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-
-
-
-
-
 
 
 
