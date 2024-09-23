@@ -35,7 +35,9 @@ function App() {
                 
                 />;
             case 'general':
-                return <General />;
+                return <General 
+                    onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
+                />;
             case 'replays':
                 return <Replays />;
             case 'bracket':

@@ -3,12 +3,63 @@ import { Container, Row, Col, Form } from 'react-bootstrap';
 import GenerateTeamSide from '../components/GenerateTeamSide';
 import '../styles/App.css'; 
 
+const defaultMatchData = {
+    currentGame: '',
+    teams: {
+        team1: {
+            teamName: '',
+            teamInfo: '',
+            teamLogo: '',
+            teamLogoUrl: '',
+            teamScore: 0,
+            teamColor: '',
+            teamGroup: '',
+            players: Array(6).fill({
+                player: '',
+                playerName: '',
+                hero: '',
+                role: '',
+                info: '',
+                image: null,
+                imageUrl: null
+            })
+        },
+        team2: {
+            teamName: '',
+            teamInfo: '',
+            teamLogo: '',
+            teamLogoUrl: '',
+            teamScore: 0,
+            teamColor: '',
+            teamGroup: '',
+            players: Array(6).fill({
+                player: '',
+                playerName: '',
+                hero: '',
+                role: '',
+                info: '',
+                image: null,
+                imageUrl: null
+            })
+        }
+    },
+    maps: {
+        selectedMap: '',
+        mapData: Array(7).fill({
+            map: '',
+            team1Score: 0,
+            team2Score: 0,
+            completed: false
+        })
+    }
+};
+
 const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
 
-    const [team1Info, setTeam1Info] = useState([]);
-    const [team2Info, setTeam2Info] = useState([]);
+    const [team1Info, setTeam1Info] = useState({});
+    const [team2Info, setTeam2Info] = useState({});
     
     const [maps, setMaps] = useState({});
 
@@ -23,15 +74,17 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                 console.log('Response:', response);
                 if (response.ok) {
                     const data = await response.json();
-                    setCurrentGame(data.currentGame);
+                    const filledData = { ...defaultMatchData, ...data };
 
-                    setTeam1Players(data.teams.team1.players);
-                    setTeam2Players(data.teams.team2.players);
+                    setCurrentGame(filledData.currentGame);
 
-                    setTeam1Info(data.teams.team1);
-                    setTeam2Info(data.teams.team2);
+                    setTeam1Players(filledData.teams.team1.players);
+                    setTeam2Players(filledData.teams.team2.players);
 
-                    setMaps(data.maps);
+                    setTeam1Info(filledData.teams.team1);
+                    setTeam2Info(filledData.teams.team2);
+
+                    setMaps(filledData.maps);
 
                     setIsLoading(false);
                 } else {
@@ -44,7 +97,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
     
         fetchMatchData();
     }, []);
-
+    // }, [setCurrentGame]);
 
     const getMapList = () => {
         switch (currentGame) {
@@ -52,12 +105,10 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                 return ['Busan', 'Hanamura', 'Hollywood', 'Ilios', 'King\'s Row', 'Lijiang Tower', 'Nepal', 'Numbani', 'Oasis', 'Temple of Anubis', 'Volskaya Industries', 'Watchpoint: Gibraltar'];
             case 'Valorant':
                 return ['Ascent', 'Bind', 'Breeze', 'Haven', 'Icebox', 'Split'];
-
             default:
                 return [];
         }
     }
-
 
     const handleMapChange = (index, field, value) => {
         const newMapData = maps.mapData.map((map, i) =>
@@ -109,16 +160,17 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
             },
             currentGame: currentGame
         };
-                // Send JSON data to the server
-                await fetch('http://localhost:8080/update-json', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(jsonData)
-                });
         
-                console.log("To-Server", JSON.stringify(jsonData, null, 2));
+        // Send JSON data to the server
+        await fetch('http://localhost:8080/update-json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        });
+
+        console.log("To-Server", JSON.stringify(jsonData, null, 2));
     };
 
     // Call the onGenerateJSON prop with the generateJSON function
@@ -128,7 +180,6 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
         return <div>Loading...</div>
     }
     return (
-
         <Container fluid className="custom-container">
             <Row>
                 <Col md={6} className="team-side team-side-left">
@@ -153,10 +204,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                 </Col>
             </Row>
 
-
-
-            <Row >
-
+            <Row>
                 <Row className="mt-2">
                     <Col className="d-flex justify-content-center align-items-center">
                         <Form.Group controlId="activeMapSelect">
@@ -174,7 +222,6 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                         </Form.Group>
                     </Col>
                 </Row>
-
 
                 <Col>
                     <Row>
@@ -194,9 +241,8 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                                 >
                                     <option value="">Select Map</option>
                                     {getMapList().map((map, index) => (
-                                    <option key={index} value={map}>{map}</option>
-                                ))}
-                                
+                                        <option key={index} value={map}>{map}</option>
+                                    ))}
                                 </Form.Control>
                             </Col>
                         ))}
