@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Form, Row, Col } from 'react-bootstrap';
 
 const handleFileClick = (id) => {
     document.getElementById(id).click();
@@ -66,11 +66,20 @@ const General = ({ onGenerateJSON }) => {
     };
 
     const addInput = (column) => {
-        const newId = `${column}-${Object.keys(inputs).filter(key => inputs[key].column === column).length + 1}`;
-        const newLabel = prompt('Enter label for new input:');
+        let inputID = "";
+        while (inputID === "") {
+            inputID = prompt('Enter label for new input:');
+            if (inputID === null) {
+                // User hit cancel, exit the function
+                return;
+            }
+            if (inputID === "") {
+                alert('Please enter a label for the new input.');
+            }
+        }
         setInputs({
             ...inputs,
-            [newId]: { id: newId, label: newLabel, column, value: '' }
+            [inputID]: { id: inputID, label: inputID, column, value: '' }
         });
     };
 
@@ -90,11 +99,10 @@ const General = ({ onGenerateJSON }) => {
     };
 
     const addFile = (column) => {
-        const newId = `${column}-${Object.keys(files).filter(key => files[key].column === column).length + 1}`;
-        const newLabel = prompt('Enter label for new file select:');
+        const fileID = prompt('Enter label for new file select:');
         setFiles({
             ...files,
-            [newId]: { id: newId, label: newLabel, column, url: '', value: '' }
+            [fileID]: { id: fileID, label: fileID, column, url: '', value: '' }
         });
     };
 
@@ -118,11 +126,10 @@ const General = ({ onGenerateJSON }) => {
     };
 
     const addColor = () => {
-        const newId = `color${Object.keys(colors).length + 1}`;
-        const newLabel = prompt('Enter label for new color select:');
+        const colorID = prompt('Enter label for new color select:');
         setColors({
             ...colors,
-            [newId]: { id: newId, label: newLabel, value: '' }
+            [colorID]: { id: colorID, label: colorID, value: '' }
         });
     };
 
@@ -144,15 +151,15 @@ const General = ({ onGenerateJSON }) => {
     return (
         <div>
             <h2>General Tab</h2>
-            <form>
-                <div className="row">
+            <Form>
+                <Row>
 
                     {/* First Column: Label + Input */}
-                    <div className="col-md-2">
+                    <Col md={2}>
                         {Object.values(inputs).filter(input => input.column === 'input').map(input => (
                             <div key={input.id} className="d-flex align-items-center mb-2">
                                 <label htmlFor={input.id} className="label-width">{input.label}</label>
-                                <input
+                                <Form.Control
                                     id={input.id}
                                     type="text"
                                     className="form-control mr-2"
@@ -164,14 +171,14 @@ const General = ({ onGenerateJSON }) => {
                             </div>
                         ))}
                         <button type="button" onClick={() => addInput('input')}>+ Add Input</button>
-                    </div>
+                    </Col>
                     
                     {/* Second Column: Label + Input */}
-                    <div className="col-md-2">
+                    <Col md={2}>
                         {Object.values(inputs).filter(input => input.column === 'input2').map(input => (
                             <div key={input.id} className="d-flex align-items-center mb-2">
                                 <label htmlFor={input.id} className="label-width">{input.label}</label>
-                                <input
+                                <Form.Control
                                     id={input.id}
                                     type="text"
                                     className="form-control mr-2"
@@ -183,14 +190,14 @@ const General = ({ onGenerateJSON }) => {
                             </div>
                         ))}
                         <button type="button" onClick={() => addInput('input2')}>+ Add Input</button>
-                    </div>
+                    </Col>
 
                     {/* Third Column: File Select */}
-                    <div className="col-md-2">
+                    <Col md={2}>
                         {Object.values(files).filter(file => file.column === 'file').map(file => (
                             <div key={file.id} className="d-flex align-items-center mb-2">
                                 <label htmlFor={file.id} className="label-width">{file.label}</label>
-                                <input
+                                <Form.Control
                                     id={file.id}
                                     type="file"
                                     className="d-none"
@@ -217,14 +224,14 @@ const General = ({ onGenerateJSON }) => {
                             </div>
                         ))}
                         <button type="button" onClick={() => addFile('file')}>+ Add File Select</button>
-                    </div>
+                    </Col>
 
                     {/* Fourth Column: File Select */}
-                    <div className="col-md-2">
+                    <Col md={2}>
                         {Object.values(files).filter(file => file.column === 'file2').map(file => (
                             <div key={file.id} className="d-flex align-items-center mb-2">
                                 <label htmlFor={file.id} className="label-width">{file.label}</label>
-                                <input
+                                <Form.Control
                                     id={file.id}
                                     type="file"
                                     className="d-none"
@@ -251,14 +258,14 @@ const General = ({ onGenerateJSON }) => {
                             </div>
                         ))}
                         <button type="button" onClick={() => addFile('file2')}>+ Add File Select</button>
-                    </div>
+                    </Col>
 
                     {/* Fifth Column: Color Selectors */}
-                    <div className="col-md-2">
+                    <Col md={2}>
                         {Object.values(colors).map(color => (
                             <div key={color.id} className="d-flex align-items-center mb-2">
                                 <label htmlFor={color.id} className="label-width">{color.label}</label>
-                                <input
+                                <Form.Control
                                     id={color.id}
                                     type="color"
                                     className="form-control mr-2"
@@ -270,16 +277,18 @@ const General = ({ onGenerateJSON }) => {
                             </div>
                         ))}
                         <button type="button" onClick={addColor}>+ Add Color Select</button>
-                    </div>
+                    </Col>
 
                     {/* Sixth Column: Space for more input boxes */}
-                    <div className="col-md-2">
-                     
-                    </div>
+                    
+                    <Col md={2}>
+                        {/* Add another color column or what? */}
+                        {/* should we customize it so user can select whats in each column completely? */}
+                    </Col>
 
-                </div>
-                <button type="button" onClick={saveState} className="btn btn-primary mt-3">Update</button>
-            </form>
+                </Row>
+                <Button onClick={saveState} className="mt-3">Update</Button>
+            </Form>
         </div>
     );
 };
