@@ -4,12 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import _ from 'lodash';
-
-// ISSUES
-// 1. The 'input' box is much too large
-
-
-
+import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -117,6 +112,7 @@ const General = ({ onGenerateJSON, setStatus }) => {
                     width={1200}
                     verticalCompact={true}  // forces layout to be compact vertically
                     preventCollision={false} // prevents collision of elements
+                    draggableHandle=".drag-handle" // Only allow dragging by the handle
                 >
                     {Object.values(inputs).map((input) => (
                         <div key={input.id} className="general-grid-item">
@@ -178,7 +174,14 @@ const General = ({ onGenerateJSON, setStatus }) => {
                                         onClick={() => handleRemoveInput(input.id)}
                                         style={{ cursor: 'pointer', marginLeft: '10px', color: 'red' }} // Change the color here
                                     />
-                                </div>
+                                    <FontAwesomeIcon
+                                        icon={faArrowsAlt}
+                                        className="drag-handle"
+                                        style={{ width: '15px', height: '15px', position: 'absolute', top: '0', right: '0', cursor: 'move', color: 'gray' }}
+                                    />    
+                                    
+                                    {/* <div className="drag-handle" style={{ width: '15px', height: '15px', backgroundColor: 'gray', position: 'absolute', top: '0', right: '0', cursor: 'move' }}></div> */}
+                                    </div>
                             </div>
                         </div>
                     ))}
