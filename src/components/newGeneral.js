@@ -12,6 +12,7 @@ const ReactGridLayout = WidthProvider(RGL);
 
 // ISSUES
 // 1. When clicking to drag an item, the item moves approximately 50-100px to the right, every single time. 
+// 2. Making a few excessive calls to localstorage.. needs refined a bit
 
 // To Do: 
 // Set up resizable grid item? do we really need it for this? doesnt feel so besides MAYBE an image upload
@@ -37,10 +38,11 @@ const renderPopover = (file) => (
 
 const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
-    // const [columns, setColumns] = useState(["file", "text", "color"]); // Not used in the 'draggable' version but we need to fill it out still for folks using the 'static' version potentially
     const [layout, setLayout] = useState([]);
     const columns = ["file", "text", "color"];
 
+
+    // Loading Inputs when the component mounts
     useEffect(() => {
         const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
         const newLayout = [];
@@ -48,11 +50,11 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             newLayout.push(savedInputs[key].layout);
         });
 
-        console.log(newLayout);
-
         setInputs(savedInputs);
         setLayout(newLayout);
     }, []);
+
+
 
     const handleRemoveInput = (inputId) => {
         if (window.confirm('Are you sure you want to remove this item?')) {
@@ -62,7 +64,6 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                 delete newInputs[inputId];
                 return newInputs;
             });
-
             // Currently the layout is rerendered every time the layout is changed.. inside of the onLayoutChange function
         }
     };
@@ -83,6 +84,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
         setInputs(newInputs);
     };
 
+
     const addInput = (type) => {
         let id = "";
         while (id === "") {
@@ -94,20 +96,20 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                 alert('Please enter a label for the new input.');
             }
         }
-        const newInput = { 
+        const newInput = {
             id: id,
             type: type,
             label: `${id} `,
             value: type === 'color' ? '#000000' : '',
             url: type === 'file' ? '' : undefined,
             column: type
-         };
+        };
 
         setInputs(prevInputs => {
-            const newInputs = { 
+            const newInputs = {
                 ...prevInputs,
-                 [id]: newInput
-                 };
+                [id]: newInput
+            };
 
             localStorage.setItem('inputs', JSON.stringify(newInputs));
             localStorage.setItem('columns', JSON.stringify(columns));
@@ -124,6 +126,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
         }]);
     };
 
+
     const handleInputChange = (id, value) => {
         setInputs(prevInputs => {
             const newInputs = { ...prevInputs, [id]: { ...prevInputs[id], value } };
@@ -133,6 +136,8 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             return newInputs;
         });
     };
+
+
 
     const handleFileChange = (id, event) => {
         const file = event.target.files[0];
@@ -164,7 +169,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                     verticalCompact={true}  // forces layout to be compact vertically
                     preventCollision={false} // prevents collision of elements
                     draggableHandle=".drag-handle" // Only allow dragging by the handle
-                    allowOverlap= {false}
+                    allowOverlap={false}
                     isResizable={false} // Prevents resizing
                     className="bg-light border"
                 >
@@ -232,31 +237,28 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                         icon={faArrowsAlt}
                                         className="drag-handle"
                                         style={{ width: '15px', height: '15px', position: 'absolute', top: '0', right: '0', cursor: 'move', color: 'gray' }}
-                                    />    
-                                    
+                                    />
+
                                     {/* <div className="drag-handle" style={{ width: '15px', height: '15px', backgroundColor: 'gray', position: 'absolute', top: '0', right: '0', cursor: 'move' }}></div> */}
-                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </ReactGridLayout>
                 <div className="py-2 px-2 bg-dark">
-    <Row>
-        <Col>
-            <ButtonGroup size='sm'>
-                <Button variant="secondary" onClick={() => addInput('text')}>Add Text Input</Button>
-                <Button variant="secondary" onClick={() => addInput('file')}>Add File Select</Button>
-                <Button variant="secondary" onClick={() => addInput('color')}>Add Color Select</Button>
-            </ButtonGroup>
-        </Col>
-        <Col className="text-right">
-            <Button onClick={() => saveState(inputs, columns)} size= "sm" variant="primary" className="">Save Layout</Button>
-        </Col>
-    </Row>
-</div>
-                {/* <Button onClick={() => localStorage.setItem('inputs', JSON.stringify(inputs))} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
-                {/* <Button onClick= {saveState} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
-                {/* <Button onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
+                    <Row>
+                        <Col>
+                            <ButtonGroup size='sm'>
+                                <Button variant="secondary" onClick={() => addInput('text')}>Add Text Input</Button>
+                                <Button variant="secondary" onClick={() => addInput('file')}>Add File Select</Button>
+                                <Button variant="secondary" onClick={() => addInput('color')}>Add Color Select</Button>
+                            </ButtonGroup>
+                        </Col>
+                        <Col className="text-right">
+                            <Button onClick={() => saveState(inputs, columns)} size="sm" variant="primary" className="">Save Layout</Button>
+                        </Col>
+                    </Row>
+                </div>
 
             </Form>
         </div>
