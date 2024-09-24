@@ -5,6 +5,12 @@ import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import _ from 'lodash';
 
+// ISSUES
+// 1. The 'input' box is much too large
+
+
+
+
 const ReactGridLayout = WidthProvider(RGL);
 
 const handleFileClick = (id) => {
@@ -107,10 +113,10 @@ const General = ({ onGenerateJSON, setStatus }) => {
                     layout={layout}
                     onLayoutChange={onLayoutChange}
                     cols={12}
-                    rowHeight={50}
+                    rowHeight={35}
                     width={1200}
-                    verticalCompact={false}
-                    preventCollision={true}
+                    verticalCompact={true}  // forces layout to be compact vertically
+                    preventCollision={false} // prevents collision of elements
                 >
                     {Object.values(inputs).map((input) => (
                         <div key={input.id} className="general-grid-item">

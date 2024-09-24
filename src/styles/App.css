@@ -4,7 +4,10 @@
     --fontSize: 12px;
 }
 
-
+/* stopping the highighting during dragging */
+body {
+    user-select: none;
+}
 
 .label-width {
     width: 100px;
@@ -170,6 +173,7 @@
 
 
   /* FOR THE DRAGGABLE GENERAL.JS  */
+  
 .general-grid-item {
     display: flex;
     flex-direction: column;
