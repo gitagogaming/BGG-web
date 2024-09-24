@@ -7,7 +7,7 @@ import Bracket from './components/Bracket';
 import { Container, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import StatusBar from './StatusBar'; 
 
-
+import GeneralTest from './components/newGeneral';
 
 
 // finished with heros1.html - need to copy over to heroes2.html
@@ -51,6 +51,9 @@ function App() {
                 return <Replays />;
             case 'bracket':
                 return <Bracket />;
+            case 'generalTest':
+                return <GeneralTest />;
+
             default:
                 return <Match />;
         }
@@ -122,6 +125,7 @@ function App() {
                     <button className={`nav-link ${activeTab === 'general' ? 'active' : ''}`} onClick={() => setActiveTab('general')}>General</button>
                     <button className={`nav-link ${activeTab === 'replays' ? 'active' : ''}`} onClick={() => setActiveTab('replays')}>Replays</button>
                     <button className={`nav-link ${activeTab === 'bracket' ? 'active' : ''}`} onClick={() => setActiveTab('bracket')}>Bracket</button>
+                    <button className={`nav-link ${activeTab === 'generalTest' ? 'active' : ''}`} onClick={() => setActiveTab('generalTest')}>General Draggable Test</button>
                 </div>
                 {renderButtons()}
             </nav>
