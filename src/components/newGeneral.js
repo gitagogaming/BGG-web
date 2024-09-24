@@ -101,9 +101,10 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
 
         // we save layouts to 'inputs' although its not used in the normal version of the 'general tab'
         localStorage.setItem('inputs', JSON.stringify(newInputs));
+        setInputs(newInputs);
         
-        setLayout(layout);
-        localStorage.setItem('layout', JSON.stringify(layout));
+        // setLayout(layout);
+        // localStorage.setItem('layout', JSON.stringify(layout));
     };
 
     const addInput = (type) => {
