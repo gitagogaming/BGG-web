@@ -35,18 +35,43 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [layout, setLayout] = useState([]);
 
     useEffect(() => {
+        // Loading the 'inputs' from localStorage which is holding data for any inputs created in the 'general tab'
         const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
+        // We need to loop thru inputs and recreate the layouts by making an array with each layout ver input
+        
+        const newLayout = [];
+        Object.keys(savedInputs).forEach((key, i) => {
+            newLayout.push(savedInputs[key].layout);
+            // newLayout.push({
+            //     x: key.x,
+            //     y: key.y,
+            //     w: key.w,
+            //     h: key.h,
+            //     i: key.i
+            // });
+        });
+
+        console.log(newLayout);
+
         setInputs(savedInputs);
-        setLayout(generateLayout(savedInputs));
+        setLayout(newLayout);
+
+
+
+
+        // setInputs(savedInputs);
+        // setLayout(generateLayout(savedInputs));
+        // console.log(savedInputs)
     }, []);
 
     const handleRemoveInput = (inputId) => {
         if (window.confirm('Are you sure you want to remove this item?')) {
-            setInputs(prevInputs => {
-                const newInputs = { ...prevInputs };
-                delete newInputs[inputId];
-                return newInputs;
-            });
+            // setInputs(prevInputs => {
+            //     const newInputs = { ...prevInputs };
+            //     delete newInputs[inputId];
+            //     return newInputs;
+            // });
+
             setLayout(prevLayout => prevLayout.filter(item => item.i !== inputId));
         }
     };
@@ -64,7 +89,21 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     };
 
     const onLayoutChange = (layout) => {
+        // for every item in the layout, check the ID(i) and see if it is also in localstorage('inputs') and if so add layout to that input.. 
+        const currentInputs = JSON.parse(localStorage.getItem('inputs')) || {};
+
+        const newInputs = {};
+        layout.forEach(item => {
+            if (currentInputs[item.i]) {
+                newInputs[item.i] = { ...currentInputs[item.i], layout: item };
+            }
+        });
+
+        // we save layouts to 'inputs' although its not used in the normal version of the 'general tab'
+        localStorage.setItem('inputs', JSON.stringify(newInputs));
+        
         setLayout(layout);
+        localStorage.setItem('layout', JSON.stringify(layout));
     };
 
     const addInput = (type) => {
@@ -135,43 +174,6 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
         }
     };
 
-
-    // const saveState = async () => {
-    //     localStorage.setItem('inputs', JSON.stringify(inputs));
-    //     localStorage.setItem('columns', JSON.stringify(columns));
-
-
-    //     // setStatus('Layout updated!', 'success');
-
-    //     if (onGenerateJSON) {
-    //         const response = await fetch('http://localhost:8080/getFullJson');
-    //         const existingData = await response.json();
-
-    //         // Group inputs by type
-    //         const groupedInputs = {};
-    //         Object.entries(inputs).forEach(([key, value]) => {
-    //             if (!groupedInputs[value.type]) {
-    //                 groupedInputs[value.type] = {};
-    //             }
-    //             groupedInputs[value.type][key] = value;
-    //         });
-
-    //         const updatedData = {
-    //             ...existingData,
-    //             general: groupedInputs
-    //         };
-
-    //         await fetch('http://localhost:8080/update-json', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(updatedData)
-    //         });
-
-    //         console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
-    //     }
-    // };
 
     return (
         <div>
