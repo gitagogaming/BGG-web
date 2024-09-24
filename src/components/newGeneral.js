@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col } from 'react-bootstrap';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
+
 import RGL, { WidthProvider } from 'react-grid-layout';
 import _ from 'lodash';
-import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 
 const ReactGridLayout = WidthProvider(RGL);
 
 // ISSUES
-// 1. When adding an item, it does not ask for a title for the item and just prepopulates causing duplicates etc
-// 2. The Json is not formatted correctly and needs reworked :(
+// 1. When clicking to drag an item, the item moves approximately 50-100px to the right, every single time. 
+
+// To Do: 
+// Set up resizable grid item? do we really need it for this? doesnt feel so besides MAYBE an image upload
+// Rename the item.. ??
+// Better close and drag handle?
 
 
 const handleFileClick = (id) => {
@@ -31,65 +37,38 @@ const renderPopover = (file) => (
 
 const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
-    const [columns, setColumns] = useState(["file", "text", "color"]); // Not used in the 'draggable' version but we need to fill it out still for folks using the 'static' version potentially
+    // const [columns, setColumns] = useState(["file", "text", "color"]); // Not used in the 'draggable' version but we need to fill it out still for folks using the 'static' version potentially
     const [layout, setLayout] = useState([]);
+    const columns = ["file", "text", "color"];
 
     useEffect(() => {
-        // Loading the 'inputs' from localStorage which is holding data for any inputs created in the 'general tab'
         const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
-        // We need to loop thru inputs and recreate the layouts by making an array with each layout ver input
-        
         const newLayout = [];
         Object.keys(savedInputs).forEach((key, i) => {
             newLayout.push(savedInputs[key].layout);
-            // newLayout.push({
-            //     x: key.x,
-            //     y: key.y,
-            //     w: key.w,
-            //     h: key.h,
-            //     i: key.i
-            // });
         });
 
         console.log(newLayout);
 
         setInputs(savedInputs);
         setLayout(newLayout);
-
-
-
-
-        // setInputs(savedInputs);
-        // setLayout(generateLayout(savedInputs));
-        // console.log(savedInputs)
     }, []);
 
     const handleRemoveInput = (inputId) => {
         if (window.confirm('Are you sure you want to remove this item?')) {
-            // setInputs(prevInputs => {
-            //     const newInputs = { ...prevInputs };
-            //     delete newInputs[inputId];
-            //     return newInputs;
-            // });
+            // Remove the item from the inputs object
+            setInputs(prevInputs => {
+                const newInputs = { ...prevInputs };
+                delete newInputs[inputId];
+                return newInputs;
+            });
 
-            setLayout(prevLayout => prevLayout.filter(item => item.i !== inputId));
+            // Currently the layout is rerendered every time the layout is changed.. inside of the onLayoutChange function
         }
     };
 
-    const generateLayout = (inputs) => {
-        return _.map(Object.keys(inputs), (key, i) => {
-            return {
-                x: (i * 2) % 12,
-                y: Math.floor(i / 6) * 2,
-                w: 2,
-                h: 2, // Fixed height to accommodate two rows
-                i: key
-            };
-        });
-    };
 
     const onLayoutChange = (layout) => {
-        // for every item in the layout, check the ID(i) and see if it is also in localstorage('inputs') and if so add layout to that input.. 
         const currentInputs = JSON.parse(localStorage.getItem('inputs')) || {};
 
         const newInputs = {};
@@ -102,9 +81,6 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
         // we save layouts to 'inputs' although its not used in the normal version of the 'general tab'
         localStorage.setItem('inputs', JSON.stringify(newInputs));
         setInputs(newInputs);
-        
-        // setLayout(layout);
-        // localStorage.setItem('layout', JSON.stringify(layout));
     };
 
     const addInput = (type) => {
@@ -177,8 +153,8 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
 
 
     return (
-        <div>
-            <Form>
+        <div >
+            <Form >
                 <ReactGridLayout
                     layout={layout}
                     onLayoutChange={onLayoutChange}
@@ -190,6 +166,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                     draggableHandle=".drag-handle" // Only allow dragging by the handle
                     allowOverlap= {false}
                     isResizable={false} // Prevents resizing
+                    className="bg-light border"
                 >
                     {Object.values(inputs).map((input) => (
                         <div key={input.id} className="general-grid-item">
@@ -263,16 +240,23 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                         </div>
                     ))}
                 </ReactGridLayout>
-                <div className="mt-3">
-                    <Dropdown as={ButtonGroup}>
-                        <Button variant="secondary" onClick={() => addInput('text')}>Add Text Input</Button>
-                        <Button variant="secondary" onClick={() => addInput('file')}>Add File Select</Button>
-                        <Button variant="secondary" onClick={() => addInput('color')}>Add Color Select</Button>
-                    </Dropdown>
-                </div>
+                <div className="py-2 px-2 bg-dark">
+    <Row>
+        <Col>
+            <ButtonGroup size='sm'>
+                <Button variant="secondary" onClick={() => addInput('text')}>Add Text Input</Button>
+                <Button variant="secondary" onClick={() => addInput('file')}>Add File Select</Button>
+                <Button variant="secondary" onClick={() => addInput('color')}>Add Color Select</Button>
+            </ButtonGroup>
+        </Col>
+        <Col className="text-right">
+            <Button onClick={() => saveState(inputs, columns)} size= "sm" variant="primary" className="">Save Layout</Button>
+        </Col>
+    </Row>
+</div>
                 {/* <Button onClick={() => localStorage.setItem('inputs', JSON.stringify(inputs))} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
                 {/* <Button onClick= {saveState} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
-                <Button onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
+                {/* <Button onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
 
             </Form>
         </div>
