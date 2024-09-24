@@ -182,7 +182,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
     return (
         <Container fluid className="custom-container">
             <Row>
-                <Col md={6} className="team-side team-side-left">
+                <Col md={6} className="team-side team-side-left py-2">
                     <GenerateTeamSide
                         team="Team1"
                         players={team1Players}
@@ -192,7 +192,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                         currentGame={currentGame}
                     />
                 </Col>
-                <Col md={6} className="team-side team-side-right">
+                <Col md={6} className="team-side team-side-right py-2">
                     <GenerateTeamSide
                         team="Team2"
                         players={team2Players}
@@ -204,7 +204,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                 </Col>
             </Row>
 
-            <Row>
+            <Row className = "bg-white">
                 <Row className="mt-2">
                     <Col className="d-flex justify-content-center align-items-center">
                         <Form.Group controlId="activeMapSelect">
@@ -265,7 +265,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                             </Col>
                         ))}
                     </Row>
-                    <Row>
+                    <Row className="mb-3">
                         {maps.mapData.map((map, index) => (
                             <Col key={index}>
                                 <Form.Check

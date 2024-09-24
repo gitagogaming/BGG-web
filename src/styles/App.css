@@ -160,6 +160,7 @@ body {
 
 /*  FOR GENERAL TAB CURRENTLY */
 .delete-icon{
+    color:white;
     height: 30px;
     width: 30px;
 }
@@ -174,6 +175,14 @@ body {
 
   /* FOR THE DRAGGABLE GENERAL.JS  */
   
+.grid-background{
+    /* image */
+    background-image: url('http://localhost:8080/bgg-bg.png');
+    background-size: cover;
+    /* background-repeat: no-repeat; */
+     /* background-attachment: fixed;  */
+}
+
 .general-grid-item {
     display: flex;
     flex-direction: column;

@@ -161,14 +161,14 @@ function App() {
     };
 
     return (
-        <Container>
+        <Container className="bg-dark px-1 py-3">
             <nav className="nav nav-tabs d-flex justify-content-between align-items-center">
                 <div className="nav nav-tabs">
-                    <button className={`nav-link ${activeTab === 'match' ? 'active' : ''}`} onClick={() => setActiveTab('match')}>Match</button>
-                    <button className={`nav-link ${activeTab === 'general' ? 'active' : ''}`} onClick={() => setActiveTab('general')}>General</button>
-                    <button className={`nav-link ${activeTab === 'replays' ? 'active' : ''}`} onClick={() => setActiveTab('replays')}>Replays</button>
-                    <button className={`nav-link ${activeTab === 'bracket' ? 'active' : ''}`} onClick={() => setActiveTab('bracket')}>Bracket</button>
-                    <button className={`nav-link ${activeTab === 'generalTest' ? 'active' : ''}`} onClick={() => setActiveTab('generalTest')}>General Draggable Test</button>
+                    <button className={`nav-link ${activeTab === 'match' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('match')}>Match</button>
+                    <button className={`nav-link ${activeTab === 'general' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('general')}>General</button>
+                    <button className={`nav-link ${activeTab === 'replays' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('replays')}>Replays</button>
+                    <button className={`nav-link ${activeTab === 'bracket' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('bracket')}>Bracket</button>
+                    <button className={`nav-link ${activeTab === 'generalTest' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('generalTest')}>General Draggable Test</button>
                 </div>
                 {renderButtons()}
             </nav>

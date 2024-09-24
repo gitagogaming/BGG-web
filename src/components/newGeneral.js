@@ -13,6 +13,7 @@ const ReactGridLayout = WidthProvider(RGL);
 // ISSUES
 // 1. When clicking to drag an item, the item moves approximately 50-100px to the right, every single time. 
 // 2. Making a few excessive calls to localstorage.. needs refined a bit
+// 3. When using "Toggle Overlap", the items do not retain their specific position after a reload.. likely due to how the layout is being saved
 
 // To Do: 
 // Set up resizable grid item? do we really need it for this? doesnt feel so besides MAYBE an image upload
@@ -40,6 +41,11 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
     const [layout, setLayout] = useState([]);
     const columns = ["file", "text", "color"];
+
+    const [collision, setCollision] = useState(true);
+    const [overlap, setOverlap] = useState(false);
+    const [horizontalCompact, setHoriztonalCompact] = useState(false);
+    const [verticalCompact, setVerticalCompact] = useState(false);
 
 
     // Loading Inputs when the component mounts
@@ -161,17 +167,25 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
         <div >
             <Form >
                 <ReactGridLayout
+                    className="bg-light border grid-background"
                     layout={layout}
                     onLayoutChange={onLayoutChange}
                     cols={12}
                     rowHeight={35}
                     width={1200}
-                    verticalCompact={true}  // forces layout to be compact vertically
-                    preventCollision={false} // prevents collision of elements
-                    draggableHandle=".drag-handle" // Only allow dragging by the handle
-                    allowOverlap={false}
+
+                    resizeHandles={['se', 's', 'e']} // Resize from bottom right, bottom, and right
+                    
+                    draggableHandle=".drag-handle"
+                    verticalCompact={false}  // forces layout to be compact vertically
+                    // compactType=
+                    preventCollision={collision} // prevents collision of elements
+                    allowOverlap={overlap} // Allow overlapping of elements
                     isResizable={false} // Prevents resizing
-                    className="bg-light border"
+
+                    // autoSize={true} // Automatically resizes the grid items to fit their content - useful if many different sizes
+
+           
                 >
                     {Object.values(inputs).map((input) => (
                         <div key={input.id} className="general-grid-item">
@@ -255,7 +269,42 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                             </ButtonGroup>
                         </Col>
                         <Col className="text-right">
-                            <Button onClick={() => saveState(inputs, columns)} size="sm" variant="primary" className="">Save Layout</Button>
+                            <ButtonGroup size='sm'>
+                                <Button onClick={() => saveState(inputs, columns)}  variant="primary" className="">Save Layout</Button>
+                                <Dropdown >
+                                    <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                                        Options 
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item 
+                                        onClick={() => setCollision(!collision)} 
+                                        active={collision}
+                                        > Toggle Collision
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => setOverlap(!overlap)} 
+                                            active={overlap}
+                                        > Toggle Overlap
+                                        </Dropdown.Item>
+
+                                        {/* compact vertical and or horiztonal buttons */}
+                                        <Dropdown.Item
+                                            onClick={() => setHoriztonalCompact(!horizontalCompact)}
+                                            active={horizontalCompact}
+                                        > Toggle Horizontal Compact
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => setVerticalCompact(!verticalCompact)}
+                                            active={verticalCompact}
+                                        > Toggle Vertical Compact
+                                        </Dropdown.Item>
+
+
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </ButtonGroup>
+                          
+
                         </Col>
                     </Row>
                 </div>

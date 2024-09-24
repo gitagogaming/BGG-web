@@ -194,10 +194,23 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                 <Row>
                     {columns.map((columnName) => (
                         <Col key={columnName} md={4}>
-                            <h5>{columnName}</h5>
+                            <div className="d-flex justify-content-between align-items-center mb-2 bg-black">
+                                <h5 className="text-white bg-black p-1 px-2 rounded-2">{columnName.toUpperCase()}</h5>
+                                <Dropdown as={ButtonGroup} onClick={handleDropdownClick} size= "sm" className="ml-2 px-3">
+                                    <Button variant="secondary">Add Item</Button>
+                                    <Dropdown.Toggle split variant="primary" id="dropdown-basic" />
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={() => addInput('text', columnName)}>Text Input</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => addInput('file', columnName)}>File Select</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => addInput('color', columnName)}>Color Select</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                             {(groupedInputs[columnName] || []).map((input) => (
                                 <div key={input.id} className="d-flex align-items-center mb-2">
-                                    <label htmlFor={input.id} className="label-width">{input.label}</label>
+                                    <div>
+                                        <label htmlFor={input.id} className="label-width text-white">{input.label}</label>
+                                    </div>
                                     {input.type === 'text' && (
                                         <Form.Control
                                             id={input.id}
@@ -259,8 +272,8 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                 </div>
                             ))}
 
-                            <div className="mt-3">
-                                    <Dropdown as={ButtonGroup} onClick={handleDropdownClick}>
+                            {/* <div className="mt-3">
+                                <Dropdown as={ButtonGroup} onClick={handleDropdownClick}>
                                     <Button variant="secondary">Add Item</Button>
                                     <Dropdown.Toggle split variant="primary" id="dropdown-basic" />
                                     <Dropdown.Menu>
@@ -270,7 +283,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
-                            </div>
+                            </div> */}
                         </Col>
                     ))}
                 </Row>
