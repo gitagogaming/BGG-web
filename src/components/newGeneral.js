@@ -8,6 +8,14 @@ import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 
 const ReactGridLayout = WidthProvider(RGL);
 
+// ISSUES
+// 1. The 'input' box is much too large
+// 2. Cannot click an input box without it moving entirely
+// 3. Unable to click the delete button, it causes the 'move' effect to occur
+// 4. When adding an item, it does not ask for a title for the item and just prepopulates causing duplicates etc
+// 5. The Json is not formatted correctly and needs reworked :(
+
+
 const handleFileClick = (id) => {
     document.getElementById(id).click();
 };
