@@ -23,7 +23,7 @@ const renderPopover = (file) => (
     </Popover>
 );
 
-const General = ({ onGenerateJSON, setStatus }) => {
+const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
     const [columns, setColumns] = useState([]);
 
@@ -46,42 +46,42 @@ const General = ({ onGenerateJSON, setStatus }) => {
         setColumns(savedColumns);
     }, []);
 
-    const saveState = async () => {
-        localStorage.setItem('inputs', JSON.stringify(inputs));
-        localStorage.setItem('columns', JSON.stringify(columns));
+    // const saveState = async () => {
+    //     localStorage.setItem('inputs', JSON.stringify(inputs));
+    //     localStorage.setItem('columns', JSON.stringify(columns));
 
 
-        setStatus('Layout updated!', 'success');
+    //     setStatus('Layout updated!', 'success');
 
-        if (onGenerateJSON) {
-            const response = await fetch('http://localhost:8080/getFullJson');
-            const existingData = await response.json();
+    //     if (onGenerateJSON) {
+    //         const response = await fetch('http://localhost:8080/getFullJson');
+    //         const existingData = await response.json();
 
-            // Group inputs by type
-            const groupedInputs = {};
-            Object.entries(inputs).forEach(([key, value]) => {
-                if (!groupedInputs[value.type]) {
-                    groupedInputs[value.type] = {};
-                }
-                groupedInputs[value.type][key] = value;
-            });
+    //         // Group inputs by type
+    //         const groupedInputs = {};
+    //         Object.entries(inputs).forEach(([key, value]) => {
+    //             if (!groupedInputs[value.type]) {
+    //                 groupedInputs[value.type] = {};
+    //             }
+    //             groupedInputs[value.type][key] = value;
+    //         });
 
-            const updatedData = {
-                ...existingData,
-                general: groupedInputs
-            };
+    //         const updatedData = {
+    //             ...existingData,
+    //             general: groupedInputs
+    //         };
 
-            await fetch('http://localhost:8080/update-json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedData)
-            });
+    //         await fetch('http://localhost:8080/update-json', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify(updatedData)
+    //         });
 
-            console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
-        }
-    };
+    //         console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
+    //     }
+    // };
 
 
 
@@ -269,13 +269,14 @@ const General = ({ onGenerateJSON, setStatus }) => {
                                         <Dropdown.Item onClick={() => addInput('color', columnName)}>Color Select</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
+
                             </div>
                         </Col>
                     ))}
                 </Row>
 
                 <Button onClick={createColumn} variant="success" className="mt-5 mb-2">Create Column</Button>
-                <Button onClick={saveState} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
+                <Button onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
 
             </Form>
         </div>

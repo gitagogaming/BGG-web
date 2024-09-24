@@ -32,6 +32,44 @@ function App() {
         
     }
 
+    const saveState = async (inputs, columns) => {
+        localStorage.setItem('inputs', JSON.stringify(inputs));
+        localStorage.setItem('columns', JSON.stringify(columns));
+
+
+        setStatus('Layout updated!', 'success');
+
+        // if (onGenerateJSON) {
+            const response = await fetch('http://localhost:8080/getFullJson');
+            const existingData = await response.json();
+
+            // Group inputs by type
+            const groupedInputs = {};
+            Object.entries(inputs).forEach(([key, value]) => {
+                if (!groupedInputs[value.type]) {
+                    groupedInputs[value.type] = {};
+                }
+                groupedInputs[value.type][key] = value;
+            });
+
+            const updatedData = {
+                ...existingData,
+                general: groupedInputs
+            };
+
+            await fetch('http://localhost:8080/update-json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            });
+
+            console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
+        // }
+    };
+
+
     
     const renderTabContent = () => {
         switch (activeTab) {
@@ -46,13 +84,18 @@ function App() {
                 return <General 
                     onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
                     setStatus={setStatus}
+                    saveState={saveState}
                 />;
             case 'replays':
                 return <Replays />;
             case 'bracket':
                 return <Bracket />;
             case 'generalTest':
-                return <GeneralTest />;
+                return <GeneralTest
+                onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
+                setStatus={setStatus}
+                saveState={saveState}
+                />;
 
             default:
                 return <Match />;

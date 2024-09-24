@@ -9,11 +9,8 @@ import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 const ReactGridLayout = WidthProvider(RGL);
 
 // ISSUES
-// 1. The 'input' box is much too large
-// 2. Cannot click an input box without it moving entirely
-// 3. Unable to click the delete button, it causes the 'move' effect to occur
-// 4. When adding an item, it does not ask for a title for the item and just prepopulates causing duplicates etc
-// 5. The Json is not formatted correctly and needs reworked :(
+// 1. When adding an item, it does not ask for a title for the item and just prepopulates causing duplicates etc
+// 2. The Json is not formatted correctly and needs reworked :(
 
 
 const handleFileClick = (id) => {
@@ -32,8 +29,9 @@ const renderPopover = (file) => (
     </Popover>
 );
 
-const General = ({ onGenerateJSON, setStatus }) => {
+const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
+    const [columns, setColumns] = useState(["file", "text", "color"]); // Not used in the 'draggable' version but we need to fill it out still for folks using the 'static' version potentially
     const [layout, setLayout] = useState([]);
 
     useEffect(() => {
@@ -70,13 +68,37 @@ const General = ({ onGenerateJSON, setStatus }) => {
     };
 
     const addInput = (type) => {
-        const id = `input-${Date.now()}`;
-        const newInput = { id, type, label: `${type} input`, value: '' };
+        let id = "";
+        while (id === "") {
+            id = prompt('Enter label for new item:');
+            if (id === null) {
+                return; // User canceled input
+            }
+            if (id === "") {
+                alert('Please enter a label for the new input.');
+            }
+        }
+        const newInput = { 
+            id: id,
+            type: type,
+            label: `${id} `,
+            value: type === 'color' ? '#000000' : '',
+            url: type === 'file' ? '' : undefined,
+            column: type
+         };
+
         setInputs(prevInputs => {
-            const newInputs = { ...prevInputs, [id]: newInput };
+            const newInputs = { 
+                ...prevInputs,
+                 [id]: newInput
+                 };
+
             localStorage.setItem('inputs', JSON.stringify(newInputs));
+            localStorage.setItem('columns', JSON.stringify(columns));
+
             return newInputs;
         });
+
         setLayout(prevLayout => [...prevLayout, {
             x: (layout.length * 2) % 12,
             y: Math.floor(layout.length / 6) * 2,
@@ -90,6 +112,8 @@ const General = ({ onGenerateJSON, setStatus }) => {
         setInputs(prevInputs => {
             const newInputs = { ...prevInputs, [id]: { ...prevInputs[id], value } };
             localStorage.setItem('inputs', JSON.stringify(newInputs));
+            localStorage.setItem('columns', JSON.stringify(columns));
+
             return newInputs;
         });
     };
@@ -101,6 +125,8 @@ const General = ({ onGenerateJSON, setStatus }) => {
             setInputs(prevInputs => {
                 const newInputs = { ...prevInputs, [id]: { ...prevInputs[id], url: reader.result } };
                 localStorage.setItem('inputs', JSON.stringify(newInputs));
+                localStorage.setItem('columns', JSON.stringify(columns));
+
                 return newInputs;
             });
         };
@@ -108,6 +134,44 @@ const General = ({ onGenerateJSON, setStatus }) => {
             reader.readAsDataURL(file);
         }
     };
+
+
+    // const saveState = async () => {
+    //     localStorage.setItem('inputs', JSON.stringify(inputs));
+    //     localStorage.setItem('columns', JSON.stringify(columns));
+
+
+    //     // setStatus('Layout updated!', 'success');
+
+    //     if (onGenerateJSON) {
+    //         const response = await fetch('http://localhost:8080/getFullJson');
+    //         const existingData = await response.json();
+
+    //         // Group inputs by type
+    //         const groupedInputs = {};
+    //         Object.entries(inputs).forEach(([key, value]) => {
+    //             if (!groupedInputs[value.type]) {
+    //                 groupedInputs[value.type] = {};
+    //             }
+    //             groupedInputs[value.type][key] = value;
+    //         });
+
+    //         const updatedData = {
+    //             ...existingData,
+    //             general: groupedInputs
+    //         };
+
+    //         await fetch('http://localhost:8080/update-json', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify(updatedData)
+    //         });
+
+    //         console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
+    //     }
+    // };
 
     return (
         <div>
@@ -203,7 +267,10 @@ const General = ({ onGenerateJSON, setStatus }) => {
                         <Button variant="secondary" onClick={() => addInput('color')}>Add Color Select</Button>
                     </Dropdown>
                 </div>
-                <Button onClick={() => localStorage.setItem('inputs', JSON.stringify(inputs))} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
+                {/* <Button onClick={() => localStorage.setItem('inputs', JSON.stringify(inputs))} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
+                {/* <Button onClick= {saveState} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button> */}
+                <Button onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
+
             </Form>
         </div>
     );
