@@ -154,6 +154,16 @@
 
 
 
+.delete-icon{
+    height: 30px;
+    width: 30px;
+}
+.delete-icon:hover {
+    /* filter:invert(1); */
+    color: red;
+    /* cursor: pointer; */
+}
+
 
 
 /*  used to hide the 'Side Selection' for the away team since it only needs set for the home team */
