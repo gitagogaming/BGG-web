@@ -121,6 +121,8 @@ const General = ({ onGenerateJSON, setStatus }) => {
                     verticalCompact={true}  // forces layout to be compact vertically
                     preventCollision={false} // prevents collision of elements
                     draggableHandle=".drag-handle" // Only allow dragging by the handle
+                    allowOverlap= {false}
+                    isResizable={false} // Prevents resizing
                 >
                     {Object.values(inputs).map((input) => (
                         <div key={input.id} className="general-grid-item">
@@ -134,7 +136,7 @@ const General = ({ onGenerateJSON, setStatus }) => {
                                             id={input.id}
                                             type="text"
                                             className="form-control mr-2"
-                                            style={{ width: '100px' }}
+                                            style={{ width: '120px' }}
                                             value={input.value}
                                             onChange={(e) => handleInputChange(input.id, e.target.value)}
                                         />
