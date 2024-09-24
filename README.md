@@ -54,3 +54,16 @@ Example: `http://localhost:8080/heroes1.html`
 - Node.js
 - React
 - Bootstrap
+
+
+
+
+
+
+---
+
+### values that need generated on GENERAL TAB by default.. absolutely mandatory for the basics to work.. 
+
+Caster1
+Caster2
+BGG-Branding

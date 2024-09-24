@@ -5,7 +5,7 @@ import General from './components/General';
 import Replays from './components/Replays';
 import Bracket from './components/Bracket';
 import { Container, Button, Dropdown, DropdownButton } from 'react-bootstrap';
-
+import StatusBar from './StatusBar'; 
 
 
 
@@ -19,6 +19,14 @@ function App() {
     const [activeTab, setActiveTab] = useState('match');
     const [currentgame, setSelectedGame] = useState('');
     const generateJSONRef = useRef(null);
+
+    const [statusMessage, setStatusMessage] = useState('');
+    const [statusVariant, setStatusVariant] = useState('success'); 
+
+    const setStatus = (message, variant) => {
+        setStatusMessage(message);
+        setStatusVariant(variant);
+    };
 
     const importGame = async () => {
         
@@ -37,6 +45,7 @@ function App() {
             case 'general':
                 return <General 
                     onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
+                    setStatus={setStatus}
                 />;
             case 'replays':
                 return <Replays />;
@@ -119,6 +128,9 @@ function App() {
             <div className="tab-content">
                 {renderTabContent()}
             </div>
+
+            <StatusBar message={statusMessage} variant={statusVariant} /> 
+
         </Container>
     );
 }
