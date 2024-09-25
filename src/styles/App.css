@@ -181,14 +181,23 @@ body {
     margin: 0;
 }
 
-.delete-icon{
+.question-icon{
+    color: rgb(5, 5, 255);
+    font-size:15px
+}
+
+.question-icon:hover {
     color:rgb(94, 94, 94);
-    height: 30px;
-    width: 30px;
+}
+
+.delete-icon{
+    color:rgb(155, 15, 15);
+    font-size:15px
 }
 .delete-icon:hover {
     /* filter:invert(1); */
-    color: red;
+    color:rgb(94, 94, 94);
+
     /* cursor: pointer; */
 }
 
