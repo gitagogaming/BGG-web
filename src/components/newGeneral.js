@@ -13,10 +13,11 @@ const ReactGridLayout = WidthProvider(RGL);
 // 1. When clicking to drag an item, the item moves approximately 50-100px to the right, every single time. 
 // 2. Making a few excessive calls to localstorage.. needs refined a bit
 // 3. When using "Toggle Overlap", the items do not retain their specific position after a reload.. likely due to how the layout is being saved
+// 4. Popover does not automatically close when user clicks around it
 
 // To Do: 
 // Set up resizable grid item? do we really need it for this? doesnt feel so besides MAYBE an image upload
-// Option to Rename the item ??
+// ✅ Option to Rename the item ??
 // Select a Better close and drag handle icon + location?
 // Option to have a 'parent card' which will ahve children items in it.. 
 // - currently an item is refered to as general.file.FILENAMEHERE.url but if we have a parent card then it would be general.PARENTCARD.FILENAMEHERE.url instead
@@ -113,7 +114,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     };
     const renameInput = (inputId) => {
         let newLabel = null;
-
+    
         // ask user for new label, check if it exists if it does then ask again saying it already exists
         do {
             newLabel = prompt('Enter new label for this item:');
@@ -127,13 +128,34 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                 newLabel = ""; // Reset newLabel to continue the loop
             }
         } while (newLabel === "");
-
+    
         setInputs(prevInputs => {
-            const newInputs = { ...prevInputs, [inputId]: { ...prevInputs[inputId], label: newLabel } };
+            const newInputs = { ...prevInputs };
+            const inputToRename = newInputs[inputId];
+    
+            // Delete the old key and add the new key with updated label and id
+            delete newInputs[inputId];
+            newInputs[newLabel] = {
+                ...inputToRename,
+                label: newLabel,
+                id: newLabel
+            };
+    
+            // Update layout information
+            const newLayout = layout.map(item => {
+                if (item.i === inputId) {
+                    return { ...item, i: newLabel };
+                }
+                return item;
+            });
+    
             localStorage.setItem('inputs', JSON.stringify(newInputs));
+            // localStorage.setItem('layout', JSON.stringify(newLayout));
+            setLayout(newLayout); // Update the layout state
             return newInputs;
         });
     };
+    
 
 
     const isDuplicateLabel = (label, inputs) => {
