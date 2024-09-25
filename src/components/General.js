@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, OverlayTrigger, Popover, Form, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -288,8 +288,8 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                     ))}
                 </Row>
 
-                <Button onClick={createColumn} variant="success" className="mt-5 mb-2">Create Column</Button>
-                <Button onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
+                <Button size = "sm" onClick={createColumn} variant="success" className="mt-5 mb-2">Create Column</Button>
+                <Button size = "sm" onClick={() => saveState(inputs, columns)} variant="primary" className="mt-5 mb-2 ml-2">Save Layout</Button>
 
             </Form>
         </div>

@@ -96,7 +96,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
         };
     
         fetchMatchData();
-    }, []);
+    }, [setCurrentGame]);
     // }, [setCurrentGame]);
 
     const getMapList = () => {

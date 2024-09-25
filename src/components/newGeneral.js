@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col, DropdownButton } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { faDeleteLeft, faEdit, faGrip } from '@fortawesome/free-solid-svg-icons';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 
 import RGL, { WidthProvider } from 'react-grid-layout';
-import _ from 'lodash';
+// import _ from 'lodash';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -17,8 +17,11 @@ const ReactGridLayout = WidthProvider(RGL);
 
 // To Do: 
 // Set up resizable grid item? do we really need it for this? doesnt feel so besides MAYBE an image upload
-// Rename the item.. ??
-// Better close and drag handle?
+// Option to Rename the item ??
+// Select a Better close and drag handle icon + location?
+// Option to have a 'parent card' which will ahve children items in it.. 
+// - currently an item is refered to as general.file.FILENAMEHERE.url but if we have a parent card then it would be general.PARENTCARD.FILENAMEHERE.url instead
+// -- This would allow users to have a card that has multiple items in it that relate to one another, like player name, logo, color, tagline etc.. whatever they want
 
 
 const handleFileClick = (id) => {
@@ -41,6 +44,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
     const [layout, setLayout] = useState([]);
     const columns = ["file", "text", "color"];
+    
 
     const [collision, setCollision] = useState(true);
     const [overlap, setOverlap] = useState(false);
@@ -73,7 +77,34 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             // Currently the layout is rerendered every time the layout is changed.. inside of the onLayoutChange function
         }
     };
+    const renameInput = (inputId) => {
+        let newLabel = null;
 
+        // ask user for new label, check if it exists if it does then ask again saying it already exists
+        do {
+            newLabel = prompt('Enter new label for this item:');
+            if (newLabel === null) {
+                return; // User canceled input
+            }
+            if (newLabel === "") {
+                alert('Please enter a label for the new input.');
+            } else if (isDuplicateLabel(newLabel, inputs)) {
+                alert('This label already exists. Please enter a different label.');
+                newLabel = ""; // Reset newLabel to continue the loop
+            }
+        } while (newLabel === "");
+
+        setInputs(prevInputs => {
+            const newInputs = { ...prevInputs, [inputId]: { ...prevInputs[inputId], label: newLabel } };
+            localStorage.setItem('inputs', JSON.stringify(newInputs));
+            return newInputs;
+        });
+    };
+
+
+    const isDuplicateLabel = (label, inputs) => {
+        return Object.values(inputs).some(input => input.label.trim() === label.trim());
+    };
 
     const onLayoutChange = (layout) => {
         const currentInputs = JSON.parse(localStorage.getItem('inputs')) || {};
@@ -93,15 +124,21 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
 
     const addInput = (type) => {
         let id = "";
-        while (id === "") {
+
+        // ask user for new label, check if it exists if it does then ask again saying it already exists
+        do {
             id = prompt('Enter label for new item:');
             if (id === null) {
                 return; // User canceled input
             }
             if (id === "") {
                 alert('Please enter a label for the new input.');
+            } else if (isDuplicateLabel(id, inputs)) {
+                alert('This label already exists. Please enter a different label.');
+                id = ""; // Reset id to continue the loop
             }
-        }
+        } while (id === "");
+
         const newInput = {
             id: id,
             type: type,
@@ -122,6 +159,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
 
             return newInputs;
         });
+
 
         setLayout(prevLayout => [...prevLayout, {
             x: (layout.length * 2) % 12,
@@ -168,30 +206,31 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             <Form >
                 <ReactGridLayout
                     className="bg-light border grid-background"
+                    style={{ minHeight: "800px" }}
+
                     layout={layout}
                     onLayoutChange={onLayoutChange}
                     cols={12}
                     rowHeight={35}
                     width={1200}
 
-                    resizeHandles={['se', 's', 'e']} // Resize from bottom right, bottom, and right
-                    
-                    draggableHandle=".drag-handle"
-                    verticalCompact={false}  // forces layout to be compact vertically
-                    // compactType=
-                    preventCollision={collision} // prevents collision of elements
-                    allowOverlap={overlap} // Allow overlapping of elements
-                    isResizable={false} // Prevents resizing
-
-                    // autoSize={true} // Automatically resizes the grid items to fit their content - useful if many different sizes
-
-           
+                    draggableHandle=".drag-handle" // Restrict drag handle to the drag handle class
+                    verticalCompact={false}  // forces layout to be compact vertically should use 'compactType' instead but it fails to work when you try and use BOTH vertical and horizontal compact
+                    preventCollision={collision}
+                    allowOverlap={overlap}
                 >
                     {Object.values(inputs).map((input) => (
                         <div key={input.id} className="general-grid-item">
                             <div className="general-grid-item-content">
                                 <div className="general-grid-item-title">
-                                    <label htmlFor={input.id} className="general-label-width">{input.label}</label>
+                                    <label htmlFor={input.id} className="general-label-width">{input.label}
+                                        <FontAwesomeIcon
+                                            icon={faEdit}
+                                            className="edit-icon px-2"
+                                            onClick={() => renameInput(input.id)}
+                                            style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue', top: '0', right: '0' }}
+                                        />
+                                    </label>
                                 </div>
                                 <div className="general-grid-item-body">
                                     {input.type === 'text' && (
@@ -245,13 +284,20 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                         icon={faDeleteLeft}
                                         className="delete-icon"
                                         onClick={() => handleRemoveInput(input.id)}
-                                        style={{ cursor: 'pointer', marginLeft: '10px', color: 'red' }} // Change the color here
+                                        style={{ cursor: 'pointer', marginRight: 'auto', color: 'red' }} // Change the color here
                                     />
                                     <FontAwesomeIcon
-                                        icon={faArrowsAlt}
+                                        icon={faGrip}
                                         className="drag-handle"
-                                        style={{ width: '15px', height: '15px', position: 'absolute', top: '0', right: '0', cursor: 'move', color: 'gray' }}
+                                        style={{ width: '15px', height: '15px', position: 'absolute', top: '5', right: '5', cursor: 'move', color: 'gray' }}
                                     />
+
+                                    {/* <FontAwesomeIcon 
+                                        icon= {faEdit}
+                                        className="edit-icon"
+                                        onClick={() => renameInput(input.id)}
+                                        style={{ cursor: 'pointer', marginLeft: '10px', color: 'blue' }}
+                                    /> */}
 
                                     {/* <div className="drag-handle" style={{ width: '15px', height: '15px', backgroundColor: 'gray', position: 'absolute', top: '0', right: '0', cursor: 'move' }}></div> */}
                                 </div>
@@ -259,7 +305,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                         </div>
                     ))}
                 </ReactGridLayout>
-                <div className="py-2 px-2 bg-dark">
+                <div className="pt-2 px-2 bg-dark">
                     <Row>
                         <Col>
                             <ButtonGroup size='sm'>
@@ -270,40 +316,35 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                         </Col>
                         <Col className="text-right">
                             <ButtonGroup size='sm'>
-                                <Button onClick={() => saveState(inputs, columns)}  variant="primary" className="">Save Layout</Button>
-                                <Dropdown >
-                                    <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                                        Options 
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item 
-                                        onClick={() => setCollision(!collision)} 
+                                <Button onClick={() => saveState(inputs, columns)} variant="primary" className="">Save Layout</Button>
+                                <DropdownButton as={ButtonGroup} title="Options" variant="secondary" id="dropdown-basic">
+                                    <Dropdown.Item
+                                        onClick={() => setCollision(!collision)}
                                         active={collision}
-                                        > Toggle Collision
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            onClick={() => setOverlap(!overlap)} 
-                                            active={overlap}
-                                        > Toggle Overlap
-                                        </Dropdown.Item>
-
-                                        {/* compact vertical and or horiztonal buttons */}
-                                        <Dropdown.Item
-                                            onClick={() => setHoriztonalCompact(!horizontalCompact)}
-                                            active={horizontalCompact}
-                                        > Toggle Horizontal Compact
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            onClick={() => setVerticalCompact(!verticalCompact)}
-                                            active={verticalCompact}
-                                        > Toggle Vertical Compact
-                                        </Dropdown.Item>
-
-
-                                    </Dropdown.Menu>
-                                </Dropdown>
+                                    >
+                                        Toggle Collision
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => setOverlap(!overlap)}
+                                        active={overlap}
+                                    >
+                                        Toggle Overlap
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => setHoriztonalCompact(!horizontalCompact)}
+                                        active={horizontalCompact}
+                                    >
+                                        Toggle Horizontal Compact
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => setVerticalCompact(!verticalCompact)}
+                                        active={verticalCompact}
+                                    >
+                                        Toggle Vertical Compact
+                                    </Dropdown.Item>
+                                </DropdownButton>
                             </ButtonGroup>
-                          
+
 
                         </Col>
                     </Row>

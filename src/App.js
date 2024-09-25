@@ -161,7 +161,7 @@ function App() {
     };
 
     return (
-        <Container className="bg-dark px-1 py-3">
+        <Container className="bg-dark px-1 py-0">
             <nav className="nav nav-tabs d-flex justify-content-between align-items-center">
                 <div className="nav nav-tabs">
                     <button className={`nav-link ${activeTab === 'match' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('match')}>Match</button>
