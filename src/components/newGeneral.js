@@ -4,7 +4,7 @@ import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col,
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faEdit, faGrip } from '@fortawesome/free-solid-svg-icons';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
-
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 // import _ from 'lodash';
 
@@ -44,7 +44,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [inputs, setInputs] = useState({});
     const [layout, setLayout] = useState([]);
     const columns = ["file", "text", "color"];
-    
+
 
     const [collision, setCollision] = useState(true);
     const [overlap, setOverlap] = useState(false);
@@ -306,7 +306,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                     ))}
                 </ReactGridLayout>
                 <div className="pt-2 px-2 bg-dark">
-                    <Row>
+                    <Row className="align-items-center">
                         <Col>
                             <ButtonGroup size='sm'>
                                 <Button variant="secondary" onClick={() => addInput('text')}>Add Text Input</Button>
@@ -315,10 +315,10 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                             </ButtonGroup>
                         </Col>
                         <Col className="text-right">
-                            <ButtonGroup size='sm'>
+                            <ButtonGroup size='sm' className="custom-button-group">
                                 <Button onClick={() => saveState(inputs, columns)} variant="primary" className="">Save Layout</Button>
-                                <DropdownButton as={ButtonGroup} title="Options" variant="secondary" id="dropdown-basic">
-                                    <Dropdown.Item
+                                <DropdownButton as={ButtonGroup} title={<FontAwesomeIcon icon={faCog} />} variant="secondary" id="dropdown-basic">
+                                <Dropdown.Item
                                         onClick={() => setCollision(!collision)}
                                         active={collision}
                                     >
