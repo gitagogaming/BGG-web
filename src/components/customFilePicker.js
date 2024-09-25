@@ -3,6 +3,9 @@ import { Modal, Button, Row, Col, FormControl } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolder } from '@fortawesome/free-solid-svg-icons';
 
+// Issues:
+// 1. Seems to be a few 'events' triggering when loading homepage with filtering items
+
 const CustomFilePicker = ({ onSelect }) => {
     const [show, setShow] = useState(false);
     const [currentPath, setCurrentPath] = useState('');
@@ -10,13 +13,15 @@ const CustomFilePicker = ({ onSelect }) => {
     const [allItems, setAllItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
-    useEffect(() => {
-        fetchItems();
-    }, []);
+    // useEffect(() => {
+    //     fetchItems();
+    // }, []);
 
     useEffect(() => {
-        filterItems(currentPath, searchQuery);
-    }, [currentPath, allItems, searchQuery]);
+        if (searchQuery) {
+            filterItems(currentPath, searchQuery);
+        }
+    }, [searchQuery]);
 
     const fetchItems = () => {
         fetch('http://localhost:8080/api/images')
@@ -60,8 +65,15 @@ const CustomFilePicker = ({ onSelect }) => {
         setItems(filteredItems);
     };
 
-    const handleShow = () => setShow(true);
+
+    const handleShow = () => {
+        fetchItems();
+        setShow(true) 
+    };
+
+
     const handleClose = () => setShow(false);
+
 
     const handleSelect = (item) => {
         if (item.type === 'folder') {
@@ -72,15 +84,18 @@ const CustomFilePicker = ({ onSelect }) => {
         }
     };
 
+
     const handleBack = () => {
         const pathParts = currentPath.split('/').filter(Boolean);
         pathParts.pop();
         setCurrentPath(pathParts.join('/'));
     };
 
+
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
+
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
