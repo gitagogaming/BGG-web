@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col, DropdownButton } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDeleteLeft, faEdit, faGrip } from '@fortawesome/free-solid-svg-icons';
+import { faDeleteLeft, faEdit, faGrip, faCog, faX } from '@fortawesome/free-solid-svg-icons';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 // import _ from 'lodash';
 
@@ -244,52 +243,71 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                         />
                                     )}
                                     {input.type === 'file' && (
-                                        <>
+                                        <div className="d-flex align-items-center position-relative">
                                             <Form.Control
                                                 id={input.id}
                                                 type="file"
                                                 className="d-none"
                                                 onChange={(e) => handleFileChange(input.id, e)}
                                             />
-                                            <OverlayTrigger
-                                                trigger="hover"
-                                                placement="right"
-                                                overlay={renderPopover(input)}
+                                            {/* <Button
+                                                variant="secondary"
+                                                className="image-file-selector"
+                                                onClick={() => handleFileClick(input.id)}
                                             >
-                                                <Button
-                                                    variant="secondary"
-                                                    className="image-file-selector"
-                                                    onClick={() => handleFileClick(input.id)}
+                                                +
+                                            </Button> */}
+                                            {input.url ? (
+                                                <OverlayTrigger
+                                                    trigger="hover"
+                                                    placement="right"
+                                                    overlay={renderPopover(input)}
                                                 >
-                                                    {input.url ? (
-                                                        <img src={input.url} alt="Selected" style={{ width: '20px', height: '20px' }} />
-                                                    ) : (
-                                                        '+'
-                                                    )}
-                                                </Button>
-                                            </OverlayTrigger>
-                                        </>
+                                                    <img src={input.url} alt="Selected"
+                                                        style={{
+                                                            position: 'absolute', width: '60px', height: '60px',
+                                                            bottom: -15, left: 95,
+                                                            cursor: 'pointer'
+                                                        }}
+                                                        onClick={() => handleFileClick(input.id)}
+                                                    />
+                                                </OverlayTrigger>
+                                            ) : (
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Picture_icon_BLACK.svg/271px-Picture_icon_BLACK.svg.png"
+                                                    alt="Placeholder Image..."
+                                                    style={{
+                                                        position: 'absolute', width: '60px', height: '60px',
+                                                        bottom: -15, left: 95,
+                                                        cursor: 'pointer',
+                                                        opacity: 0.5
+                                                    }}
+                                                    onClick={() => handleFileClick(input.id)}
+                                                />
+                                            )}
+                                        </div>
                                     )}
                                     {input.type === 'color' && (
                                         <Form.Control
                                             id={input.id}
                                             type="color"
                                             className="form-control mr-2"
-                                            style={{ width: '50px' }}
+                                            style={{ position: 'absolute', width: '60px', height: '60px', bottom: 10, left: 105, border: 0 }}
                                             value={input.value}
                                             onChange={(e) => handleInputChange(input.id, e.target.value)}
                                         />
                                     )}
                                     <FontAwesomeIcon
-                                        icon={faDeleteLeft}
+                                        icon={faX}
                                         className="delete-icon"
                                         onClick={() => handleRemoveInput(input.id)}
-                                        style={{ cursor: 'pointer', marginRight: 'auto', color: 'red' }} // Change the color here
+                                        style={{ width: '15px', height: '15px', cursor: 'pointer', position: 'absolute', top: '5', right: '5' }} // Change the color here
                                     />
+
+                                    {/* keeping it bottom right until we figure out how to resize properly */}
                                     <FontAwesomeIcon
                                         icon={faGrip}
                                         className="drag-handle"
-                                        style={{ width: '15px', height: '15px', position: 'absolute', top: '5', right: '5', cursor: 'move', color: 'gray' }}
+                                        style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5', right: '5', cursor: 'move', color: 'gray' }}
                                     />
 
                                     {/* <FontAwesomeIcon 
@@ -318,7 +336,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                             <ButtonGroup size='sm' className="custom-button-group">
                                 <Button onClick={() => saveState(inputs, columns)} variant="primary" className="">Save Layout</Button>
                                 <DropdownButton as={ButtonGroup} title={<FontAwesomeIcon icon={faCog} />} variant="secondary" id="dropdown-basic">
-                                <Dropdown.Item
+                                    <Dropdown.Item
                                         onClick={() => setCollision(!collision)}
                                         active={collision}
                                     >
