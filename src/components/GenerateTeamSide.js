@@ -1,9 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import ImageFileSelector from './ImageFileSelector';
+import CustomFilePicker from './customFilePicker';
+
+// ISSUES:
+// 1. When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
 
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
+    const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
 
+    const handleFileSelect = (image) => {
+        setTeamLogoUrl(image);
+        handleTeamInfoChange({ target: { value: image } }, `${team}Logo`);
+    };
 
     const getRoleOptions = () => {
         if (currentGame === 'Valorant') {
@@ -71,7 +80,10 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     // It ends up causing the whole form to reset/reload.. every single input/combobox etc just resets to default values which makes no apparent sense to me..
     // 
     const handleTeamInfoChange = async (event, field) => {
-        event.preventDefault();
+        if (event.preventDefault) {
+            event.preventDefault();
+        }
+    
 
         const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
         const newTeamInfo = { ...teamInfo, [field]: value };
@@ -156,33 +168,30 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                     <Form.Group controlId={`teamLogo`}>
                         <Form.Label>Logo</Form.Label>
                         <div className="d-flex align-items-center">
-                            <div className="image-container">
-                                <ImageFileSelector
+                        <div className="image-container">
+                            <ImageFileSelector
+                                logoURL={teamLogoUrl}
+                                onClick={() => document.getElementById('filePickerButton').click()}
+                            />
+
+                                {/* THE OG FILE SELECTOR - Part 1 */}
+                                 {/* <ImageFileSelector
                                     logoURL={teamInfo.teamLogoUrl}
                                     onClick={() => handleFileClick('selectTeamLogo')}
-                                />
-                                {/* {teamInfo.teamLogoUrl ? (
-                    <img
-                        src={teamInfo.teamLogoUrl}
-                        alt="Team Logo"
-                        className="image-preview"
-                        onClick={() => handleFileClick('selectTeamLogo')} // Corrected to onClick
-                    />
-                ) : (
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Picture_icon_BLACK.svg/271px-Picture_icon_BLACK.svg.png"
-                        alt="Team Logo"
-                        className="image-preview"
-                        onClick={() => handleFileClick('selectTeamLogo')} // Corrected to onClick
-                    />
-                )} */}
-                            </div>
-                            <Form.Control
+                                />  */}
+                        </div>
+                        <CustomFilePicker onSelect={handleFileSelect} />
+
+                                {/* The OG File Selector - Part2 */}
+                            {/* <Form.Control
                                 type="file"
+                                accept='image/*'
                                 className="d-none"
                                 id={`selectTeamLogo`}
-                                onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)}
-                            />
+                                onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)
+                                
+                            }
+                            /> */}
                         </div>
 
 

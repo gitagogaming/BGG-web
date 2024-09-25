@@ -20,107 +20,27 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Define the upload directory
-const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
 
-// Ensure the directory exists
+const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Use memory storage for file uploads
-const upload = multer({ storage: multer.memoryStorage() });
 
-app.post('/upload', upload.single('teamLogo'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const teamName = req.body.teamName || 'default';
-    const fileExtension = path.extname(req.file.originalname);
-    const filename = `${teamName}${fileExtension}`;
-    const filepath = path.join(uploadDir, filename);
-
-    // Saving Logo.. - Do we want to limit an overwrite.. file size, etc?
-    fs.writeFile(filepath, req.file.buffer, (err) => {
-        if (err) {
-            console.error('Error saving file:', err);
-            return res.status(500).json({ message: 'Error saving file' });
-        }
-
-        console.log(`File saved: ${filename}`);
-
-        res.status(200).json({
-            message: 'File uploaded successfully',
-            filename: filename,
-            path: filepath,
-            teamName: teamName
-        });
-    });
-});
-
-// JSON data update route
-let jsonData = {};
-app.post('/update-json', (req, res) => {
-    jsonData = req.body;
-    const filePath = path.join(__dirname, 'public', 'matchData.json');
-
-    fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
-        if (err) {
-            console.error('Error writing to file', err);
-            return res.sendStatus(500);
-        }
-        res.sendStatus(200);
-    });
-});
-
-// Endpoint to serve the full JSON data
-app.get('/getFullJson', (req, res) => {
-    console.log('GET /getFullJson');
-    res.json(jsonData);
-});
-
-// Serving hero files
-app.get('/getHeroFiles', (req, res) => {
-    const heroesDir = path.join(__dirname, 'public/Scoreboard/Heroes');
-    fs.readdir(heroesDir, (err, files) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to read directory' });
-        }
-        const heroFiles = files.filter(file => file.endsWith('.hero'));
-        res.json(heroFiles);
-    });
-});
-
-// Endpoint to retrieve specific values from JSON data
-app.get('/getValue', (req, res) => {
-    const { path } = req.query;
-    let result = jsonData;
-
-    if (path) {
-        const keyPath = path.split('.');
-        for (const key of keyPath) {
-            if (result && result[key] !== undefined) {
-                result = result[key];
-            } else {
-                result = null;
-                break;
-            }
-        }
-    }
-
-    if (typeof result === 'string') {
-        res.send(result); // Send plain text response for strings
-    } else {
-        res.json(result); // Send JSON response for other types
+// Setting up the routes for API endpoints
+const routesPath = path.join(__dirname, 'routes');
+fs.readdirSync(routesPath).forEach((file) => {
+    if (file.endsWith('.js')) {
+        const route = require(path.join(routesPath, file));
+        app.use(route);
     }
 });
+
+
 
 // In production, serve the built React app
 if (isProduction) {
     app.use(express.static(path.join(__dirname, 'build')));
-
-    // Serve the index.html on any unknown route (for SPA support)
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, 'build', 'index.html'));
     });

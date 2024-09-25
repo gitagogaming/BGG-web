@@ -270,3 +270,50 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {  
    opacity: 1;
 }
+
+
+
+
+
+/*  FOR CUSTOMFILEPICKER.js */
+
+.modal-content {
+    width: 800px;
+    height: 600px;
+    overflow: hidden; /* Prevents the modal content from overflowing */
+}
+
+.custom-modal-body {
+    max-height: 600px;
+    width: 800px;
+    overflow-y: auto;
+    
+}
+
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 60%
+}
+
+.fixed-size-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.filepicker-imageSize {
+    width: 100px;
+    height: 50px;
+    object-fit: cover;
+}
+
+
+.folder-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+}
