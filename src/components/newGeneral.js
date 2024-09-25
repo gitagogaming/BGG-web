@@ -205,13 +205,13 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             <Form >
                 <ReactGridLayout
                     className="bg-light border grid-background"
-                    style={{ minHeight: "800px" }}
+                    style={{ minHeight: "600px" }}
 
                     layout={layout}
                     onLayoutChange={onLayoutChange}
                     cols={12}
                     rowHeight={35}
-                    width={1200}
+                    width={1200} // does not seem to be doing anything...
 
                     draggableHandle=".drag-handle" // Restrict drag handle to the drag handle class
                     verticalCompact={false}  // forces layout to be compact vertically should use 'compactType' instead but it fails to work when you try and use BOTH vertical and horizontal compact

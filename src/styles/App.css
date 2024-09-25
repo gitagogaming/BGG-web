@@ -2,6 +2,20 @@
     --itemSize: 25px;
     --gridGap: 10px;
     --fontSize: 12px;
+    
+}
+
+
+@font-face {
+    font-family:'Bebas Neue';
+    src: url('BebasNeue-Regular.ttf') format('truetype');
+
+}
+
+@font-face {
+    font-family: 'LiberationMono';
+    src: url('LiberationMono-Regular.ttf') format('truetype');
+
 }
 
 /* stopping the highighting during dragging */
@@ -159,8 +173,16 @@ body {
 
 
 /*  FOR GENERAL TAB CURRENTLY */
+
+/* adding some custom padding to make buttons similar size due to dropdown */
+.custom-button-group .btn,
+.custom-button-group .dropdown-toggle {
+    padding: 0.175rem 0.55rem; /* Adjust as needed */
+    margin: 0;
+}
+
 .delete-icon{
-    color:white;
+    color:rgb(94, 94, 94);
     height: 30px;
     width: 30px;
 }
@@ -170,17 +192,33 @@ body {
     /* cursor: pointer; */
 }
 
+.form-label {
+    font-family: 'LiberationMono';
+    font-size: 0.7rem; /* Adjust as needed */
+    font-weight: 400;
+    text-transform: uppercase;
+    padding-left:0.4rem
+}
 
 
-
-  /* FOR THE DRAGGABLE GENERAL.JS  */
+/* FOR THE DRAGGABLE GENERAL.JS  */
   
 .grid-background{
-    /* image */
+    position: relative;
     background-image: url('http://localhost:8080/bgg-bg.png');
     background-size: cover;
-    /* background-repeat: no-repeat; */
-     /* background-attachment: fixed;  */
+}
+.grid-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(7, 7, 29, 0.5) 20%, rgba(233, 236, 239, 0.5) 100%);
+    pointer-events: none; 
+    z-index: 0; 
+    
 }
 
 .general-grid-item {

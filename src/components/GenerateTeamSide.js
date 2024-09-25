@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
+import ImageFileSelector from './ImageFileSelector';
 
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
 
@@ -74,29 +75,29 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
         const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
         const newTeamInfo = { ...teamInfo, [field]: value };
-    
+
         console.log('Updated Team Info:', newTeamInfo);
-    
+
         if (event.target.type === 'file') {
             console.log("Da files", event.target.files);
             newTeamInfo.teamLogoUrl = URL.createObjectURL(value);
             newTeamInfo.teamLogo = value.name;
-    
+
             // Upload the file to the server
             const formData = new FormData();
             formData.append('teamLogo', value);
             formData.append('teamName', newTeamInfo.teamName);
-    
+
             try {
                 const response = await fetch('http://localhost:8080/upload', {
                     method: 'POST',
                     body: formData
                 });
-    
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log('File uploaded successfully:', data);
-    
+
                     // Update the teamLogoUrl with the response data
                     // newTeamInfo.teamLogoUrl = data.filename;
                 } else {
@@ -106,7 +107,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 console.error('Error uploading file:', error);
             }
         }
-    
+
         // Update the state with the new team info
         setTeamInfo(newTeamInfo);
         console.log('Final Team Info:', newTeamInfo);
@@ -115,9 +116,9 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     const handleFileClick = (id) => {
         const fileInput = document.getElementById(id);
         fileInput.click();
-        fileInput.onchange = (e) => {
-            handleTeamInfoChange(e, `${team}Logo`);
-        };
+        // fileInput.onchange = (e) => {
+        //     handleTeamInfoChange(e, `${team}Logo`);
+        // };
     };
 
     return (
@@ -156,16 +157,35 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         <Form.Label>Logo</Form.Label>
                         <div className="d-flex align-items-center">
                             <div className="image-container">
-                                <img src={teamInfo.teamLogoUrl} alt='Team Logo' className="image-preview" />
+                                <ImageFileSelector
+                                    logoURL={teamInfo.teamLogoUrl}
+                                    onClick={() => handleFileClick('selectTeamLogo')}
+                                />
+                                {/* {teamInfo.teamLogoUrl ? (
+                    <img
+                        src={teamInfo.teamLogoUrl}
+                        alt="Team Logo"
+                        className="image-preview"
+                        onClick={() => handleFileClick('selectTeamLogo')} // Corrected to onClick
+                    />
+                ) : (
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Picture_icon_BLACK.svg/271px-Picture_icon_BLACK.svg.png"
+                        alt="Team Logo"
+                        className="image-preview"
+                        onClick={() => handleFileClick('selectTeamLogo')} // Corrected to onClick
+                    />
+                )} */}
                             </div>
                             <Form.Control
-                            type="file"
-                            className="d-none"
-                            id={`selectTeamLogo`}
-                            onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)}
-                        />
-                            <Button variant="secondary" className='image-file-selector' onClick={() => handleFileClick('selectTeamLogo')}>...</Button>
+                                type="file"
+                                className="d-none"
+                                id={`selectTeamLogo`}
+                                onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)}
+                            />
                         </div>
+
+
                     </Form.Group>
                 </div>
             </div>
@@ -248,7 +268,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                     {/* Player Name */}
                     <div className="grid-item">
                         <Form.Group controlId={`playerInput${index}`}>
-                            <Form.Label>Player {`P${index + 1}`}</Form.Label>
+                            <Form.Label>{`P${index + 1}`}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={player.playerName}
@@ -268,8 +288,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                             >
                                 <option value="">Select Hero</option>
                                 {getHeroOptions(player.role).map((hero, heroIndex) => (
-                                <option key={heroIndex} value={hero}>{hero}</option>
-                            ))}
+                                    <option key={heroIndex} value={hero}>{hero}</option>
+                                ))}
 
                             </Form.Control>
                         </Form.Group>
@@ -286,8 +306,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                             >
                                 <option value="">Select Role</option>
                                 {getRoleOptions().map((role, roleIndex) => (
-                                <option key={roleIndex} value={role}>{role}</option>
-                            ))}
+                                    <option key={roleIndex} value={role}>{role}</option>
+                                ))}
 
                             </Form.Control>
                         </Form.Group>
@@ -311,10 +331,19 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                             <Form.Label>Image</Form.Label>
                             <div className="d-flex align-items-center">
                                 <div className="image-container">
-                                    {player.imageUrl && <img src={player.imageUrl} alt={`Hero ${index}`} className="image-preview" />}
+
+                                    <ImageFileSelector
+                                        logoURL={player.imageUrl}
+                                        onClick={() => handleFileClick(`selectHeroImage${index}`)}
+                                    />
                                 </div>
-                                <input type="file" className="d-none" id={`selectHeroImage${index}`} onChange={(e) => handleFileChange(e, index)} />
-                                <Button variant="secondary" className='image-file-selector' onClick={() => handleFileClick(`selectHeroImage${index}`)}>...</Button>
+                                <Form.Control
+                                    type="file"
+                                    className="d-none"
+                                    id={`selectHeroImage${index}`}
+                                    onChange={(e) => handleFileChange(e, index)}
+                                />
+                                {/* <input type="file" className="d-none" id={`selectHeroImage${index}`} onChange={(e) => handleFileChange(e, index)} /> */}
                             </div>
                         </Form.Group>
                     </div>
