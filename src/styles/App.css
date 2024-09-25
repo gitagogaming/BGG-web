@@ -274,6 +274,45 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 
+/*  BRACKET GENERATOR */
+
+.bracket {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+  }
+  
+  .round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .match {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100px;
+    text-align: center;
+  }
+  
+  .match-info {
+    margin-bottom: 5px;
+  }
+  
+  .match-lines {
+    border-top: 1px solid black;
+    height: 50px;
+    margin: 0 auto;
+  }
+
+  
+/* End Bracket Generator */
+
+
+
+
 
 /*  FOR CUSTOMFILEPICKER.js */
 

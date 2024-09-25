@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col, DropdownButton } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDeleteLeft, faEdit, faGrip, faCog, faX } from '@fortawesome/free-solid-svg-icons';
+import { faDeleteLeft, faEdit, faGrip, faCog, faX, faQuestion, faClipboard } from '@fortawesome/free-solid-svg-icons';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 // import _ from 'lodash';
@@ -27,14 +27,37 @@ const handleFileClick = (id) => {
     document.getElementById(id).click();
 };
 
-const renderPopover = (file) => (
-    <Popover id={`popover-${file.id}`}>
-        <Popover.Body>
-            {file.url ? (
-                <img src={file.url} alt="Selected" style={{ width: '100%', height: 'auto' }} />
-            ) : (
-                <span>No image selected</span>
-            )}
+const renderTooltip = (input, handleCopy) => (
+    <Popover id="popover-basic" style={{ maxWidth: '100%' }}>
+        <Popover.Header as="h3">API Route</Popover.Header>
+        <Popover.Body style={{ width: '100%' }}>
+            <div className="d-flex flex-column">
+                <div style={{ fontSize: '12px' }}>
+                    <strong>Value:</strong>
+                    <div className="d-flex align-items-center" style={{ marginTop: '5px' }}>
+                        <div 
+                            className="form-control" 
+                            style={{ 
+                                display: 'inline-block', 
+                                width: 'calc(100% )', // Adjust width to leave space for the icon
+                                backgroundColor: '#f8f9fa', 
+                                border: '1px solid #ced4da', 
+                                padding: '5px 10px', 
+                                borderRadius: '4px',
+                                cursor: 'text'
+                            }}
+                        >
+                            {`http://localhost:8080/getValue?path=general.${input.type}.${input.id}.value`}
+                        </div>
+                        <FontAwesomeIcon 
+                            icon={faClipboard}
+                            className="copy-icon"
+                            onClick={() => handleCopy(`http://localhost:8080/getValue?path=general.${input.type}.${input.id}`)}
+                            style={{ cursor: 'pointer', marginLeft: '10px', color: 'blue' }}
+                        />
+                    </div>
+                </div>
+            </div>
         </Popover.Body>
     </Popover>
 );
@@ -50,6 +73,17 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     const [horizontalCompact, setHoriztonalCompact] = useState(false);
     const [verticalCompact, setVerticalCompact] = useState(false);
 
+    
+    const [copySuccess, setCopySuccess] = useState({});
+
+
+    const handleCopy = (route) => {
+        navigator.clipboard.writeText(route).then(() => {
+            setCopySuccess({ [route]: true });
+            setTimeout(() => setCopySuccess({ [route]: false }), 2000); // Reset after 2 seconds
+        });
+    };
+
 
     // Loading Inputs when the component mounts
     useEffect(() => {
@@ -64,6 +98,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     }, []);
 
 
+        
 
     const handleRemoveInput = (inputId) => {
         if (window.confirm('Are you sure you want to remove this item?')) {
@@ -135,6 +170,9 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             } else if (isDuplicateLabel(id, inputs)) {
                 alert('This label already exists. Please enter a different label.');
                 id = ""; // Reset id to continue the loop
+            } else if (id.length > 11) {
+                alert('This label already exists. Please enter a different label.');
+                id = ""; // Reset id to continue the loop
             }
         } while (id === "");
 
@@ -203,34 +241,45 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
     return (
         <div >
             <Form >
-                <ReactGridLayout
-                    className="bg-light border grid-background"
-                    style={{ minHeight: "600px" }}
-
-                    layout={layout}
-                    onLayoutChange={onLayoutChange}
-                    cols={12}
-                    rowHeight={35}
-                    width={1200} // does not seem to be doing anything...
-
-                    draggableHandle=".drag-handle" // Restrict drag handle to the drag handle class
-                    verticalCompact={false}  // forces layout to be compact vertically should use 'compactType' instead but it fails to work when you try and use BOTH vertical and horizontal compact
-                    preventCollision={collision}
-                    allowOverlap={overlap}
-                >
-                    {Object.values(inputs).map((input) => (
-                        <div key={input.id} className="general-grid-item">
-                            <div className="general-grid-item-content">
-                                <div className="general-grid-item-title">
-                                    <label htmlFor={input.id} className="general-label-width">{input.label}
-                                        <FontAwesomeIcon
-                                            icon={faEdit}
-                                            className="edit-icon px-2"
-                                            onClick={() => renameInput(input.id)}
-                                            style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue', top: '0', right: '0' }}
-                                        />
-                                    </label>
-                                </div>
+            <ReactGridLayout
+            className="bg-light border grid-background"
+            style={{ minHeight: "600px" }}
+            layout={layout}
+            onLayoutChange={onLayoutChange}
+            cols={12}
+            rowHeight={35}
+            width={1200}
+            draggableHandle=".drag-handle"
+            verticalCompact={false}
+            preventCollision={collision}
+            allowOverlap={overlap}
+        >
+            {Object.values(inputs).map((input) => (
+                <div key={input.id} className="general-grid-item">
+                    <div className="general-grid-item-content">
+                        <div className="general-grid-item-title">
+                            <label htmlFor={input.id} className="general-label-width">
+                                {input.label}
+                                <FontAwesomeIcon
+                                    icon={faEdit}
+                                    className="edit-icon pl-2"
+                                    onClick={() => renameInput(input.id)}
+                                    style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue' }}
+                                />
+                                {/* Popover with Copy Button */}
+                                <OverlayTrigger
+                                    trigger="click"
+                                    placement="right"
+                                    overlay={renderTooltip(input, handleCopy)}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faQuestion}
+                                        className="question-icon pl-2"
+                                        style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue' }}
+                                    />
+                                </OverlayTrigger>
+                            </label>
+                        </div>
                                 <div className="general-grid-item-body">
                                     {input.type === 'text' && (
                                         <Form.Control
@@ -250,19 +299,12 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                                 className="d-none"
                                                 onChange={(e) => handleFileChange(input.id, e)}
                                             />
-                                            {/* <Button
-                                                variant="secondary"
-                                                className="image-file-selector"
-                                                onClick={() => handleFileClick(input.id)}
-                                            >
-                                                +
-                                            </Button> */}
                                             {input.url ? (
                                                 <OverlayTrigger
                                                     trigger="hover"
                                                     placement="right"
-                                                    overlay={renderPopover(input)}
-                                                >
+                                                    overlay={renderTooltip(input, handleCopy)}
+                                                    >
                                                     <img src={input.url} alt="Selected"
                                                         style={{
                                                             position: 'absolute', width: '60px', height: '60px',
@@ -310,14 +352,6 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                         style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5', right: '5', cursor: 'move', color: 'gray' }}
                                     />
 
-                                    {/* <FontAwesomeIcon 
-                                        icon= {faEdit}
-                                        className="edit-icon"
-                                        onClick={() => renameInput(input.id)}
-                                        style={{ cursor: 'pointer', marginLeft: '10px', color: 'blue' }}
-                                    /> */}
-
-                                    {/* <div className="drag-handle" style={{ width: '15px', height: '15px', backgroundColor: 'gray', position: 'absolute', top: '0', right: '0', cursor: 'move' }}></div> */}
                                 </div>
                             </div>
                         </div>
