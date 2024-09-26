@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col, DropdownButton } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDeleteLeft, faEdit, faGrip, faCog, faX, faQuestionCircle, faClipboard, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import { faDeleteLeft, faEdit, faGrip, faCog, faX, faQuestionCircle, faClipboard, faWindowClose, faLock } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 // import _ from 'lodash';
 
@@ -80,6 +80,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
 
 
     const [copySuccess, setCopySuccess] = useState({});
+    
 
 
     // Copy API Route to Clipboard (Popover/ToolTip)
@@ -118,6 +119,17 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
         }
     };
 
+    const toggleLockInput = (inputId, event) => {
+        if (event.ctrlKey) {
+            setInputs(prevInputs => {
+                const newInputs = { ...prevInputs };
+                newInputs[inputId].layout.static = !newInputs[inputId].layout.static;
+                return newInputs;
+            });
+    
+            localStorage.setItem('inputs', JSON.stringify(inputs));
+        }
+    };
 
     const renameInput = (inputId) => {
         let newLabel = null;
@@ -232,6 +244,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
             w: 2,
             h: 2, // Fixed height to accommodate two rows
             i: id
+            // static: true
         }]);
     };
 
@@ -294,18 +307,7 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                             onClick={() => renameInput(input.id)}
                                             style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue' }}
                                         />
-                                        {/* Popover with Copy Button
-                                <OverlayTrigger
-                                    trigger="click"
-                                    placement="right"
-                                    overlay={renderTooltip(input, handleCopy)}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={faQuestionCircle}
-                                        className="question-icon pl-2"
-                                        style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue' }}
-                                    />
-                                </OverlayTrigger> */}
+
                                     </label>
                                 </div>
                                 <div className="general-grid-item-body">
@@ -378,21 +380,35 @@ const General = ({ onGenerateJSON, setStatus, saveState }) => {
                                                 style={{ cursor: 'pointer' }}
                                             />
                                         </OverlayTrigger>
-
+                                        
+                                    {!input.layout.static && (
                                         <FontAwesomeIcon
                                             icon={faWindowClose}
                                             className="delete-icon"
                                             onClick={() => handleRemoveInput(input.id)}
                                             style={{ cursor: 'pointer' }}
                                         />
+                                    )}
                        
                                     </div>
                                     {/* keeping it bottom right until we figure out how to resize properly */}
+                                    {!input.layout.static ? (
                                     <FontAwesomeIcon
                                         icon={faGrip}
                                         className="drag-handle"
                                         style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5', right: '5', cursor: 'move', color: 'gray' }}
+                                    
                                     />
+                                    
+                                ) : (
+                                    <FontAwesomeIcon
+                                        icon={faLock}
+                                        className="lock-icon"
+                                        style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5px', right: '5px', color: 'gray' }}
+                                        onClick={() => alert('This item is locked and cannot be moved.')}
+                                        // onClick={(event) => toggleLockInput(input.id, event)}
+                                        />
+                                )}
 
                                 </div>
                             </div>

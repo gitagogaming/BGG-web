@@ -4,12 +4,14 @@ import ImageFileSelector from './ImageFileSelector';
 import CustomFilePicker from './customFilePicker';
 
 // ISSUES:
-// 1. When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
+// 1. ✅ When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
+// 2. ✅ When setting away team logo, it updates the home team only.
 
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
 
     const handleFileSelect = (image) => {
+        console.log("Image", image);
         setTeamLogoUrl(image);
         handleTeamInfoChange({ target: { value: image } }, `${team}Logo`);
     };
@@ -121,7 +123,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         }
 
         // Update the state with the new team info
-        setTeamInfo(newTeamInfo);
+        setTeamInfo(newTeamInfo); // whats this for again? :P
         console.log('Final Team Info:', newTeamInfo);
     };
 
@@ -150,7 +152,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                     </Form.Group>
                 </div>
 
-                {/* Team Info */}
+                {/* Team Info Box*/}
                 <div className="grid-item">
                     <Form.Group controlId={`teamInfo`}>
                         <Form.Label>Team Info</Form.Label>
@@ -169,29 +171,32 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         <Form.Label>Logo</Form.Label>
                         <div className="d-flex align-items-center">
                         <div className="image-container">
-                            <ImageFileSelector
+                            {/* Custom File picker Part1 */}
+                            {/* <ImageFileSelector
                                 logoURL={teamLogoUrl}
                                 onClick={() => document.getElementById('filePickerButton').click()}
-                            />
+                            /> */}
 
                                 {/* THE OG FILE SELECTOR - Part 1 */}
-                                 {/* <ImageFileSelector
+                                 <ImageFileSelector
                                     logoURL={teamInfo.teamLogoUrl}
-                                    onClick={() => handleFileClick('selectTeamLogo')}
-                                />  */}
+                                    onClick={() => handleFileClick(`selectTeamLogo-${team}`)}
+                                /> 
                         </div>
-                        <CustomFilePicker onSelect={handleFileSelect} />
+
+                        {/* Custom File Picker part2 */}
+                        {/* <CustomFilePicker onSelect={handleFileSelect} /> */}
 
                                 {/* The OG File Selector - Part2 */}
-                            {/* <Form.Control
+                            <Form.Control
                                 type="file"
                                 accept='image/*'
                                 className="d-none"
-                                id={`selectTeamLogo`}
-                                onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)
-                                
-                            }
-                            /> */}
+                                // id={`selectTeamLogo`}
+                                id={`selectTeamLogo-${team}`}
+
+                                onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)}
+                            />
                         </div>
 
 
@@ -199,6 +204,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 </div>
             </div>
 
+
+            {/* Team Score  & Team Color */}
             {/* Team Score */}
             <div className={`grid-container ${team === 'Team2' ? 'reverse' : ''}`}>
                 <div className="grid-item">
@@ -225,6 +232,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         />
                     </Form.Group>
                 </div>
+
 
                 {/* Team Side Radio */}
                 <div className="grid-item">

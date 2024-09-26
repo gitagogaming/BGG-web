@@ -20,11 +20,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+// const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
+// if (!fs.existsSync(uploadDir)) {
+//     fs.mkdirSync(uploadDir, { recursive: true });
+// }
 
+// expose the upload folder
+app.use('/uploads', express.static(path.join(__dirname, './src/uploads')));
 
 // Setting up the routes for API endpoints
 const routesPath = path.join(__dirname, 'routes');

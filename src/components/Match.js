@@ -117,7 +117,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
         setMaps({ ...maps, mapData: newMapData });
     };
 
-    const generateJSON = async () => {
+    const generateJSON = async (event) => {
         const team1Data = {
             teamName: team1Info.teamName,
             teamInfo: team1Info.teamInfo,

@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<!-- TO DO: 
+animate score on/off screen 
+allow custom social media icons 
+allow backup image for team logos
+Get Color Data from API for theme colors?
+-->
+
 
 <head>
   <style>
@@ -402,22 +409,35 @@
     async function interval() {
 
 
+      
       let teamJson = await fetch(`http://localhost:8080/getValue?path=teams`);
       let teamsData = await teamJson.json();
       console.log(teamsData);
+
+      let themeColors = await fetch(`http://localhost:8080/getValue?path=general.color`);
+      let themecolors = await themeColors.json();
+      
+      console.log(`ThemeCOlor1: ${themecolors.theme1.value}`);
+      console.log(`ThemeCOlor2: ${themecolors.theme2.value}`);
 
 
       //Set to 1 for video functions, 0 to disable
       let blankimage = "iVBORw0KGgoAAAANSUhEUgAAAHAAAABkCAYAAABep7TGAAAABGdBTUEAALGPC/xhBQAAAEJJREFUeF7twQENAAAAwqD3T+1mDiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuBqvZAABFEy6BwAAAABJRU5ErkJggg=="
       //Get constant theme data
-      let colortheme1txt = await fetch('../scoreboard/general/colortheme1.txt');
-      colortheme1txt = await colortheme1txt.text();
-      let colortheme2txt = await fetch('../scoreboard/general/colortheme2.txt');
-      colortheme2txt = await colortheme2txt.text();
-      let colortheme3txt = await fetch('../scoreboard/general/colortheme3.txt');
-      colortheme3txt = await colortheme3txt.text();
-      let colortheme4txt = await fetch('../scoreboard/general/colortheme4.txt');
-      colortheme4txt = await colortheme4txt.text();
+      // let colortheme1txt = await fetch('../scoreboard/general/colortheme1.txt');
+      // colortheme1txt = await colortheme1txt.text();
+      // let colortheme2txt = await fetch('../scoreboard/general/colortheme2.txt');
+      // colortheme2txt = await colortheme2txt.text();
+      // let colortheme3txt = await fetch('../scoreboard/general/colortheme3.txt');
+      // colortheme3txt = await colortheme3txt.text();
+      // let colortheme4txt = await fetch('../scoreboard/general/colortheme4.txt');
+      // colortheme4txt = await colortheme4txt.text();
+
+
+      let colortheme1txt = themecolors.theme1.value;
+      let colortheme2txt = themecolors.theme2.value;
+      let colortheme3txt = themecolors.theme3.value;
+      let colortheme4txt = themecolors.theme4.value;
 
       $('body').css("border-color", (colortheme3txt));
       $('.camerabox').css("border-color", (colortheme3txt));
@@ -481,7 +501,9 @@
         // teamcls.score = await fetch(`../scoreboard/match1/t${teamIndex + 1}score.txt`);
         teamcls.score = await fetch(`http://localhost:8080/getValue?path=teams.team${teamIndex + 1}.teamScore`);
         teamcls.score = await teamcls.score.text();
-        teamcls.logo = teamData.teamLogoUrl;
+        // teamcls.logo = teamData.teamLogoUrl; using a blob
+        let logoFileExtension = teamData.teamLogo.split('.').pop();
+        teamcls.logo = `http://localhost:8080/uploads/teamLogos/${teamData.teamName}.${logoFileExtension}`;
         team[teamIndex] = teamcls;
 
         if (team[teamIndex].logo != "iVBORw0KGgoAAAANSUhEUgAAAHAAAABkCAYAAABep7TGAAAABGdBTUEAALGPC/xhBQAAAEJJREFUeF7twQENAAAAwqD3T+1mDiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuBqvZAABFEy6BwAAAABJRU5ErkJggg==") {
@@ -516,6 +538,10 @@
           $('.scorebox').css("display", "none");
         } else {
           $('.scorebox').css("display", "block");
+          
+          // $('.scorebox').css("display", "block");
+
+          
         }
       }
 
@@ -534,6 +560,28 @@
         }
         document.querySelector(".image" + (g + 1)).style.backgroundImage = "url(data:image/jpeg;base64," + btoa(str) + ")";
       }
+
+
+      // async function fetchAndDisplayImage(imageID, elementClass) {
+      //   try {
+      //     let response = await fetch(`http://localhost:8080/getValue?path=general.file.${imageID}.url`);
+      //     let imageUrl = await response.text();
+      //     // let data = await fetch(imageUrl);
+      //     // let blob = await data.blob();
+      //     // let reader = new FileReader();
+      //     // reader.onloadend = function () {
+      //     //   document.querySelector(`.${elementClass}`).style.backgroundImage = `url(${reader.result})`;
+      //     // }
+      //     // reader.readAsDataURL(blob);
+      //   } catch (error) {
+      //     console.error('Error fetching and displaying image:', error);
+      //   }
+      // }
+
+      // // Fetch and display image1
+      // fetchAndDisplayImage("bgg-branding", 'image1');
+      // // Fetch and display image15
+      // fetchAndDisplayImage("bgg-branding", 'image2');
 
     }
 

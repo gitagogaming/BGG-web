@@ -6,7 +6,7 @@ const fs = require('fs');
 const router = express.Router();
 
 router.get('/getHeroFiles', (req, res) => {
-    const heroesDir = path.join(__dirname, 'public/Scoreboard/Heroes');
+    const heroesDir = path.join(__dirname, '../public/Scoreboard/Heroes');
     fs.readdir(heroesDir, (err, files) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to read directory' });
