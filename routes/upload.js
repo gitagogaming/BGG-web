@@ -5,6 +5,10 @@ const multer = require('multer');
 
 const router = express.Router();
 
+///// LOCAL UPLOADS /////
+
+
+
 // Define the upload directory
 const uploadDir = path.join(__dirname, '../public/uploads/teamLogos');
 
