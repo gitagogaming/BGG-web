@@ -1,13 +1,13 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const multer = require('multer');
+const upload = require('../middlewares/multer');
 
 const router = express.Router();
 
-///// LOCAL UPLOADS /////
-
-
+/////////////////
+// - LOCAL UPLOADS
+////////////////
 
 // Define the upload directory
 const uploadDir = path.join(__dirname, '../public/uploads/teamLogos');
@@ -18,7 +18,6 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Use memory storage for file uploads
-const upload = multer({ storage: multer.memoryStorage() });
 
 router.post('/upload', upload.single('teamLogo'), (req, res) => {
     if (!req.file) {

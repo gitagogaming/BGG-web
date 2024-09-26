@@ -4,7 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const { createProxyMiddleware } = require('http-proxy-middleware'); // Proxy middleware for development
-const multer = require('multer'); // Import multer
+
+const upload = require('../middlewares/multer'); 
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -21,8 +22,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 // const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
 // if (!fs.existsSync(uploadDir)) {

@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer'); // Import multer
+const upload = require('../middlewares/multer'); 
+const { uploadImage, createFolders, generateImageUrl, renameImage, deleteImage, fetchImages } = require('../controllers/cloudinary');
 
 
-// Multer setup for handling file uploads
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+
 
 
 
@@ -28,7 +27,7 @@ router.post('/api/uploadImage', upload.single('teamLogo'), async (req, res) => {
     }
   });
 
-  
+
   router.post('/api/createFolders', async (req, res) => {
     const { folderNames } = req.body;
     try {

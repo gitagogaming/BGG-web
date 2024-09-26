@@ -7,7 +7,7 @@ import Bracket from './components/Bracket';
 import { Container, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import StatusBar from './StatusBar'; 
 
-import GeneralTest from './components/newGeneral';
+import GeneralTest from './components/DraggableGeneral';
 
 
 // finished with heros1.html - need to copy over to heroes2.html
