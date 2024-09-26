@@ -1,14 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import ImageFileSelector from './ImageFileSelector';
 import CustomFilePicker from './customFilePicker';
+import Autocomplete from './AutoComplete';
 
 // ISSUES:
 // 1. ✅ When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
 // 2. ✅ When setting away team logo, it updates the home team only.
 
+// TO DO:
+// Auto Select Hero Image when selecting a hero.
+
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
+    const [LogoFiles, setLogoFiles] = useState([]);
 
     const handleFileSelect = (image) => {
         console.log("Image", image);
@@ -138,6 +143,30 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         // };
     };
 
+    useEffect(() => {
+        const FetchTeamLogos = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/getLogoFiles');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('TeamLogo Files:', data);
+                    setLogoFiles(data);
+                } else {
+                    console.error('Error fetching TeamLogo files:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching TeamLogo files:', error);
+            }
+        }
+        FetchTeamLogos();
+        }, []);
+
+        
+    const handleSelect = (item) => {
+        handleTeamInfoChange({ target: { value: item.teamName } }, 'teamName');
+    };
+
+
     return (
         <div>
             <div className={`grid-container  ${team === 'Team2' ? 'reverse' : ''}`}>
@@ -146,12 +175,14 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 <div className="grid-item">
                     <Form.Group controlId={`teamName`}>
                         <Form.Label>Team Name</Form.Label>
-                        <Form.Control
+                        <Autocomplete items={LogoFiles} onSelect={handleSelect} />
+
+                        {/* <Form.Control
                             type="text"
                             value={teamInfo.teamName}
                             onChange={(e) => handleTeamInfoChange(e, 'teamName')}
                             className='team-name-input'
-                        />
+                        /> */}
                     </Form.Group>
                 </div>
 
@@ -175,23 +206,23 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         <div className="d-flex align-items-center">
                         <div className="image-container">
                             {/* Custom File picker Part1 */}
-                            {/* <ImageFileSelector
+                            <ImageFileSelector
                                 logoURL={teamLogoUrl}
                                 onClick={() => document.getElementById('filePickerButton').click()}
-                            /> */}
+                            />
 
                                 {/* THE OG FILE SELECTOR - Part 1 */}
-                                 <ImageFileSelector
+                                 {/* <ImageFileSelector
                                     logoURL={teamInfo.teamLogoUrl}
                                     onClick={() => handleFileClick(`selectTeamLogo-${team}`)}
-                                /> 
+                                />  */}
                         </div>
 
                         {/* Custom File Picker part2 */}
-                        {/* <CustomFilePicker onSelect={handleFileSelect} /> */}
+                        <CustomFilePicker onSelect={handleFileSelect} />
 
                                 {/* The OG File Selector - Part2 */}
-                            <Form.Control
+                            {/* <Form.Control
                                 type="file"
                                 accept='image/*'
                                 className="d-none"
@@ -199,7 +230,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                                 id={`selectTeamLogo-${team}`}
 
                                 onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)}
-                            />
+                            /> */}
                         </div>
 
 

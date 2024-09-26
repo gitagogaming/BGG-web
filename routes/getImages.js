@@ -5,7 +5,7 @@ const fs = require('fs');
 const router = express.Router();
 
 router.get('/api/images', (req, res) => {
-    const imagesDir = path.join(__dirname, '../public/uploads/teamLogos');
+    const imagesDir = path.join(__dirname, '../src/uploads/teamLogos');
 
     const getFilesAndFolders = (dir) => {
         const items = [];
