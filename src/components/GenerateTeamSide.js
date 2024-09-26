@@ -94,7 +94,10 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
         if (event.target.type === 'file') {
             console.log("Da files", event.target.files);
-            newTeamInfo.teamLogoUrl = URL.createObjectURL(value);
+            // newTeamInfo.teamLogoUrl = URL.createObjectURL(value);
+
+            let logoFileExtension = newTeamInfo.teamLogo.split('.').pop();
+            newTeamInfo.teamLogoUrl = `http://localhost:8080/uploads/teamLogos/${newTeamInfo.teamName}.${logoFileExtension}`;
             newTeamInfo.teamLogo = value.name;
 
             // Upload the file to the server
