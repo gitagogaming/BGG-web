@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@g-loot/react-tournament-brackets": "^1.0.31-rc",
     "bootstrap": "^5.3.3",
+    "cloudinary": "^2.5.0",
     "cors": "^2.8.5",
     "multer": "^1.4.5-lts.1",
     "react": "^18.0.0",
