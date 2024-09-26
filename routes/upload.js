@@ -21,7 +21,7 @@ router.post('/upload', upload.single('teamLogo'), (req, res) => {
         return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const uploadDir = path.join(__dirname, '../public/uploads/teamLogos', req.body.path || '');
+    const uploadDir = path.join(__dirname, '../src/uploads/teamLogos', req.body.path || '');
     const teamName = req.body.teamName || req.body.name || 'default';
     const fileExtension = path.extname(req.file.originalname);
     const filename = `${teamName}${fileExtension}`;

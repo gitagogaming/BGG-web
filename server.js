@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-const multer = require('multer');
 const { createProxyMiddleware } = require('http-proxy-middleware'); // Proxy middleware for development
 
 const app = express();
