@@ -1,10 +1,18 @@
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
+
+// Questions:
+// 1. Do we have 'global' cloudinary project in which we have users login via discord and we can make a folder based on the userID for discord
+// -  How do we handle the rate limits if we do have a global account, do we limit to 250 images per user with a max file size of 5mb for example?
+// 2. Or.. Do we have an area for cloudinary credentials(login form) which allows users to connect their cloudinary account
+// - we would then ahve to store their credentials somehow so its safe.. localstorage/cookies ???  whats safe so theres no liability issues on our side
+
 
 const CLOUD_NAME = process.env.CLOUD_NAME;
 const API_KEY = process.env.API_KEY;
 const API_SECRET = process.env.API_SECRET;
 
-const cloudinary = require('cloudinary').v2;
+
 
 // Return "https" URLs by setting secure: true
 cloudinary.config({
@@ -30,52 +38,16 @@ const checkRateLimits = async () => {
   }
 };
 
-/////////////////////////
-// Uploads an image file
-/////////////////////////
-// const uploadImage = async (imagePath, cloudFolder) => {
-//   const options = {
-//     use_filename: true,
-//     unique_filename: false,
-//     overwrite: true,
-//     folder: cloudFolder
-//   };
 
-//   try {
-//     const result = await cloudinary.uploader.upload(imagePath, options);
-//     console.log(result);
-//     return result.public_id;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// };
+const uploadImage = async (fileUrl, folder) => {
+  try {
+    const result = await cloudinary.uploader.upload(fileUrl, { folder });
+    return result.public_id;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
-
-const uploadImage = async (fileBuffer, cloudFolder) => {
-    const options = {
-      use_filename: true,
-      unique_filename: false,
-      overwrite: true,
-      folder: cloudFolder
-    };
-  
-    try {
-      const result = await cloudinary.uploader.upload_stream(options, (error, result) => {
-        if (error) {
-          console.error(error);
-          throw error;
-        }
-        console.log(result);
-        return result.public_id;
-      }).end(fileBuffer);
-      
-      return result.public_id;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
 
 /////////////////////////
 // Check if folders exist and create them if they don't
@@ -165,7 +137,8 @@ const fetchImages = async (folderName) => {
         url: resource.url,
         width: resource.width,
         height: resource.height,
-        resource_type: resource.resource_type
+        resource_type: resource.resource_type,
+        size_bytes: resource.bytes
       }));
   
       console.log(filteredResources);
@@ -188,6 +161,72 @@ module.exports = {
   deleteImage,
   fetchImages
 };
+
+
+
+
+
+
+
+
+
+///// When using the default file picker we use this upload.. not needed for now as cloudinary widget is better... lol
+//// -- This is used along side of routes/cloudinary.js @ bottom of file `router.post('/api/uploadImage `
+// const uploadImage = async (fileBuffer, cloudFolder) => {
+//     const options = {
+//       use_filename: true,
+//       unique_filename: false,
+//       overwrite: true,
+//       folder: cloudFolder
+//     };
+  
+//     try {
+//       const result = await cloudinary.uploader.upload_stream(options, (error, result) => {
+//         if (error) {
+//           console.error(error);
+//           throw error;
+//         }
+//         console.log(result);
+//         return result.public_id;
+//       }).end(fileBuffer);
+      
+//       return result.public_id;
+//     } catch (error) {
+//       console.error(error);
+//       throw error;
+//     }
+//   };
+
+
+
+
+
+
+
+// Other upload code, cant recall if was even good but here it is..
+/////////////////////////
+// Uploads an image file
+/////////////////////////
+// const uploadImage = async (imagePath, cloudFolder) => {
+//   const options = {
+//     use_filename: true,
+//     unique_filename: false,
+//     overwrite: true,
+//     folder: cloudFolder
+//   };
+
+//   try {
+//     const result = await cloudinary.uploader.upload(imagePath, options);
+//     console.log(result);
+//     return result.public_id;
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
+
+
+
 
 
 

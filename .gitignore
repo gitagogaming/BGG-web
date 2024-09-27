@@ -6,3 +6,6 @@
 /public/uploads
 /src/uploads
 .env
+/public/uploads
+/public/uploads
+public/matchData.json

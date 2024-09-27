@@ -1,80 +1,56 @@
+import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCloud } from "@fortawesome/free-solid-svg-icons";
 
-// import { useState } from "react";
-// import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
-// import { Cloudinary } from "@cloudinary/url-gen";
-// import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
+function CloudinaryUploadWidget({ uwConfig, setPublicId, variant }) {
+  const [loaded, setLoaded] = useState(false);
 
-// // import "./styles.css";
+  useEffect(() => {
+    // Check if the script is already loaded
+    if (!loaded) {
+      const uwScript = document.getElementById("uw");
+      if (!uwScript) {
+        // If not loaded, create and load the script
+        const script = document.createElement("script");
+        script.setAttribute("async", "");
+        script.setAttribute("id", "uw");
+        script.src = "https://upload-widget.cloudinary.com/global/all.js";
+        script.addEventListener("load", () => setLoaded(true));
+        document.body.appendChild(script);
+      } else {
+        // If already loaded, update the state
+        setLoaded(true);
+      }
+    }
+  }, [loaded]);
 
-// export default function CloudinaryWidget() {
-//   const [publicId, setPublicId] = useState("");
-//   // Replace with your own cloud name
-//   const [cloudName] = useState("ddnp1mpva");
-//   // Replace with your own upload preset
-//   const [uploadPreset] = useState("bgg-logos");
+  const initializeCloudinaryWidget = () => {
+    if (loaded) {
+      var myWidget = window.cloudinary.createUploadWidget(
+        uwConfig,
+        (error, result) => {
+          if (!error && result && result.event === "success") {
+            console.log("Done! Here is the image info: ", result.info);
+            setPublicId(result.info.public_id);
+          }
+        }
+      );
 
-//   // Upload Widget Configuration
-//   // Remove the comments from the code below to add
-//   // additional functionality.
-//   // Note that these are only a few examples, to see
-//   // the full list of possible parameters that you
-//   // can add see:
-//   //   https://cloudinary.com/documentation/upload_widget_reference
+      myWidget.open();
+    }
+  };
 
-//   const [uwConfig] = useState({
-//     cloudName,
-//     uploadPreset
-//     // cropping: true, //add a cropping step
-//     // showAdvancedOptions: true,  //add advanced options (public_id and tag)
-//     // sources: [ "local", "url"], // restrict the upload sources to URL and local files
-//     // multiple: false,  //restrict upload to a single file
-//     // folder: "user_images", //upload files to the specified folder
-//     // tags: ["users", "profile"], //add the given tags to the uploaded files
-//     // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
-//     // clientAllowedFormats: ["images"], //restrict uploading to image files only
-//     // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
-//     // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
-//     // theme: "purple", //change to a purple theme
-//   });
+  return (
+    <Button
+      onClick={initializeCloudinaryWidget}
+      size="sm"
+      variant= {variant || "primary"}
+    >
+      <FontAwesomeIcon icon={faCloud} className="pr-2" />
+      Upload to Cloud
+    </Button>
+  );
+}
 
-//   // Create a Cloudinary instance and set your cloud name.
-//   const cld = new Cloudinary({
-//     cloud: {
-//       cloudName
-//     }
-//   });
-
-//   const myImage = cld.image(publicId);
-
-//   return (
-//     <div className="CloudinaryWidget">
-//       {/* <h3>Cloudinary Upload Widget Example</h3> */}
-//       <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
-//       <p>
-//         <a
-//           href="https://cloudinary.com/documentation/upload_widget"
-//           target="_blank"
-//         >
-//           Upload Widget User Guide
-//         </a>
-//       </p>
-//       <p>
-//         <a
-//           href="https://cloudinary.com/documentation/upload_widget_reference"
-//           target="_blank"
-//         >
-//           Upload Widget Reference
-//         </a>
-//       </p>
-//       <div style={{ width: "800px" }}>
-//         <AdvancedImage
-//           style={{ maxWidth: "100%" }}
-//           cldImg={myImage}
-//           plugins={[responsive(), placeholder()]}
-//         />
-//       </div>
-//     </div>
-//   );
-// }
-
-
+export default CloudinaryUploadWidget;

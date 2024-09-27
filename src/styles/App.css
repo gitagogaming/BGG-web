@@ -333,16 +333,20 @@ input[type=number]::-webkit-outer-spin-button {
 
 .custom-modal-body {
     max-height: 600px;
-    width: 800px;
+    /* width: 760px; */
     overflow-y: auto;
     
 }
+
+
 
 .text-ellipsis {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 60%
+    width: 100%;
+    display: inline-block; 
+
 }
 
 .fixed-size-icon {
@@ -365,3 +369,44 @@ input[type=number]::-webkit-outer-spin-button {
     width: 100px;
     height: 100px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  CldAlbum CSS */
+
+.filepicker-imageSize {
+    width: 100%;
+    height: auto;
+  }
+  
+  .filepicker-imageSize-list {
+    width: 100px;
+    height: auto;
+  }
+  
+  .filepicker-imageSize-grid {
+    width: 100%;
+    height: auto;
+  }
+  
+  .card-view {
+    text-align: center;
+  }
+  
+  .file-details {
+    padding-left: 10px;
+    width:100%
+  }
+  
+  

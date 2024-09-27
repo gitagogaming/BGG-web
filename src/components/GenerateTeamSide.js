@@ -3,6 +3,14 @@ import { Form, Button } from 'react-bootstrap';
 import ImageFileSelector from './ImageFileSelector';
 import CustomFilePicker from './customFilePicker';
 import Autocomplete from './AutoComplete';
+import CldImage from './CldImage';
+
+
+// Cloudinary Widget and the Fun Stuff
+// import CloudinaryUploadWidget from './CloudinaryUploadWidget';
+// import { Cloudinary } from "@cloudinary/url-gen";
+// import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
+
 
 // ISSUES:
 // 1. ✅ When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
@@ -14,6 +22,38 @@ import Autocomplete from './AutoComplete';
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
     const [LogoFiles, setLogoFiles] = useState([]);
+
+
+    // const [publicId, setPublicId] = useState("");
+    // const [cloudName] = useState("ddnp1mpva");
+    // const [uploadPreset] = useState("bgg-logos");
+
+    // const [uwConfig] = useState({
+    //     cloudName,
+    //     uploadPreset,
+    //     cropping: true, //add a cropping step
+    //     // showAdvancedOptions: true,  //add advanced options (public_id and tag)
+    //     // sources: [ "local", "url"], // restrict the upload sources to URL and local files
+    //     // multiple: false,  //restrict upload to a single file
+    //     // folder: "user_images", //upload files to the specified folder
+    //     // tags: ["users", "profile"], //add the given tags to the uploaded files
+    //     // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
+    //     clientAllowedFormats: ["image"], //restrict uploading to image files only
+    //     maxImageFileSize: 2500000,  //restrict file size to less than 2MB
+    //     // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
+    //     // theme: "purple", //change to a purple theme
+    //   });
+
+    //   const cld = new Cloudinary({
+    //     cloud: {
+    //       cloudName
+    //     }
+    //   });
+    
+    //   const myImage = cld.image(publicId);
+    
+
+
 
     const handleFileSelect = (image) => {
         console.log("Image", image);
@@ -110,8 +150,17 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             formData.append('teamLogo', value);
             formData.append('teamName', newTeamInfo.teamName);
 
+   
+
             try {
-                const response = await fetch('http://localhost:8080/upload', {
+                // const response = await fetch('http://localhost:8080/upload', {
+                //     method: 'POST',
+                //     body: formData
+                // });
+
+                    // setting a var for cloudinary folder
+                formData.append('folder', 'BGGTOOL-LOGOS');
+                const response = await fetch('http://localhost:8080/api/uploadImage', {
                     method: 'POST',
                     body: formData
                 });
@@ -169,6 +218,16 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
     return (
         <div>
+      
+
+      <div style={{ width: "800px" }}>
+        {/* <AdvancedImage
+          style={{ maxWidth: "100%" }}
+          cldImg={myImage}
+          plugins={[responsive(), placeholder()]}
+        /> */}
+      </div>
+
             <div className={`grid-container  ${team === 'Team2' ? 'reverse' : ''}`}>
 
                 {/* Team Name */}
@@ -205,11 +264,24 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         <Form.Label>Logo</Form.Label>
                         <div className="d-flex align-items-center">
                         <div className="image-container">
+
+    
+                            
+                            {/*  Displays the image for Cloud Images */}
+                            {/* <CldImage publicId='pioneers-logos-idZ89lWao9_kyju1g'
+                                onClick={() => document.getElementById('filePickerButton').click()}
+                            /> */}
+
+
                             {/* Custom File picker Part1 */}
                             <ImageFileSelector
                                 logoURL={teamLogoUrl}
                                 onClick={() => document.getElementById('filePickerButton').click()}
                             />
+
+                            {/* Opens the component */}
+                            {/* Custom File Picker part2 */}
+                            <CustomFilePicker onSelect={handleFileSelect} />
 
                                 {/* THE OG FILE SELECTOR - Part 1 */}
                                  {/* <ImageFileSelector
@@ -218,8 +290,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                                 />  */}
                         </div>
 
-                        {/* Custom File Picker part2 */}
-                        <CustomFilePicker onSelect={handleFileSelect} />
 
                                 {/* The OG File Selector - Part2 */}
                             {/* <Form.Control

@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { createProxyMiddleware } = require('http-proxy-middleware'); // Proxy middleware for development
 
-const upload = require('../middlewares/multer'); 
+const upload = require('./middlewares/multer'); 
 
 const app = express();
 const PORT = process.env.PORT || 8080;

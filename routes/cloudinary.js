@@ -4,28 +4,23 @@ const upload = require('../middlewares/multer');
 const { uploadImage, createFolders, generateImageUrl, renameImage, deleteImage, fetchImages } = require('../controllers/cloudinary');
 
 
+// we current do front end uploads with cloudinary widget so we dont need this route currently
+// 0 or never.. because then the cost would be on server if we host this on the web.
 
-
-
-
-router.post('/api/uploadImage', upload.single('teamLogo'), async (req, res) => {
-    const file = req.file;
-    const cloudFolder = req.body.folder;
+// router.post('/api/uploadImage', async (req, res) => {
+//     const { file, folder } = req.body;
   
-    console.log("file", file);
-    console.log("Cloud Folder:", cloudFolder);
+//     if (!file) {
+//       return res.status(400).json({ error: 'No file provided' });
+//     }
   
-    if (!file) {
-      return res.status(400).json({ error: 'No file provided' });
-    }
-  
-    try {
-      const publicId = await uploadImage(file.buffer, cloudFolder);
-      res.json({ publicId });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+//     try {
+//       const publicId = await uploadImage(file, folder);
+//       res.json({ publicId });
+//     } catch (error) {
+//       res.status(500).json({ error: error.message });
+//     }
+//   });
 
 
   router.post('/api/createFolders', async (req, res) => {
@@ -80,3 +75,32 @@ router.post('/api/uploadImage', upload.single('teamLogo'), async (req, res) => {
 
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+// Using the default file picker, we have to use file.buffer to get the file data
+// router.post('/api/uploadImage', upload.single('teamLogo'), async (req, res) => {
+//     const file = req.file;
+//     const cloudFolder = req.body.folder;
+  
+//     console.log("file", file);
+//     console.log("Cloud Folder:", cloudFolder);
+  
+//     if (!file) {
+//       return res.status(400).json({ error: 'No file provided' });
+//     }
+  
+//     try {
+//       const publicId = await uploadImage(file.buffer, cloudFolder);
+//       res.json({ publicId });
+//     } catch (error) {
+//       res.status(500).json({ error: error.message });
+//     }
+//   });
