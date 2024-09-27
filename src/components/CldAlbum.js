@@ -6,34 +6,54 @@ const CldAlbum = ({ tag = 'esports', folderName = 'BGGTOOL_LOGOS', publicId, han
   const [photos, setPhotos] = useState([]);
   const [filteredPhotos, setFilteredPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('list'); // Default view is 'list'
+  const [view, setView] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    setLoading(true); // Reset loading state when publicId changes
-  }, [publicId]);
+    if (publicId) {
+      // Check if the publicId is not already in the photos array
+      const isNewUpload = !photos.some(photo => photo.public_id === publicId);
+
+      if (isNewUpload) {
+        // Create a new photo object
+        const newPhoto = {
+          public_id: publicId,
+          format: 'unknown', // we need to adjust info coming from upload widget to include...
+          width: 0, // we need to adjust info coming from upload widget to include...
+          height: 0, // we need to adjust info coming from upload widget to include...
+          bytes: 0 // we need to adjust info coming from upload widget to include...
+        };
+
+        // Add the new photo to the photos array
+        setPhotos(prevPhotos => [newPhoto, ...prevPhotos]);
+        setFilteredPhotos(prevFiltered => [newPhoto, ...prevFiltered]);
+      }
+    }
+  }, [publicId, photos]);
+
+  const getData = async () => {
+    console.log("Public ID changed, why aren't we fetching new data?", publicId);
+    try {
+      const response = await fetch(`/api/fetchImages?folderName=${folderName}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+
+      console.log("We fetched... getData", data);
+
+      setPhotos(data);
+      setFilteredPhotos(data); // Initialize filteredPhotos
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await fetch(`/api/fetchImages?folderName=${folderName}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        console.log('Data:', data);
-        setPhotos(data);
-        setFilteredPhotos(data); // Initialize filteredPhotos
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     getData();
-  }, [folderName, publicId]);
+  }, []);
 
   useEffect(() => {
     const filterPhotos = () => {
@@ -50,7 +70,7 @@ const CldAlbum = ({ tag = 'esports', folderName = 'BGGTOOL_LOGOS', publicId, han
 
   const handleViewChange = (newView) => {
     console.log("New view:", newView);
-    setView(newView); 
+    setView(newView);
   };
 
   if (loading) {
@@ -93,11 +113,11 @@ const CldAlbum = ({ tag = 'esports', folderName = 'BGGTOOL_LOGOS', publicId, han
                 </Tooltip>}
               >
                 <div style={{ cursor: 'pointer' }}>
-                  <CldImage 
+                  <CldImage
                     publicId={photo.public_id}
                     classNames="filepicker-imageSize"
-                    onClick={() => console.log('Clicked on:', photo.public_id)}
-                     />
+                    onClick={() => handleSelect(photo)}
+                  />
                 </div>
               </OverlayTrigger>
             </div>
@@ -111,18 +131,18 @@ const CldAlbum = ({ tag = 'esports', folderName = 'BGGTOOL_LOGOS', publicId, han
                 <Row>
                   <Col xs={4} md={3} className="d-flex justify-content-center">
                     <CldImage
-                       publicId={photo.public_id} 
-                       classNames="filepicker-imageSize-list"
-                       onClick={() => console.log('Clicked on:', photo.public_id)}
-                       />
+                      publicId={photo.public_id}
+                      classNames="filepicker-imageSize-list"
+                      onClick={() => handleSelect(photo)}
+                    />
                   </Col>
                   <Col xs={8} md={9}>
                     <div className="file-details">
                       <p className="m-0"><strong>Filename:</strong> {photo.public_id.split('/').pop()}</p>
                       <p className="m-0">
-                          <strong>Size:</strong> {photo.size_bytes < 1048576 
-                            ? (photo.size_bytes / 1024).toFixed(2) + ' KB' 
-                            : (photo.size_bytes / 1048576).toFixed(2) + ' MB'}
+                        <strong>Size:</strong> {photo.size_bytes < 1048576
+                          ? (photo.size_bytes / 1024).toFixed(2) + ' KB'
+                          : (photo.size_bytes / 1048576).toFixed(2) + ' MB'}
                       </p>
                       <p className="m-0"><strong>Format:</strong> {photo.format}</p>
                       <p className="m-0"><strong>Resolution:</strong> {photo.width}x{photo.height}</p>

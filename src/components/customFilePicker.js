@@ -119,35 +119,6 @@ const CustomFilePicker = ({ onSelect }) => {
 
 
 
-
-
-    // const filterItems = (path, query, items = allItems) => {
-    //     console.log('Filtering items for path:', path, 'and query:', query);
-    //     let filteredItems;
-
-    //     if (query) {
-    //         // Filter items based on search query
-    //         filteredItems = items.filter(item => item.name.toLowerCase().includes(query.toLowerCase()));
-    //     } else {
-    //         // Filter items based on current path
-    //         filteredItems = items.filter(item => {
-    //             const itemPath = item.path || '';
-    //             return itemPath.startsWith(path) && itemPath.split('/').length === path.split('/').length + 1;
-    //         });
-    //     }
-
-    //     // Sort items so folders appear at the top
-    //     filteredItems.sort((a, b) => {
-    //         if (a.type === 'folder' && b.type !== 'folder') return -1;
-    //         if (a.type !== 'folder' && b.type === 'folder') return 1;
-    //         return a.name.localeCompare(b.name);
-    //     });
-
-    //     console.log('Filtered items:', filteredItems);
-    //     setItems(filteredItems);
-    // };
-
-
     const handleShow = () => {
         fetchItems();
         setShow(true)
@@ -162,11 +133,15 @@ const CustomFilePicker = ({ onSelect }) => {
             console.log(`Current path: ${currentPath}/${item.name}`);
             setCurrentPath(`${currentPath}/${item.name}`);
         } else {
-            //  this is selecting the iamge from the custom file selector(photo album
-            onSelect(`/uploads/teamLogos${item.path}`);
-            handleClose();
+            // Firing off the Onselect to trigger the image to be set in the parent component
+            if (uploadType === 'local') {
+                onSelect(`/uploads/teamLogos${item.path}`);
+            } else if (uploadType === 'cloud') {
+                onSelect(item.url);
+                handleClose();
+            }
         }
-    };
+    }
 
 
     const handleBack = () => {
@@ -257,18 +232,20 @@ const CustomFilePicker = ({ onSelect }) => {
                     )}
                     <Row className="justify-content-center">
                         {uploadType === 'cloud' ? (
+                            
                             <CldAlbum
                                 key={publicId}
                                 // tag="esports"
                                 folderName="BGGTOOL_LOGOS"
                                 publicId={publicId}
                                 setCloudImages={setCloudImages}
-                                onClick={handleSelect}
-                                
+                                handleSelect={handleSelect}
 
                             />
                         ) : (
-                            <LocalAlbum items={allItems} handleSelect={handleSelect} />
+                            <LocalAlbum 
+                                items={allItems}
+                                handleSelect={handleSelect} />
                             // <>
                             // {items.map((item, index) => (
                             //     <Col key={index} xs={6} md={4} lg={3} className="mb-3">
