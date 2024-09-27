@@ -3,6 +3,14 @@ import { Container, Row, Col, Form } from 'react-bootstrap';
 import GenerateTeamSide from '../components/GenerateTeamSide';
 import '../styles/App.css'; 
 
+
+
+
+
+
+
+
+
 const defaultMatchData = {
     currentGame: '',
     teams: {

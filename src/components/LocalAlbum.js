@@ -9,12 +9,13 @@ const LocalAlbum = ({ items, handleSelect }) => {
 
   useEffect(() => {
     const filterItems = () => {
+      let filtered = items;
       if (searchQuery) {
-        const filtered = items.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
-        setFilteredItems(filtered);
-      } else {
-        setFilteredItems(items);
+        filtered = items.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
       }
+      // Sort items so folders come first
+      filtered.sort((a, b) => (a.type === 'folder' ? -1 : 1));
+      setFilteredItems(filtered);
     };
 
     filterItems();

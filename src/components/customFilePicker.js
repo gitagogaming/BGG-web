@@ -12,7 +12,7 @@ import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 
 import CldAlbum from './CldAlbum';
 
-import { useImageContext } from '../context/ImageContext';
+// import { useImageContext } from '../context/ImageContext';
 import LocalAlbum from './LocalAlbum';
 
 // Issues:
@@ -25,15 +25,15 @@ import LocalAlbum from './LocalAlbum';
 const CustomFilePicker = ({ onSelect }) => {
 
     // <ImageContext.Provider value={{ photos, loading, filteredPhotos, filterItems }}>
-    const { filteredPhotos, filterItems } = useImageContext();
+    // const { filteredPhotos, filterItems } = useImageContext();
 
-    useEffect(() => {
-        setItems(filteredPhotos);
-    }, [filterItems]);
+    // useEffect(() => {
+    //     setItems(filteredPhotos);
+    // }, [filterItems]);
 
     const [show, setShow] = useState(false);
     const [currentPath, setCurrentPath] = useState('');
-    const [items, setItems] = useState([]);
+    // const [items, setItems] = useState([]);
     const [allItems, setAllItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -88,18 +88,18 @@ const CustomFilePicker = ({ onSelect }) => {
     //     fetchItems();
     // }, []);
 
-    useEffect(() => {
-        if (uploadType === 'cloud' && cloudImages.length > 0) {
-            filterItems({ currentPath, searchQuery, items: cloudImages });
-        } else if (uploadType === 'local') {
-            console.log('Filtering items for path:', currentPath, 'and query:', searchQuery);
-            if (allItems.length > 0) {
-                filterItems({ currentPath, searchQuery, items: allItems });
-            }
+    // useEffect(() => {
+    //     if (uploadType === 'cloud' && cloudImages.length > 0) {
+    //         filterItems({ currentPath, searchQuery, items: cloudImages });
+    //     } else if (uploadType === 'local') {
+    //         console.log('Filtering items for path:', currentPath, 'and query:', searchQuery);
+    //         if (allItems.length > 0) {
+    //             filterItems({ currentPath, searchQuery, items: allItems });
+    //         }
 
-        }
+    //     }
 
-    }, [searchQuery, currentPath]);
+    // }, [searchQuery, currentPath]);
 
     const fetchItems = () => {
         fetch('http://localhost:8080/api/images')
@@ -159,6 +159,7 @@ const CustomFilePicker = ({ onSelect }) => {
 
     const handleSelect = (item) => {
         if (item.type === 'folder') {
+            console.log(`Current path: ${currentPath}/${item.name}`);
             setCurrentPath(`${currentPath}/${item.name}`);
         } else {
             //  this is selecting the iamge from the custom file selector(photo album
@@ -175,9 +176,9 @@ const CustomFilePicker = ({ onSelect }) => {
     };
 
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
+    // const handleSearchChange = (e) => {
+    //     setSearchQuery(e.target.value);
+    // };
 
 
     const handleFileUpload = async (e) => {
@@ -267,7 +268,7 @@ const CustomFilePicker = ({ onSelect }) => {
 
                             />
                         ) : (
-                            <LocalAlbum items={items} handleSelect={handleSelect} />
+                            <LocalAlbum items={allItems} handleSelect={handleSelect} />
                             // <>
                             // {items.map((item, index) => (
                             //     <Col key={index} xs={6} md={4} lg={3} className="mb-3">
