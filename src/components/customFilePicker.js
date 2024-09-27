@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Modal, Button, Row, Col, FormControl, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen, faFile } from '@fortawesome/free-solid-svg-icons';
@@ -8,15 +8,12 @@ import CloudinaryUploadWidget from './CloudinaryUploadWidget';
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 
-import filterItems from './FilterItems';
+// import filterItems from './FilterItems';
 
-// import { CldImage } from './CldImage';
 import CldAlbum from './CldAlbum';
 
-// import { thumbnail } from "@cloudinary/url-gen/actions/resize";
-// import { byRadius } from "@cloudinary/url-gen/actions/roundCorners";
-// import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
-// import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { useImageContext } from '../context/ImageContext';
+import LocalAlbum from './LocalAlbum';
 
 // Issues:
 // 1. Seems to be a few 'events' triggering when loading homepage with filtering items
@@ -26,6 +23,14 @@ import CldAlbum from './CldAlbum';
 // - Question is, how can we still use the upload cloudinary widget in the same way as this component?
 
 const CustomFilePicker = ({ onSelect }) => {
+
+    // <ImageContext.Provider value={{ photos, loading, filteredPhotos, filterItems }}>
+    const { filteredPhotos, filterItems } = useImageContext();
+
+    useEffect(() => {
+        setItems(filteredPhotos);
+    }, [filterItems]);
+
     const [show, setShow] = useState(false);
     const [currentPath, setCurrentPath] = useState('');
     const [items, setItems] = useState([]);
@@ -73,6 +78,10 @@ const CustomFilePicker = ({ onSelect }) => {
     }, [publicId]);
 
 
+    useEffect(() => {
+        console.log("Cloud Images:", cloudImages);
+    }, [cloudImages]);
+
 
 
     // useEffect(() => {
@@ -81,15 +90,15 @@ const CustomFilePicker = ({ onSelect }) => {
 
     useEffect(() => {
         if (uploadType === 'cloud' && cloudImages.length > 0) {
-            // filterItems({currentPath, searchQuery, items:cloudImages});
+            filterItems({ currentPath, searchQuery, items: cloudImages });
         } else if (uploadType === 'local') {
             console.log('Filtering items for path:', currentPath, 'and query:', searchQuery);
-            if (allItems.length > 0 ) {
-            filterItems({currentPath, searchQuery, items:allItems, setItems});
+            if (allItems.length > 0) {
+                filterItems({ currentPath, searchQuery, items: allItems });
             }
-            
+
         }
-        
+
     }, [searchQuery, currentPath]);
 
     const fetchItems = () => {
@@ -103,14 +112,14 @@ const CustomFilePicker = ({ onSelect }) => {
                     path: item.path.replace(/\\/g, '/')
                 }));
                 setAllItems(normalizedData);
-                filterItems({currentPath, searchQuery, items:normalizedData, setItems});
+                filterItems({ currentPath, searchQuery, items: normalizedData, setItems });
             })
             .catch(error => console.error('Error fetching items:', error));
     };
 
 
 
-    
+
 
     // const filterItems = (path, query, items = allItems) => {
     //     console.log('Filtering items for path:', path, 'and query:', query);
@@ -210,7 +219,7 @@ const CustomFilePicker = ({ onSelect }) => {
 
     return (
         <>
-        {/*  displaying the albumb just wont work.. im getting errors about possible exports :default ? */}
+            {/*  displaying the albumb just wont work.. im getting errors about possible exports :default ? */}
 
             {/* <div>
                 <button onClick={() => setShowAlbum(true)}>Show Album</button>
@@ -221,7 +230,7 @@ const CustomFilePicker = ({ onSelect }) => {
                     </div>
                 )}
             </div> */}
-            
+
             {/* <AdvancedImage cldImg={myImage} /> */}
 
             <Button id="filePickerButton" variant="secondary" onClick={handleShow} className="d-none">
@@ -233,48 +242,51 @@ const CustomFilePicker = ({ onSelect }) => {
                     <Modal.Title>Select an Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="custom-modal-body">
-                    <FormControl
+                    {/* <FormControl
                         type="text"
                         placeholder="Search..."
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className="mb-3"
-                    />
+                    /> */}
                     {currentPath && (
                         <Button variant="link" onClick={handleBack}>
                             Back
                         </Button>
                     )}
                     <Row className="justify-content-center">
-                    {uploadType === 'cloud' ? (
-                            <CldAlbum 
+                        {uploadType === 'cloud' ? (
+                            <CldAlbum
                                 key={publicId}
                                 // tag="esports"
-                                folderName="BGGTOOL_LOGOS" 
+                                folderName="BGGTOOL_LOGOS"
                                 publicId={publicId}
                                 setCloudImages={setCloudImages}
-                             
+                                onClick={handleSelect}
+                                
+
                             />
                         ) : (
-                            <>
-                            {items.map((item, index) => (
-                                <Col key={index} xs={6} md={4} lg={3} className="mb-3">
-                                    <div className="image-item" onClick={() => handleSelect(item)} style={{ cursor: 'pointer' }}>
-                                        {item.type === 'folder' ? (
-                                            <div className="folder-icon text-center">
-                                                <FontAwesomeIcon icon={faFolderOpen} size="4x" />
-                                                <p className="text-center text-ellipsis">{item.name}</p>
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                <img src={`/uploads/teamLogos${item.path}`} alt={`Image ${index + 1}`} className="filepicker-imageSize" />
-                                                <p className="text-center text-ellipsis">{item.name}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </Col>
-                            ))}
-                            </>
+                            <LocalAlbum items={items} handleSelect={handleSelect} />
+                            // <>
+                            // {items.map((item, index) => (
+                            //     <Col key={index} xs={6} md={4} lg={3} className="mb-3">
+                            //         <div className="image-item" onClick={() => handleSelect(item)} style={{ cursor: 'pointer' }}>
+                            //             {item.type === 'folder' ? (
+                            //                 <div className="folder-icon text-center">
+                            //                     <FontAwesomeIcon icon={faFolderOpen} size="4x" />
+                            //                     <p className="text-center text-ellipsis">{item.name}</p>
+                            //                 </div>
+                            //             ) : (
+                            //                 <div>
+                            //                     <img src={`/uploads/teamLogos${item.path}`} alt={`Image ${index + 1}`} className="filepicker-imageSize" />
+                            //                     <p className="text-center text-ellipsis">{item.name}</p>
+                            //                 </div>
+                            //             )}
+                            //         </div>
+                            //     </Col>
+                            // ))}
+                            // </>
                         )}
 
                     </Row>

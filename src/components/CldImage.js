@@ -48,13 +48,13 @@ const CldImage = ({ publicId, classNames, onClick, width = 300, height = 300, im
     .delivery(quality(imgQuality));
 
   return (
-    <AdvancedImage
-      cldImg={myImage}
-      style={{  cursor: onClick ? 'pointer' : 'default' }}
-      plugins={[placeholder()]}
-      className={`rounded-lg  ${classNames}`}
-      onClick={onClick}
-    />
+    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+      <AdvancedImage
+        cldImg={myImage}
+        plugins={[placeholder()]}
+        className={`rounded-lg ${classNames}`}
+      />
+    </div>
   );
 };
 
