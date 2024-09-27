@@ -103,7 +103,7 @@ const CustomFilePicker = ({ onSelect }) => {
                     path: item.path.replace(/\\/g, '/')
                 }));
                 setAllItems(normalizedData);
-                filterItems({currentPath, searchQuery, items:normalizedData});
+                filterItems({currentPath, searchQuery, items:normalizedData, setItems});
             })
             .catch(error => console.error('Error fetching items:', error));
     };
