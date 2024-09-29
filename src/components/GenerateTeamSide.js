@@ -130,7 +130,9 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         if (event.preventDefault) {
             event.preventDefault();
         }
-    
+        
+
+        console.log("The event is:", event);
 
         const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
         const newTeamInfo = { ...teamInfo, [field]: value };
@@ -180,7 +182,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         }
 
         // Update the state with the new team info
-        setTeamInfo(newTeamInfo); // whats this for again? :P
+        setTeamInfo(newTeamInfo); // this is sending info back to Match.js for use at server level
         console.log('Final Team Info:', newTeamInfo);
     };
 
@@ -199,7 +201,10 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 if (response.ok) {
                     const data = await response.json();
                     console.log('TeamLogo Files:', data);
-                    setLogoFiles(data);
+
+
+                    setLogoFiles(data); // currently not being used since moving thigns...
+                    ///    
                 } else {
                     console.error('Error fetching TeamLogo files:', response.statusText);
                 }
@@ -218,16 +223,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
     return (
         <div>
-      
-
-      <div style={{ width: "800px" }}>
-        {/* <AdvancedImage
-          style={{ maxWidth: "100%" }}
-          cldImg={myImage}
-          plugins={[responsive(), placeholder()]}
-        /> */}
-      </div>
-
             <div className={`grid-container  ${team === 'Team2' ? 'reverse' : ''}`}>
 
                 {/* Team Name */}
