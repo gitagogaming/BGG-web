@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import React, { useState, useRef } from 'react';
 import Match from './components/Match';
 import General from './components/General';
 import Replays from './components/Replays';
 import Bracket from './components/Bracket';
-import { Container, Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Container, Button, Dropdown, DropdownButton, Nav } from 'react-bootstrap';
 import StatusBar from './StatusBar'; 
 
 import GeneralTest from './components/DraggableGeneral';
@@ -78,18 +79,21 @@ function App() {
                 onGenerateJSON={(generateJSON) => generateJSONRef.current = generateJSON} 
                 setCurrentGame={setSelectedGame}
                 currentGame={currentgame}
-                
                 />;
+
             case 'general':
                 return <General 
                     onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
                     setStatus={setStatus}
                     saveState={saveState}
                 />;
+
             case 'replays':
                 return <Replays />;
+
             case 'bracket':
                 return <Bracket />;
+
             case 'generalTest':
                 return <GeneralTest
                 onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
@@ -112,23 +116,26 @@ function App() {
     const renderButtons = () => {
         if (activeTab === 'match') {
             return (
-                <div className="tab-buttons d-flex align-items-center">
+                <div className="tab-buttons d-flex align-items-center mr-2">
                     <Button 
                         variant="danger" 
                         onClick={() => handleButtonClick('Reset')}
                         className="tab-button"
+                        size="sm"
                     >Reset
                     </Button>
                     <Button 
                         variant="secondary"
                         onClick={() => handleButtonClick('Swap')}
                         className="tab-button"
+                        size="sm"
                     >Swap
                     </Button>
                     <Button
                         variant="primary"
                         onClick={() => handleButtonClick('Update')}
                         className="tab-button"
+                        size="sm"
                     >Update
                     </Button>
                     <DropdownButton
@@ -136,6 +143,7 @@ function App() {
                         title="⚙️"
                         variant="secondary"
                         className="ml-2"
+                        size="sm"
                     >
                         <Dropdown.ItemText>Select a Game</Dropdown.ItemText>
                         <Dropdown.Divider />
@@ -161,23 +169,45 @@ function App() {
     };
 
     return (
-        <Container className="bg-dark px-1 pt-2 pb-1">
-            <nav className="nav nav-tabs d-flex justify-content-between align-items-center">
-                <div className="nav nav-tabs">
-                    <button className={`nav-link ${activeTab === 'match' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('match')}>Match</button>
-                    <button className={`nav-link ${activeTab === 'general' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('general')}>General</button>
-                    <button className={`nav-link ${activeTab === 'replays' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('replays')}>Replays</button>
-                    <button className={`nav-link ${activeTab === 'bracket' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('bracket')}>Bracket</button>
-                    <button className={`nav-link ${activeTab === 'generalTest' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('generalTest')}>General Draggable Test</button>
+        <Container className="bg-dark px-0 pt-2">
+            <div className="d-flex justify-content-between">
+                <Nav className="pl-2 nav-tabs d-flex align-items-center flex-wrap">
+                    <Nav.Item>
+                        <Nav.Link className={`nav-link ${activeTab === 'match' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('match')}>Match</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link className={`nav-link ${activeTab === 'general' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('general')}>General</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link className={`nav-link ${activeTab === 'replays' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('replays')}>Replays</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link className={`nav-link ${activeTab === 'bracket' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('bracket')}>Bracket</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link className={`nav-link ${activeTab === 'generalTest' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('generalTest')}>Draggable</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+                <div className="d-none d-md-flex">
+                    {renderButtons()}
                 </div>
+            </div>
+            <div className="d-md-none mt-2">
                 {renderButtons()}
-            </nav>
+            </div>
             <div className="tab-content">
                 {renderTabContent()}
             </div>
 
-            <StatusBar message={statusMessage} variant={statusVariant} /> 
+            {/* <StatusBar message={statusMessage} variant={statusVariant} />  */}
 
+                
+            {/* <StatusBar
+                message="Connected successfully!"
+                variant="error"
+                connectionDetails={{currentGame: "Game1",
+                status:"Connected", "error": "Naah"}} 
+                /> */}
         </Container>
     );
 }

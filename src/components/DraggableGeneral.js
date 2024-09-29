@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col, DropdownButton } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDeleteLeft, faEdit, faGrip, faCog, faX, faQuestionCircle, faClipboard, faWindowClose, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faGrip, faCog, faQuestionCircle, faClipboard, faWindowClose, faLock } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 // import _ from 'lodash';
 

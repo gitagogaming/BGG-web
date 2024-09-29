@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import GenerateTeamSide from '../components/GenerateTeamSide';
-import '../styles/App.css'; 
+import '../styles/App.css';
 
 
 
@@ -68,7 +68,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
 
     const [team1Info, setTeam1Info] = useState({});
     const [team2Info, setTeam2Info] = useState({});
-    
+
     const [maps, setMaps] = useState({});
 
     const [isLoading, setIsLoading] = useState(true);
@@ -102,7 +102,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                 console.error('Error fetching match data:', error);
             }
         };
-    
+
         fetchMatchData();
     }, [setCurrentGame]);
     // }, [setCurrentGame]);
@@ -168,7 +168,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
             },
             currentGame: currentGame
         };
-        
+
         // Send JSON data to the server
         await fetch('http://localhost:8080/update-json', {
             method: 'POST',
@@ -188,7 +188,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
         return <div>Loading...</div>
     }
     return (
-        <Container fluid className="custom-container">
+        <Container fluid className="main-container">
             <Row>
                 <Col md={6} className="team-side team-side-left py-2">
                     <GenerateTeamSide
@@ -212,10 +212,10 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                 </Col>
             </Row>
 
-            <Row className = "bg-white">
-                <Row className="mt-2">
-                    <Col className="d-flex justify-content-center align-items-center">
-                        <Form.Group controlId="activeMapSelect">
+            <Row className="bg-white">
+                <Row className="pt-2 pb-3 map-select">
+                    <Col >
+                        <Form.Group controlId="activeMapSelect" className="d-flex flex-column align-items-center">
                             <Form.Label>Current Map Select</Form.Label>
                             <Form.Control
                                 as="select"
@@ -223,69 +223,67 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                                 onChange={(e) => setMaps({ ...maps, selectedMap: e.target.value })}
                             >
                                 <option value="">Select a Map...</option>
-                                {maps.mapData.map((_, index) => (
-                                    <option key={index} value={`Map ${index + 1}`}>Map {index + 1}</option>
+                                {maps.mapData.map((map, index) => (
+                                    !map.completed && (
+                                        <option key={index} value={`Map ${index + 1}`}>
+                                            Map {index + 1}
+                                        </option>
+                                    )
                                 ))}
                             </Form.Control>
                         </Form.Group>
                     </Col>
                 </Row>
 
-                <Col>
-                    <Row>
-                        {maps.mapData.map((_, index) => (
-                            <Col key={index}>
-                                <Form.Label>Map {index + 1}</Form.Label>
+                {maps.mapData.map((map, index) => (
+                    <Col key={index} className=" map-select maps pb-2">
+                        <Form.Label className="d-flex justify-content-center">Map {index + 1}</Form.Label>
+                        <Form.Group controlId={`mapSelect${index}`} className='d-flex justify-content-center'>
+
+                            <Form.Control
+                                as="select"
+                                value={map.selectedMap}
+                                onChange={(e) => handleMapChange(index, 'selectedMap', e.target.value)}
+                            >
+                                <option value="">Select Map</option>
+                                {getMapList().map((mapName, mapIndex) => (
+                                    <option key={mapIndex} value={mapName}>{mapName}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Row className="mt-2 ">
+                            <Col>
+                                <Form.Group controlId={`teamScores${index}`} className="d-flex justify-content-center gap-2">
+                                    <Form.Control
+                                        type="number"
+                                        value={map.team1Score}
+                                        onChange={(e) => handleMapChange(index, 'team1Score', e.target.value)}
+                                        placeholder="Team 1 Score"
+                                        className='score-input'
+
+                                    />
+                                    <Form.Control
+                                        type="number"
+                                        value={map.team2Score}
+                                        onChange={(e) => handleMapChange(index, 'team2Score', e.target.value)}
+                                        placeholder="Team 2 Score"
+                                        className='score-input'
+
+                                    />
+                                </Form.Group>
                             </Col>
-                        ))}
-                    </Row>
-                    <Row>
-                        {maps.mapData.map((map, index) => (
-                            <Col key={index}>
-                                <Form.Control
-                                    as="select"
-                                    value={map.selectedMap}
-                                    onChange={(e) => handleMapChange(index, 'selectedMap', e.target.value)}
-                                >
-                                    <option value="">Select Map</option>
-                                    {getMapList().map((map, index) => (
-                                        <option key={index} value={map}>{map}</option>
-                                    ))}
-                                </Form.Control>
-                            </Col>
-                        ))}
-                    </Row>
-                    <Row>
-                        {maps.mapData.map((map, index) => (
-                            <Col key={index} className="d-flex justify-content-center align-items-center gap-4">
-                                <Form.Control
-                                    type="number"
-                                    value={map.team1Score}
-                                    onChange={(e) => handleMapChange(index, 'team1Score', e.target.value)}
-                                    style={{ width: '25%' }}
-                                />
-                                <Form.Control
-                                    type="number"
-                                    value={map.team2Score}
-                                    onChange={(e) => handleMapChange(index, 'team2Score', e.target.value)}
-                                    style={{ width: '25%' }}
-                                />
-                            </Col>
-                        ))}
-                    </Row>
-                    <Row className="mb-3">
-                        {maps.mapData.map((map, index) => (
-                            <Col key={index}>
-                                <Form.Check
-                                    type="checkbox"
-                                    label="Completed"
-                                    checked={map.completed}
-                                    onChange={(e) => handleMapChange(index, 'completed', e.target.checked)}
-                                />
-                            </Col>
-                        ))}
-                    </Row>
-                </Col>
+                        </Row>
+                        <Form.Group controlId={`completed${index}`} className="d-flex justify-content-center mt-2">
+                            <Form.Check
+                                type="checkbox"
+                                label={map.completed ? "Completed" : "Not Played"}
+                                checked={map.completed}
+                                onChange={(e) => handleMapChange(index, 'completed', e.target.checked)}
+                            />
+
+                        </Form.Group>
+                    </Col>
+                ))}
             </Row>
         </Container>
     );

@@ -19,11 +19,17 @@ router.get('/getHeroFiles', (req, res) => {
 
 router.get('/getLogoFiles', (req, res) => {
     const logosDir = path.join(__dirname, '../src/uploads/teamLogos');
+
     fs.readdir(logosDir, (err, files) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to read directory' });
         }
-        const logoFiles = files.filter(file => file.endsWith('.png'));
+    
+        const allowedExtensions = ['.png', '.jpg', '.jpeg', '.svg'];
+        const logoFiles = files.filter(file => 
+            allowedExtensions.some(ext => file.endsWith(ext))
+        );
+    
         res.json(logoFiles);
     });
 });

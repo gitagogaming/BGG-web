@@ -27,7 +27,7 @@ router.post('/upload', upload.single('teamLogo'), (req, res) => {
     const uploadDir = path.join(__dirname, '../src/uploads/teamLogos', req.body.path || '');
     const teamName = req.body.teamName || req.body.name || 'default';
     const fileExtension = path.extname(req.file.originalname);
-    const filename = `${teamName}${fileExtension}`;
+    const filename = `${teamName}`;
     const filepath = path.join(uploadDir, filename);
 
     // Ensure the directory exists

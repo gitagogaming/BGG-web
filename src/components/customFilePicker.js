@@ -1,18 +1,10 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { Modal, Button, Row, Col, FormControl, ButtonGroup } from 'react-bootstrap';
+import { Modal, Button, Row, Col, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolderOpen, faFile } from '@fortawesome/free-solid-svg-icons';
-
+import { faFile } from '@fortawesome/free-solid-svg-icons';
 
 import CloudinaryUploadWidget from './CloudinaryUploadWidget';
-import { Cloudinary } from "@cloudinary/url-gen";
-import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
-
-// import filterItems from './FilterItems';
-
 import CldAlbum from './CldAlbum';
-
-// import { useImageContext } from '../context/ImageContext';
 import LocalAlbum from './LocalAlbum';
 
 // Issues:
@@ -32,10 +24,10 @@ const CustomFilePicker = ({ onSelect }) => {
     // }, [filterItems]);
 
     const [show, setShow] = useState(false);
-    const [currentPath, setCurrentPath] = useState('');
+    // const [currentPath, setCurrentPath] = useState('');
     // const [items, setItems] = useState([]);
     const [allItems, setAllItems] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+    // const [searchQuery, setSearchQuery] = useState('');
 
     const [uploadType, setUploadType] = useState('local'); // cloud or local
     const [cloudImages, setCloudImages] = useState([]);
@@ -64,14 +56,6 @@ const CustomFilePicker = ({ onSelect }) => {
         // theme: "purple", //change to a purple theme
     });
 
-    // const cld = new Cloudinary({
-    //     cloud: {
-    //         cloudName
-    //     }
-    // });
-
-    // const myImage = cld.image(publicId);
-
 
     useEffect(() => {
         console.log("PublicID changed:", publicId);
@@ -82,24 +66,6 @@ const CustomFilePicker = ({ onSelect }) => {
         console.log("Cloud Images:", cloudImages);
     }, [cloudImages]);
 
-
-
-    // useEffect(() => {
-    //     fetchItems();
-    // }, []);
-
-    // useEffect(() => {
-    //     if (uploadType === 'cloud' && cloudImages.length > 0) {
-    //         filterItems({ currentPath, searchQuery, items: cloudImages });
-    //     } else if (uploadType === 'local') {
-    //         console.log('Filtering items for path:', currentPath, 'and query:', searchQuery);
-    //         if (allItems.length > 0) {
-    //             filterItems({ currentPath, searchQuery, items: allItems });
-    //         }
-
-    //     }
-
-    // }, [searchQuery, currentPath]);
 
     const fetchItems = () => {
         fetch('http://localhost:8080/api/images')
@@ -112,13 +78,12 @@ const CustomFilePicker = ({ onSelect }) => {
                     path: item.path.replace(/\\/g, '/')
                 }));
                 setAllItems(normalizedData);
-                // filterItems({ currentPath, searchQuery, items: normalizedData, setItems });
             })
             .catch(error => console.error('Error fetching items:', error));
     };
 
 
-
+    // Everytime user clicks on the image picker button we fetch the local uploads
     const handleShow = () => {
         fetchItems();
         setShow(true)
@@ -129,31 +94,21 @@ const CustomFilePicker = ({ onSelect }) => {
 
 
     const handleSelect = (item) => {
-        if (item.type === 'folder') {
-            console.log(`Current path: ${currentPath}/${item.name}`);
-            setCurrentPath(`${currentPath}/${item.name}`);
-        } else {
-            // Firing off the Onselect to trigger the image to be set in the parent component
-            if (uploadType === 'local') {
-                onSelect(`/uploads/teamLogos${item.path}`);
-            } else if (uploadType === 'cloud') {
-                onSelect(item.url);
-                handleClose();
-            }
+        // Firing off the Onselect to trigger the image to be set in the parent component
+        if (uploadType === 'local') {
+            onSelect(`/uploads/teamLogos${item.path}`);
+            handleClose();
+
+        } else if (uploadType === 'cloud') {
+            onSelect(item.url);
+            handleClose();
         }
+    
     }
 
 
-    const handleBack = () => {
-        const pathParts = currentPath.split('/').filter(Boolean);
-        pathParts.pop();
-        setCurrentPath(pathParts.join('/'));
-    };
 
 
-    // const handleSearchChange = (e) => {
-    //     setSearchQuery(e.target.value);
-    // };
 
 
     const handleFileUpload = async (e) => {
@@ -161,7 +116,7 @@ const CustomFilePicker = ({ onSelect }) => {
         if (file) {
             console.log("Uploading file:", file);
             const formData = new FormData();
-            formData.append('teamLogo', file); // Ensure the field name matches the backend
+            formData.append('teamLogo', file);
             formData.append('name', file.name);
 
             // setting a var for cloudinary folder
@@ -195,20 +150,6 @@ const CustomFilePicker = ({ onSelect }) => {
 
     return (
         <>
-            {/*  displaying the albumb just wont work.. im getting errors about possible exports :default ? */}
-
-            {/* <div>
-                <button onClick={() => setShowAlbum(true)}>Show Album</button>
-                {showAlbum && (
-                    <div className="modal">
-                        <button onClick={() => setShowAlbum(false)}>Close</button>
-                        <CldAlbum tag="esports" />
-                    </div>
-                )}
-            </div> */}
-
-            {/* <AdvancedImage cldImg={myImage} /> */}
-
             <Button id="filePickerButton" variant="secondary" onClick={handleShow} className="d-none">
                 Select Image
             </Button>
@@ -218,18 +159,6 @@ const CustomFilePicker = ({ onSelect }) => {
                     <Modal.Title>Select an Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="custom-modal-body">
-                    {/* <FormControl
-                        type="text"
-                        placeholder="Search..."
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="mb-3"
-                    /> */}
-                    {currentPath && (
-                        <Button variant="link" onClick={handleBack}>
-                            Back
-                        </Button>
-                    )}
                     <Row className="justify-content-center">
                         {uploadType === 'cloud' ? (
                             
