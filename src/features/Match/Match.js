@@ -9,7 +9,7 @@ import { useCurrentGameConfig } from '../../context/currentGameConfig';
 
 
 
-
+// we still need to render hero roles/ and heros for based on 'currentGameConfig' solely..
 
 const defaultMatchData = {
     currentGame: 'Overwatch',
