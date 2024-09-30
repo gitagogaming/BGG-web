@@ -33,6 +33,9 @@ function App() {
 
     const [currentGameConfig, setCurrentGameConfig] = useState({});
 
+    const [fullJson, setFullJson] = useState(() => JSON.parse(localStorage.getItem('fullJson')) || {});
+
+
     const loadConfigs = async () => {
         try {
             // const storedConfigs = getConfigsFromStorage();
@@ -94,6 +97,47 @@ function App() {
     };
 
 
+    // const saveState = async (inputs, columns) => {
+    //     localStorage.setItem('inputs', JSON.stringify(inputs));
+    //     localStorage.setItem('columns', JSON.stringify(columns));
+
+    //     setStatus('Layout updated!', 'success');
+
+    //     // Check if fullJson is empty and try to load it from local storage
+    //     let currentFullJson = fullJson;
+    //     if (Object.keys(currentFullJson).length === 0) {
+    //         currentFullJson = JSON.parse(localStorage.getItem('fullJson')) || {};
+    //     }
+
+    //     // Group inputs by type
+    //     const groupedInputs = {};
+    //     Object.entries(inputs).forEach(([key, value]) => {
+    //         if (!groupedInputs[value.type]) {
+    //             groupedInputs[value.type] = {};
+    //         }
+    //         groupedInputs[value.type][key] = value;
+    //     });
+
+    //     const updatedData = {
+    //         ...currentFullJson,
+    //         general: groupedInputs
+    //     };
+
+    //     // Update local storage
+    //     localStorage.setItem('fullJson', JSON.stringify(updatedData));
+    //     setFullJson(updatedData);
+
+    //     // Update server
+    //     await fetch('http://localhost:8080/update-json', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(updatedData)
+    //     });
+
+    //     console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
+    // };
 
     const saveState = async (inputs, columns) => {
         localStorage.setItem('inputs', JSON.stringify(inputs));
@@ -101,6 +145,8 @@ function App() {
 
 
         setStatus('Layout updated!', 'success');
+
+        //  This is fetchign fulljson from our localhost and then combining it with the current 'inputs' from the general tab and then updating the json
 
         // if (onGenerateJSON) {
             const response = await fetch('http://localhost:8080/getFullJson');
@@ -129,7 +175,7 @@ function App() {
             });
 
             console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
-        // }
+    
     };
 
 
@@ -146,7 +192,7 @@ function App() {
 
             case 'general':
                 return <General 
-                    onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
+                    // onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
                     setStatus={setStatus}
                     saveState={saveState}
                 />;
@@ -159,7 +205,7 @@ function App() {
 
             case 'generalTest':
                 return <GeneralTest
-                onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
+                // onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
                 setStatus={setStatus}
                 saveState={saveState}
                 />;
@@ -205,6 +251,7 @@ function App() {
                         size="sm"
                     >Update
                     </Button>
+                    
                     <DropdownButton
                         id="dropdown-basic-button"
                         title="⚙️"
@@ -213,44 +260,27 @@ function App() {
                         size="sm"
                     >
                         <Dropdown.ItemText>Select a Game</Dropdown.ItemText>
+                        <Dropdown.Item onClick={handleImportClick}> Import Game </Dropdown.Item>
+
                         <Dropdown.Divider />
-                        {Object.keys(currentGameConfig).map((game, index) => (
-                            <Dropdown.Item
-                                key={index}
-                                onClick={() => setSelectedGame(game)}
-                                active={currentgame === game}
-                            >{game}
-                            </Dropdown.Item>
-                        ))}
-                        
 
-                        {/* <Dropdown.Item
-                            onClick={() => setSelectedGame('Overwatch')}
-                            active={currentgame === 'Overwatch'}
-                        >Overwatch
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => setSelectedGame('Valorant')}
-                            active={currentgame === 'Valorant'}
-                        >Valorant
-                        </Dropdown.Item> */}
-
-
-
-                        <Dropdown.Item onClick={handleImportClick}
-                        >
-                        Import Game
-                        </Dropdown.Item>
-
-
+                            {Object.keys(currentGameConfig).map((game, index) => (
+                                <Dropdown.Item
+                                    key={index}
+                                    onClick={() => setSelectedGame(game)}
+                                    active={currentgame === game}
+                                >{game}
+                                </Dropdown.Item>
+                            ))}
+            
                     </DropdownButton>
                     <input
-                type="file"
-                accept=".xaml"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={importGame}
-            />
+                        type="file"
+                        accept=".bgg"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={importGame}
+                    />
                 </div>
             );
         }

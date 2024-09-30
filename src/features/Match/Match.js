@@ -112,28 +112,35 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig 
         const fetchMatchData = async () => {
             try {
                 console.log('Fetching match data...');
-                const response = await fetch('/matchData.json');
+
+                // this is meant to represent a previous save game file incase of a reboot/crash or something lets say
+                // - should be moved to local storage instead...
+                // const response = await fetch('/matchData.json');
                 
-                // const currentMatchData = localStorage.getItem('currentMatchData');
+                const currentMatchData = localStorage.getItem('currentMatchData');
                 // if (currentMatchData) {
 
                 // localStorage.setItem('currentMatchData', JSON.stringify(response));
 
-                console.log('Response:', response);
-                if (response.ok) {
-                    const data = await response.json();
-                    const filledData = { ...defaultMatchData, ...data };
+                console.log('Response:', currentMatchData);
+                if (currentMatchData) {
+                    // const data = await response.json();
+                    const data = currentMatchData;
+                    // const filledData = { ...defaultMatchData, ...data };
+                    const filledData = { ...JSON.parse(data) };
 
-                    setCurrentGame(defaultMatchData.currentGame);
+                    console.log("this is the filled data", filledData);
 
-                    setTeam1Players(defaultMatchData.teams.team1.players);
-                    setTeam2Players(defaultMatchData.teams.team2.players);
+                    setCurrentGame(filledData.currentGame);
 
-                    setTeam1Info(defaultMatchData.teams.team1);
-                    setTeam2Info(defaultMatchData.teams.team2);
+                    setTeam1Players(filledData.teams.team1.players);
+                    setTeam2Players(filledData.teams.team2.players);
+
+                    setTeam1Info(filledData.teams.team1);
+                    setTeam2Info(filledData.teams.team2);
 
                     
-                    setMaps(filledData.maps);
+                    // setMaps(filledData.maps);
 
                     setMaps(defaultMatchData.maps);
 
@@ -141,7 +148,8 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig 
 
                     setIsLoading(false);
                 } else {
-                    console.error('Failed to fetch match data:', response.statusText);
+                    // console.error('Failed to fetch match data:', response.statusText);
+                    console.error('Failed to fetch match data:', currentMatchData);
                 }
             } catch (error) {
                 console.error('Error fetching match data:', error);
@@ -152,6 +160,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig 
     }, [setCurrentGame]);
 
 
+    // Getting the map list based on what has been loaded from the new game config via xaml thats loaded into json
     const getMapList = () => {
         if (!currentGameConfig || !currentGameConfig[currentGame] || !currentGameConfig[currentGame].maps) {
             console.error("Error: Game configuration or maps not found.");
@@ -161,12 +170,15 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig 
         return currentMaps || [];
     }
 
+
+    // When map changes, we sort the avaialble maps based 
     const handleMapChange = (index, field, value) => {
         const newMapData = maps.mapData.map((map, i) =>
             i === index ? { ...map, [field]: value } : map
         );
         setMaps({ ...maps, mapData: newMapData });
     };
+
 
     const generateJSON = async (event) => {
         const team1Data = {

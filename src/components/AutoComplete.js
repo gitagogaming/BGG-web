@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Dropdown } from 'react-bootstrap';
 
-const Autocomplete = ({ items, onSelect }) => {
-    const [query, setQuery] = useState('');
+const Autocomplete = ({ items, onSelect, teamName, ...restProps }) => {
+    const [query, setQuery] = useState(teamName);
     const [filteredItems, setFilteredItems] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -36,9 +36,8 @@ const Autocomplete = ({ items, onSelect }) => {
                 type="text"
                 value={query}
                 onChange={handleInputChange}
-                placeholder="Type a team name"
-                className="team-name-input"
                 autoComplete="off"
+                {...restProps}
             />
             {showDropdown && filteredItems.length > 0 && (
                 <Dropdown.Menu show>

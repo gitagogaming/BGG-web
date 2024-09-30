@@ -67,7 +67,7 @@ const renderTooltip = (input, handleCopy) => (
     </Popover>
 );
 
-const General = ({ onGenerateJSON, setStatus, saveState }) => {
+const General = ({ saveState }) => {
     const [inputs, setInputs] = useState({});
     const [layout, setLayout] = useState([]);
     const columns = ["file", "text", "color"];

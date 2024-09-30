@@ -23,7 +23,7 @@ const renderPopover = (file) => (
     </Popover>
 );
 
-const General = ({ onGenerateJSON, setStatus, saveState }) => {
+const General = ({ saveState }) => {
     const [inputs, setInputs] = useState({});
     const [columns, setColumns] = useState([]);
 

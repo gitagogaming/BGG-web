@@ -70,6 +70,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         return [];
     };
 
+
+    // Currently this is fetching heros as defined here rather than looking at the 'currentGameConfig' which should have the heros to select from..
     const getHeroOptions = (role) => {
         const valorantHeroes = {
             Duelist: ['Jett', 'Phoenix', 'Reyna', 'Raze', 'Yoru', 'Neon'],
@@ -125,6 +127,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
     // We are trying to upload to the server.. and it works as expected but when we upload multiple times in a row WITHOUT changing the team name
     // It ends up causing the whole form to reset/reload.. every single input/combobox etc just resets to default values which makes no apparent sense to me..
+    // This was fixed and was caused by the server seeing a chagned file in a non public folder causing it to rerender everything.
     // 
     const handleTeamInfoChange = async (event, field) => {
         if (event.preventDefault) {
@@ -140,8 +143,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         console.log('Updated Team Info:', newTeamInfo);
 
         if (event.target.type === 'file') {
-            console.log("Da files", event.target.files);
-            // newTeamInfo.teamLogoUrl = URL.createObjectURL(value);
+            console.log("Uploading Files: ", event.target.files);
 
             let logoFileExtension = newTeamInfo.teamLogo.split('.').pop();
             newTeamInfo.teamLogoUrl = `http://localhost:8080/uploads/teamLogos/${newTeamInfo.teamName}.${logoFileExtension}`;
@@ -229,14 +231,13 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 <div className="grid-item">
                     <Form.Group controlId={`teamName`}>
                         <Form.Label>Team Name</Form.Label>
-                        <Autocomplete items={LogoFiles} onSelect={handleSelect} />
-
-                        {/* <Form.Control
-                            type="text"
-                            value={teamInfo.teamName}
-                            onChange={(e) => handleTeamInfoChange(e, 'teamName')}
+                        <Autocomplete 
+                            items={LogoFiles}
+                            onSelect={handleSelect}
+                            teamName={teamInfo.teamName}
                             className='team-name-input'
-                        /> */}
+                            placeholder='Type a team name'
+                        />
                     </Form.Group>
                 </div>
 
@@ -259,14 +260,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         <Form.Label>Logo</Form.Label>
                         <div className="d-flex align-items-center">
                         <div className="image-container">
-
-    
-                            
-                            {/*  Displays the image for Cloud Images */}
-                            {/* <CldImage publicId='pioneers-logos-idZ89lWao9_kyju1g'
-                                onClick={() => document.getElementById('filePickerButton').click()}
-                            /> */}
-
 
                             {/* Custom File picker Part1 */}
                             <ImageFileSelector
@@ -304,8 +297,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             </div>
 
 
-            {/* Team Score  & Team Color */}
-            {/* Team Score */}
+            {/* Team Score, Team Color & Team Side Choice Radio */}
             <div className={`grid-container ${team === 'Team2' ? 'reverse' : ''}`}>
                 <div className="grid-item">
                     <Form.Group controlId={`teamScore`}>
