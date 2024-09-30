@@ -1,12 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Match from './components/Match';
 import General from './components/General';
 import Replays from './components/Replays';
 import Bracket from './components/Bracket';
 import { Container, Button, Dropdown, DropdownButton, Nav } from 'react-bootstrap';
 import StatusBar from './StatusBar'; 
+import { fetchAllConfigs } from './services/LoadGameConfig';
+
 
 import GeneralTest from './components/DraggableGeneral';
 
@@ -21,17 +23,77 @@ function App() {
     const [currentgame, setSelectedGame] = useState('');
     const generateJSONRef = useRef(null);
 
+    const fileInputRef = useRef(null);
+
+    const [uploadStatus, setUploadStatus] = useState('');
+
     const [statusMessage, setStatusMessage] = useState('');
     const [statusVariant, setStatusVariant] = useState('success'); 
+
+
+    const [currentGameConfig, setCurrentGameConfig] = useState({});
+
+    const loadConfigs = async () => {
+        try {
+            // const storedConfigs = getConfigsFromStorage();
+            // if (storedConfigs.length > 0) {
+                // setConfigs(storedConfigs);
+            // } else {
+                const allConfigs = await fetchAllConfigs();
+
+                setCurrentGameConfig(allConfigs);
+                // we need to seperate the config and set data that is set by game config verus the data thats set based on the actual match data itself
+                // console.log("All Configs", allConfigs[0].config);
+                // setConfigs(allConfigs);
+            // }
+        } catch (error) {
+            console.error('Error loading the configs:', error);
+        }
+    };
+
+    useEffect(() => {
+        loadConfigs();
+    }, []);
+
+
 
     const setStatus = (message, variant) => {
         setStatusMessage(message);
         setStatusVariant(variant);
     };
 
-    const importGame = async () => {
-        
-    }
+ const importGame = async (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('configFile', file); // Ensure the field name matches the backend
+
+        try {
+            const response = await fetch('/upload/config', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            console.log("Successfull upload..")
+            
+            loadConfigs(); // could probably just get this list from the server on response of a new uploded config?
+
+            const data = await response.json();
+            setUploadStatus(data.message);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setUploadStatus('Error uploading file');
+        }
+    };
+
+
 
     const saveState = async (inputs, columns) => {
         localStorage.setItem('inputs', JSON.stringify(inputs));
@@ -79,6 +141,7 @@ function App() {
                 onGenerateJSON={(generateJSON) => generateJSONRef.current = generateJSON} 
                 setCurrentGame={setSelectedGame}
                 currentGame={currentgame}
+                currentGameConfig={currentGameConfig}
                 />;
 
             case 'general':
@@ -104,6 +167,10 @@ function App() {
             default:
                 return <Match />;
         }
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current.click();
     };
 
     const handleButtonClick = (action) => {
@@ -147,7 +214,17 @@ function App() {
                     >
                         <Dropdown.ItemText>Select a Game</Dropdown.ItemText>
                         <Dropdown.Divider />
-                        <Dropdown.Item
+                        {Object.keys(currentGameConfig).map((game, index) => (
+                            <Dropdown.Item
+                                key={index}
+                                onClick={() => setSelectedGame(game)}
+                                active={currentgame === game}
+                            >{game}
+                            </Dropdown.Item>
+                        ))}
+                        
+
+                        {/* <Dropdown.Item
                             onClick={() => setSelectedGame('Overwatch')}
                             active={currentgame === 'Overwatch'}
                         >Overwatch
@@ -156,12 +233,24 @@ function App() {
                             onClick={() => setSelectedGame('Valorant')}
                             active={currentgame === 'Valorant'}
                         >Valorant
+                        </Dropdown.Item> */}
+
+
+
+                        <Dropdown.Item onClick={handleImportClick}
+                        >
+                        Import Game
                         </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => importGame()}
-                        >Import Game
-                        </Dropdown.Item>
+
+
                     </DropdownButton>
+                    <input
+                type="file"
+                accept=".xaml"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={importGame}
+            />
                 </div>
             );
         }
