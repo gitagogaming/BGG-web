@@ -57,7 +57,7 @@ const renderTooltip = (input, handleCopy) => (
                         <FontAwesomeIcon
                             icon={faClipboard}
                             className="copy-icon"
-                            onClick={() => handleCopy(`http://localhost:8080/getValue?path=general.${input.type}.${input.id}`)}
+                            onClick={() => handleCopy(`http://localhost:8080/getValue?path=general.${input.type}.${input.id}.value`)}
                             style={{ cursor: 'pointer', marginLeft: '10px', color: 'blue' }}
                         />
                     </div>
@@ -79,15 +79,20 @@ const General = ({ saveState }) => {
     const [verticalCompact, setVerticalCompact] = useState(false);
 
 
-    const [copySuccess, setCopySuccess] = useState({});
-    
+    const [copySuccess, setCopySuccess] = useState(false);
+    const [animationClass, setAnimationClass] = useState('');
+
 
 
     // Copy API Route to Clipboard (Popover/ToolTip)
     const handleCopy = (route) => {
         navigator.clipboard.writeText(route).then(() => {
-            setCopySuccess({ [route]: true });
-            setTimeout(() => setCopySuccess({ [route]: false }), 2000); // Reset after 2 seconds
+            setAnimationClass('slide-in');
+            setCopySuccess(true);
+            setTimeout(() => {
+                setAnimationClass('slide-out');
+                setTimeout(() => setCopySuccess(false), 500);
+            }, 2500); // Show for 2 seconds
         });
     };
 
@@ -126,7 +131,7 @@ const General = ({ saveState }) => {
                 newInputs[inputId].layout.static = !newInputs[inputId].layout.static;
                 return newInputs;
             });
-    
+
             localStorage.setItem('inputs', JSON.stringify(inputs));
         }
     };
@@ -281,6 +286,20 @@ const General = ({ saveState }) => {
 
     return (
         <div >
+            {copySuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: '10px',
+                    right: '10px',
+                    backgroundColor: 'green',
+                    color: 'white',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    zIndex: 1000
+                }} className={animationClass}>
+                    Copied to clipboard
+                </div>
+            )}
             <Form >
                 <ReactGridLayout
                     className="bg-light border grid-background"
@@ -380,42 +399,45 @@ const General = ({ saveState }) => {
                                                 style={{ cursor: 'pointer' }}
                                             />
                                         </OverlayTrigger>
-                                        
-                                    {!input.layout.static && (
-                                        <FontAwesomeIcon
-                                            icon={faWindowClose}
-                                            className="delete-icon"
-                                            onClick={() => handleRemoveInput(input.id)}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                    )}
-                       
+
+                                        {!input.layout.static && (
+                                            <FontAwesomeIcon
+                                                icon={faWindowClose}
+                                                className="delete-icon"
+                                                onClick={() => handleRemoveInput(input.id)}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        )}
+
                                     </div>
                                     {/* keeping it bottom right until we figure out how to resize properly */}
                                     {!input.layout.static ? (
-                                    <FontAwesomeIcon
-                                        icon={faGrip}
-                                        className="drag-handle"
-                                        style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5', right: '5', cursor: 'move', color: 'gray' }}
-                                    
-                                    />
-                                    
-                                ) : (
-                                    <FontAwesomeIcon
-                                        icon={faLock}
-                                        className="lock-icon"
-                                        style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5px', right: '5px', color: 'gray' }}
-                                        onClick={() => alert('This item is locked and cannot be moved.')}
+                                        <FontAwesomeIcon
+                                            icon={faGrip}
+                                            className="drag-handle"
+                                            style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5', right: '5', cursor: 'move', color: 'gray' }}
+
+                                        />
+
+                                    ) : (
+                                        <FontAwesomeIcon
+                                            icon={faLock}
+                                            className="lock-icon"
+                                            style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5px', right: '5px', color: 'gray' }}
+                                            onClick={() => alert('This item is locked and cannot be moved.')}
                                         // onClick={(event) => toggleLockInput(input.id, event)}
                                         />
-                                )}
+                                    )}
 
                                 </div>
                             </div>
                         </div>
                     ))}
+
+
                 </ReactGridLayout>
                 <div className="pt-2 px-2 bg-dark">
+
                     <Row className="align-items-center">
                         <Col>
                             <ButtonGroup size='sm'>
