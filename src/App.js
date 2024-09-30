@@ -38,74 +38,81 @@ function App() {
 
 
 
+    // const loadConfigs = async () => {
+    //     try {
+    //         // const storedConfigs = getConfigsFromStorage();
+    //         // if (storedConfigs.length > 0) {
+    //             // setConfigs(storedConfigs);
+    //         // } else {
+    //             const allConfigs = await fetchAllConfigs();
+
+    //             setGameConfigs(allConfigs);
+
+    //             console.log("All Configs - app.js", allConfigs);
+
+    //             // At this moment this sets the current game config to 'ALL' configs since other compeents are sorting thru the 'currentGame' details theirselves..
+    //             // this needs fixed/adjusted
+    //             setCurrentGameConfig(allConfigs);
+
+    //     } catch (error) {
+    //         console.error('Error loading the configs:', error);
+    //     }
+    // };
+
+
     const loadConfigs = async () => {
         try {
-            // const storedConfigs = getConfigsFromStorage();
-            // if (storedConfigs.length > 0) {
-                // setConfigs(storedConfigs);
-            // } else {
-                const allConfigs = await fetchAllConfigs();
-
-                setGameConfigs(allConfigs);
-
-                // console.log("All Configs", allConfigs);
-
-                setCurrentGameConfig(allConfigs);
-
-                // console.log("Game config sending..", allConfigs[currentgame]);
-
-                // console.log("Current Game Configg", allConfigs[currentgame].maps.map);
-                
-                // we need to seperate the config and set data that is set by game config verus the data thats set based on the actual match data itself
-                // console.log("All Configs", allConfigs[0].config);
-                // setConfigs(allConfigs);
-            // }
+            const allConfigs = await fetchAllConfigs();
+            setGameConfigs(allConfigs);
         } catch (error) {
             console.error('Error loading the configs:', error);
         }
-    };
+    }; 
 
     useEffect(() => {
         loadConfigs();
     }, []);
 
-
-
-    const setStatus = (message, variant) => {
-        setStatusMessage(message);
-        setStatusVariant(variant);
-    };
-
- const importGame = async (event) => {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
+    // When game configs load and also when the current game changes
+    useEffect(() => {
+        if (currentgame && gameConfigs[currentgame]) {
+            setCurrentGameConfig(gameConfigs[currentgame]);
         }
+    }
+    , [currentgame, gameConfigs]);
 
-        const formData = new FormData();
-        formData.append('configFile', file); // Ensure the field name matches the backend
 
-        try {
-            const response = await fetch('/upload/config', {
-                method: 'POST',
-                body: formData
-            });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+    const importGame = async (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
             }
 
-            console.log("Successfull upload..")
-            
-            loadConfigs(); // could probably just get this list from the server on response of a new uploded config?
+            const formData = new FormData();
+            formData.append('configFile', file); // Ensure the field name matches the backend
 
-            const data = await response.json();
-            setUploadStatus(data.message);
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            setUploadStatus('Error uploading file');
-        }
-    };
+            try {
+                const response = await fetch('/upload/config', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                console.log("Successfull upload..")
+                
+                loadConfigs(); // could probably just get this list from the server on response of a new uploded config?
+
+                const data = await response.json();
+                setUploadStatus(data.message);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                setUploadStatus('Error uploading file');
+            }
+        };
 
 
     // const saveState = async (inputs, columns) => {
@@ -295,6 +302,14 @@ function App() {
             );
         }
         return null;
+    };
+
+
+
+    
+    const setStatus = (message, variant) => {
+        setStatusMessage(message);
+        setStatusVariant(variant);
     };
 
     return (

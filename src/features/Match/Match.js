@@ -165,16 +165,26 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
 
 
     // Getting the map list based on what has been loaded from the new game config via xaml thats loaded into json
+    // const getMapList = () => {
+    //     if (!currentGameConfig || !currentGameConfig[currentGame] || !currentGameConfig[currentGame].maps) {
+    //         console.error("Error: Game configuration or maps not found.");
+    //         return [];
+    //     }
+    //     const currentMaps = currentGameConfig[currentGame].maps.map;
+    //     console.log("Current maps from the config thingy", currentMaps);
+    //     return currentMaps || [];
+    // }
+
     const getMapList = () => {
-        if (!currentGameConfig || !currentGameConfig[currentGame] || !currentGameConfig[currentGame].maps) {
+        if (!currentGameConfig || !currentGameConfig.maps) {
             console.error("Error: Game configuration or maps not found.");
             return [];
         }
-        const currentMaps = currentGameConfig[currentGame].maps.map;
+        const currentMaps = currentGameConfig.maps.map;
         console.log("Current maps from the config thingy", currentMaps);
         return currentMaps || [];
-    }
-
+    };
+    
 
     // When map changes, we sort the avaialble maps based 
     const handleMapChange = (index, field, value) => {
