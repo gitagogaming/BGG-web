@@ -1,4 +1,4 @@
-// src/services/configService.js
+// src/services/LoadGameConfig.js
 import yaml from 'js-yaml';
 
 const CONFIG_STORAGE_KEY = 'gameConfigs';

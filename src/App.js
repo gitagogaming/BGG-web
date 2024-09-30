@@ -1,16 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import React, { useState, useRef, useEffect } from 'react';
-import Match from './components/Match';
-import General from './components/General';
-import Replays from './components/Replays';
-import Bracket from './components/Bracket';
+import Match from './features/Match/Match';
+import General from './features/General/General';
+import Replays from './features/Replays/Replays';
+import Bracket from './features/Bracket/Bracket';
 import { Container, Button, Dropdown, DropdownButton, Nav } from 'react-bootstrap';
-import StatusBar from './StatusBar'; 
+import StatusBar from './components/UI/StatusBar'; 
 import { fetchAllConfigs } from './services/LoadGameConfig';
 
 
-import GeneralTest from './components/DraggableGeneral';
+import GeneralTest from './features/General/DraggableGeneral';
 
 
 // finished with heros1.html - need to copy over to heroes2.html

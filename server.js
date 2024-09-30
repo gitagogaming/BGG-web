@@ -23,14 +23,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-// const uploadDir = path.join(__dirname, 'public/uploads/teamLogos');
-// if (!fs.existsSync(uploadDir)) {
-//     fs.mkdirSync(uploadDir, { recursive: true });
-// }
-
-// expose the upload folder
-app.use('/uploads', express.static(path.join(__dirname, './src/uploads')));
-
 // Setting up the routes for API endpoints
 const routesPath = path.join(__dirname, 'routes');
 fs.readdirSync(routesPath).forEach((file) => {
@@ -39,6 +31,13 @@ fs.readdirSync(routesPath).forEach((file) => {
         app.use(route);
     }
 });
+
+
+// exposing the upload folder for the overlays to use
+app.use('/uploads', express.static(path.join(__dirname, './src/uploads')));
+
+
+
 
 
 
@@ -67,6 +66,8 @@ if (isProduction) {
         })
     );
 }
+
+
 
 // Start the server
 app.listen(PORT, () => {

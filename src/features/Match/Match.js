@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import GenerateTeamSide from '../components/GenerateTeamSide';
-import '../styles/App.css';
+import GenerateTeamSide from '../../components/GenerateTeamSide';
+import '../../styles/App.css';
 
-
-
+import MatchGames from './MatchGames';
 
 
 
@@ -12,7 +11,7 @@ import '../styles/App.css';
 
 
 const defaultMatchData = {
-    currentGame: '',
+    currentGame: 'Overwatch',
     teams: {
         team1: {
             teamName: '',
@@ -62,7 +61,7 @@ const defaultMatchData = {
     }
 };
 
-const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
+const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig }) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
 
@@ -73,26 +72,72 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
 
     const [isLoading, setIsLoading] = useState(true);
 
+
+
+    // useEffect(() => {
+    //     const loadMatchData = async () => {
+    //         try {
+    //             console.log('Fetching match data...');
+    //             let data;
+    
+    //             const localData = localStorage.getItem('currentMatchData');
+    //             if (localData) {
+    //                 console.log('Using local data...');
+    //                 data = JSON.parse(localData);
+    //             } else {
+    //                 console.log('No local data found, using default configuration...');
+    //                 data = defaultMatchData;
+    //             }
+    
+    //             const filledData = { ...defaultMatchData, ...data };
+    
+    //             setCurrentGame(filledData.currentGame);
+    //             setTeam1Players(filledData.teams.team1.players);
+    //             setTeam2Players(filledData.teams.team2.players);
+    //             setTeam1Info(filledData.teams.team1);
+    //             setTeam2Info(filledData.teams.team2);
+    //             setMaps(filledData.maps);
+    //             setIsLoading(false);
+    //         } catch (error) {
+    //             console.error('Error fetching match data:', error);
+    //         }
+    //     };
+
+    //     loadMatchData();
+    // }, [setCurrentGame]);
+
+    // Currently this is firing due to app.js sending over the setCurrentGame func, thats really about it..
     useEffect(() => {
         // Fetch the JSON data from the server
         const fetchMatchData = async () => {
             try {
                 console.log('Fetching match data...');
                 const response = await fetch('/matchData.json');
+                
+                // const currentMatchData = localStorage.getItem('currentMatchData');
+                // if (currentMatchData) {
+
+                // localStorage.setItem('currentMatchData', JSON.stringify(response));
+
                 console.log('Response:', response);
                 if (response.ok) {
                     const data = await response.json();
                     const filledData = { ...defaultMatchData, ...data };
 
-                    setCurrentGame(filledData.currentGame);
+                    setCurrentGame(defaultMatchData.currentGame);
 
-                    setTeam1Players(filledData.teams.team1.players);
-                    setTeam2Players(filledData.teams.team2.players);
+                    setTeam1Players(defaultMatchData.teams.team1.players);
+                    setTeam2Players(defaultMatchData.teams.team2.players);
 
-                    setTeam1Info(filledData.teams.team1);
-                    setTeam2Info(filledData.teams.team2);
+                    setTeam1Info(defaultMatchData.teams.team1);
+                    setTeam2Info(defaultMatchData.teams.team2);
 
+                    
                     setMaps(filledData.maps);
+
+                    setMaps(defaultMatchData.maps);
+
+              
 
                     setIsLoading(false);
                 } else {
@@ -105,17 +150,15 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
 
         fetchMatchData();
     }, [setCurrentGame]);
-    // }, [setCurrentGame]);
+
 
     const getMapList = () => {
-        switch (currentGame) {
-            case 'Overwatch':
-                return ['Busan', 'Hanamura', 'Hollywood', 'Ilios', 'King\'s Row', 'Lijiang Tower', 'Nepal', 'Numbani', 'Oasis', 'Temple of Anubis', 'Volskaya Industries', 'Watchpoint: Gibraltar'];
-            case 'Valorant':
-                return ['Ascent', 'Bind', 'Breeze', 'Haven', 'Icebox', 'Split'];
-            default:
-                return [];
+        if (!currentGameConfig || !currentGameConfig[currentGame] || !currentGameConfig[currentGame].maps) {
+            console.error("Error: Game configuration or maps not found.");
+            return [];
         }
+        const currentMaps = currentGameConfig[currentGame].maps.map;
+        return currentMaps || [];
     }
 
     const handleMapChange = (index, field, value) => {
@@ -223,17 +266,21 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame }) => {
                                 onChange={(e) => setMaps({ ...maps, selectedMap: e.target.value })}
                             >
                                 <option value="">Select a Map...</option>
-                                {maps.mapData.map((map, index) => (
-                                    !map.completed && (
-                                        <option key={index} value={`Map ${index + 1}`}>
-                                            Map {index + 1}
-                                        </option>
-                                    )
+
+                                {maps && maps.mapData && maps.mapData.map((map, index) => (
+                                    <option key={index} value={`Map ${index + 1}`}>
+                                        Map {index + 1}
+                                    </option>
                                 ))}
                             </Form.Control>
                         </Form.Group>
                     </Col>
                 </Row>
+
+                {/*  USING MATCHGAMES INSTEAD .. FOR BELOW */}
+                {/* {maps  && 
+                    <MatchGames maps={maps} handleMapChange={handleMapChange} getMapList={getMapList} />
+                    } */}
 
                 {maps.mapData.map((map, index) => (
                     <Col key={index} className=" map-select maps pb-2">

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
-import ImageFileSelector from './ImageFileSelector';
-import CustomFilePicker from './customFilePicker';
+import ImageFileSelector from './UI/ImageFileSelector';
+import CustomFilePicker from './UI/customFilePicker';
 import Autocomplete from './AutoComplete';
 import CldImage from './CldImage';
 

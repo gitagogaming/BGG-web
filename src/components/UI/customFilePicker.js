@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 
 import CloudinaryUploadWidget from './CloudinaryUploadWidget';
-import CldAlbum from './CldAlbum';
-import LocalAlbum from './LocalAlbum';
+import CldAlbum from '../CldAlbum';
+import LocalAlbum from '../LocalAlbum';
 
 // Issues:
 // 1. Seems to be a few 'events' triggering when loading homepage with filtering items
@@ -15,26 +15,12 @@ import LocalAlbum from './LocalAlbum';
 // - Question is, how can we still use the upload cloudinary widget in the same way as this component?
 
 const CustomFilePicker = ({ onSelect }) => {
-
-    // <ImageContext.Provider value={{ photos, loading, filteredPhotos, filterItems }}>
-    // const { filteredPhotos, filterItems } = useImageContext();
-
-    // useEffect(() => {
-    //     setItems(filteredPhotos);
-    // }, [filterItems]);
-
     const [show, setShow] = useState(false);
-    // const [currentPath, setCurrentPath] = useState('');
-    // const [items, setItems] = useState([]);
     const [allItems, setAllItems] = useState([]);
-    // const [searchQuery, setSearchQuery] = useState('');
-
     const [uploadType, setUploadType] = useState('local'); // cloud or local
     const [cloudImages, setCloudImages] = useState([]);
 
-
     // Cloudinary Setup
-    // const [showAlbum, setShowAlbum] = useState(false);
     const [publicId, setPublicId] = useState("");
     const [cloudName] = useState("ddnp1mpva");
     const [uploadPreset] = useState("bgg-logos");
@@ -60,7 +46,6 @@ const CustomFilePicker = ({ onSelect }) => {
     useEffect(() => {
         console.log("PublicID changed:", publicId);
     }, [publicId]);
-
 
     useEffect(() => {
         console.log("Cloud Images:", cloudImages);
@@ -93,6 +78,7 @@ const CustomFilePicker = ({ onSelect }) => {
     const handleClose = () => setShow(false);
 
 
+
     const handleSelect = (item) => {
         // Firing off the Onselect to trigger the image to be set in the parent component
         if (uploadType === 'local') {
@@ -105,9 +91,6 @@ const CustomFilePicker = ({ onSelect }) => {
         }
     
     }
-
-
-
 
 
 
@@ -161,7 +144,6 @@ const CustomFilePicker = ({ onSelect }) => {
                 <Modal.Body className="custom-modal-body">
                     <Row className="justify-content-center">
                         {uploadType === 'cloud' ? (
-                            
                             <CldAlbum
                                 key={publicId}
                                 // tag="esports"
@@ -169,31 +151,11 @@ const CustomFilePicker = ({ onSelect }) => {
                                 publicId={publicId}
                                 setCloudImages={setCloudImages}
                                 handleSelect={handleSelect}
-
                             />
                         ) : (
                             <LocalAlbum 
                                 items={allItems}
                                 handleSelect={handleSelect} />
-                            // <>
-                            // {items.map((item, index) => (
-                            //     <Col key={index} xs={6} md={4} lg={3} className="mb-3">
-                            //         <div className="image-item" onClick={() => handleSelect(item)} style={{ cursor: 'pointer' }}>
-                            //             {item.type === 'folder' ? (
-                            //                 <div className="folder-icon text-center">
-                            //                     <FontAwesomeIcon icon={faFolderOpen} size="4x" />
-                            //                     <p className="text-center text-ellipsis">{item.name}</p>
-                            //                 </div>
-                            //             ) : (
-                            //                 <div>
-                            //                     <img src={`/uploads/teamLogos${item.path}`} alt={`Image ${index + 1}`} className="filepicker-imageSize" />
-                            //                     <p className="text-center text-ellipsis">{item.name}</p>
-                            //                 </div>
-                            //             )}
-                            //         </div>
-                            //     </Col>
-                            // ))}
-                            // </>
                         )}
 
                     </Row>
@@ -240,9 +202,7 @@ const CustomFilePicker = ({ onSelect }) => {
                                                 </Button>
                                             </>
                                         )}
-                                        {/* <Button variant="danger" onClick={handleClose}>
-                                        Close
-                                    </Button> */}
+
                                     </ButtonGroup>
                                 </div>
                             </div>

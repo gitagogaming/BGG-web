@@ -1,7 +1,32 @@
 const multer = require('multer');
 
-// Multer setup for handling file uploads
-const storage = multer.memoryStorage(); // Store files in memory as Buffer objects
+// Store files in memory as Buffer objects
+const storage = multer.memoryStorage(); 
+
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 100 * 1024 * 1024 }, // Limiting file size to 100MB - I dont think a gamepackage should be larger than this if properly optimized 
+  fileFilter: (req, file, cb) => {
+    // Accepting all file types
+    cb(null, true);
+  }
+});
+
+
+module.exports = upload;
+
+
+
+
+
+
+
+
+
+
+
+
 // const upload = multer({ 
 //   storage: storage,
 //   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
@@ -26,15 +51,3 @@ const storage = multer.memoryStorage(); // Store files in memory as Buffer objec
 //     }
 //   }
 // });
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // Limit file size to 5MB
-  fileFilter: (req, file, cb) => {
-    // Accept all file types
-    cb(null, true);
-  }
-});
-
-
-module.exports = upload;
