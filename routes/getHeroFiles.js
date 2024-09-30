@@ -18,7 +18,7 @@ router.get('/getHeroFiles', (req, res) => {
 
 
 router.get('/getLogoFiles', (req, res) => {
-    const logosDir = path.join(__dirname, '../src/uploads/teamLogos');
+    const logosDir = path.join(__dirname, '../public/uploads/teamLogos');
 
     fs.readdir(logosDir, (err, files) => {
         if (err) {
