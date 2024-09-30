@@ -62,11 +62,15 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     
 
     useEffect(() => {
-        console.log("Current Game Heroes from currentGameConfigs:");
+        console.log("All Configs - generateTeamside:", currentGameConfig);
+        const curConfig = currentGameConfig[currentGame];
 
-        const currentHeroes = currentGameConfig[currentGame];
-        console.log(currentHeroes);
-    }, []);
+        if (curConfig) {
+            const tanks = currentGameConfig[currentGame].heroes.Tank.hero.map(tank => tank.name);
+            console.log("Mapped Tanks:", tanks);
+
+        }
+    }, [currentGameConfig]);
 
 
 
@@ -76,45 +80,43 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         handleTeamInfoChange({ target: { value: image } }, `${team}Logo`);
     };
 
+
     const getRoleOptions = () => {
-        if (currentGame === 'Valorant') {
-            return ['Duelist', 'Controller', 'Sentinel', 'Initiator'];
-        } else if (currentGame === 'Overwatch') {
-            return ['Tank', 'DPS', 'Support'];
+        if (!currentGameConfig || !currentGameConfig.roles) {
+            console.error("Error: Game configuration or roles not found.");
+            return [];
         }
-        return [];
+    
+        const rolesConfig = currentGameConfig.roles.role;
+        if (!rolesConfig) {
+            console.error(`Error: Role configuration for ${currentGame} not found.`);
+            return [];
+        }
+
+        return rolesConfig;
     };
 
 
-    // Currently this is fetching heros as defined here rather than looking at the 'currentGameConfig' which should have the heros to select from..
     const getHeroOptions = (role) => {
-        const valorantHeroes = {
-            Duelist: ['Jett', 'Phoenix', 'Reyna', 'Raze', 'Yoru', 'Neon'],
-            Controller: ['Brimstone', 'Omen', 'Viper', 'Astra', 'Harbor'],
-            Sentinel: ['Cypher', 'Sage', 'Killjoy', 'Chamber'],
-            Initiator: ['Sova', 'Breach', 'Skye', 'KAY/O', 'Fade', 'Gekko']
-        };
-
-        const overwatchHeroes = {
-            Tank: ['D.Va', 'Orisa', 'Reinhardt', 'Roadhog', 'Sigma', 'Winston', 'Wrecking Ball', 'Zarya'],
-            DPS: ['Ashe', 'Bastion', 'Doomfist', 'Echo', 'Genji', 'Hanzo', 'Junkrat', 'McCree', 'Mei', 'Pharah', 'Reaper', 'Soldier: 76', 'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker'],
-            Support: ['Ana', 'Baptiste', 'Brigitte', 'Lúcio', 'Mercy', 'Moira', 'Zenyatta']
-        };
-
-        if (currentGame === 'Valorant') {
-            if (!role) {
-                // Return all heroes if no role is selected
-                return Object.values(valorantHeroes).flat();
-            }
-            return valorantHeroes[role] || [];
-        } else if (currentGame === 'Overwatch') {
-            if (!role) {
-                // Return all heroes if no role is selected
-                return Object.values(overwatchHeroes).flat();
-            }
-            return overwatchHeroes[role] || [];
+        if (!currentGameConfig || !currentGameConfig.heroes) {
+            console.error("Error: Game configuration or heroes not found.");
+            return [];
         }
-        return [];
+    
+        if (!role) {
+            // Return all heroes if no role is selected
+            return Object.values(currentGameConfig.heroes).flatMap(roleConfig => roleConfig.hero.map(hero => hero.name));
+        }
+    
+        const roleConfig = currentGameConfig.heroes[role];
+        if (!roleConfig || !roleConfig.hero) {
+            console.error(`Error: Role configuration for ${role} not found.`);
+            return [];
+        }
+    
+        const heroes = roleConfig.hero.map(hero => hero.name);
+        console.log("Current heroes from the config:", heroes);
+        return heroes;
     };
 
 
