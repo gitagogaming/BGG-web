@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Col, Row, ListGroup, ButtonGroup, Button, OverlayTrigger, Tooltip, FormControl } from 'react-bootstrap';
 import CldImage from '../components/CldImage';
 
+
+// instead of uploading the photos here all the time we could make a context 
+// and then share that between CldAlbum which will start it off, then the upload widget would also have access to ti
+// so when we upload it can append directly to the list, which would then update the list of photos in the CldAlbum
+// without the need for propdrilling etc
+
+
 const CldAlbum = ({ tag = 'esports', folderName = 'BGGTOOL_LOGOS', publicId, handleSelect }) => {
   const [photos, setPhotos] = useState([]);
   const [filteredPhotos, setFilteredPhotos] = useState([]);
