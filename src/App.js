@@ -12,6 +12,7 @@ import { fetchAllConfigs } from './services/LoadGameConfig';
 
 import GeneralTest from './features/General/DraggableGeneral';
 
+import { useCurrentGameConfig } from './context/currentGameConfig';
 
 // finished with heros1.html - need to copy over to heroes2.html
 // starting to work on duorow.html  
@@ -24,16 +25,17 @@ function App() {
     const generateJSONRef = useRef(null);
 
     const fileInputRef = useRef(null);
-
     const [uploadStatus, setUploadStatus] = useState('');
-
     const [statusMessage, setStatusMessage] = useState('');
     const [statusVariant, setStatusVariant] = useState('success'); 
 
+    // Loading from configs folder
+    const [gameConfigs, setGameConfigs] = useState([]);
 
-    const [currentGameConfig, setCurrentGameConfig] = useState({});
+    // Setting the game config to be used in the app
+    const { currentGameConfig, setCurrentGameConfig } = useCurrentGameConfig();
 
-    const [fullJson, setFullJson] = useState(() => JSON.parse(localStorage.getItem('fullJson')) || {});
+
 
 
     const loadConfigs = async () => {
@@ -44,7 +46,16 @@ function App() {
             // } else {
                 const allConfigs = await fetchAllConfigs();
 
+                setGameConfigs(allConfigs);
+
+                // console.log("All Configs", allConfigs);
+
                 setCurrentGameConfig(allConfigs);
+
+                // console.log("Game config sending..", allConfigs[currentgame]);
+
+                // console.log("Current Game Configg", allConfigs[currentgame].maps.map);
+                
                 // we need to seperate the config and set data that is set by game config verus the data thats set based on the actual match data itself
                 // console.log("All Configs", allConfigs[0].config);
                 // setConfigs(allConfigs);
@@ -187,7 +198,6 @@ function App() {
                 onGenerateJSON={(generateJSON) => generateJSONRef.current = generateJSON} 
                 setCurrentGame={setSelectedGame}
                 currentGame={currentgame}
-                currentGameConfig={currentGameConfig}
                 />;
 
             case 'general':
@@ -264,7 +274,7 @@ function App() {
 
                         <Dropdown.Divider />
 
-                            {Object.keys(currentGameConfig).map((game, index) => (
+                            {Object.keys(gameConfigs).map((game, index) => (
                                 <Dropdown.Item
                                     key={index}
                                     onClick={() => setSelectedGame(game)}
@@ -288,6 +298,7 @@ function App() {
     };
 
     return (
+       
         <Container className="bg-dark px-0 pt-2">
             <div className="d-flex justify-content-between">
                 <Nav className="pl-2 nav-tabs d-flex align-items-center flex-wrap">
@@ -328,6 +339,7 @@ function App() {
                 status:"Connected", "error": "Naah"}} 
                 /> */}
         </Container>
+        
     );
 }
 

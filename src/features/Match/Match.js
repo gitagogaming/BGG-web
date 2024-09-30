@@ -5,6 +5,7 @@ import '../../styles/App.css';
 
 import MatchGames from './MatchGames';
 
+import { useCurrentGameConfig } from '../../context/currentGameConfig';
 
 
 
@@ -61,7 +62,7 @@ const defaultMatchData = {
     }
 };
 
-const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig }) => {
+const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
 
@@ -71,6 +72,9 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig 
     const [maps, setMaps] = useState({});
 
     const [isLoading, setIsLoading] = useState(true);
+
+    const { currentGameConfig } = useCurrentGameConfig();
+
 
 
 
@@ -167,6 +171,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, currentGameConfig 
             return [];
         }
         const currentMaps = currentGameConfig[currentGame].maps.map;
+        console.log("Current maps from the config thingy", currentMaps);
         return currentMaps || [];
     }
 

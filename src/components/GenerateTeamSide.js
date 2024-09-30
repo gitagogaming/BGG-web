@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import ImageFileSelector from './UI/ImageFileSelector';
 import CustomFilePicker from './UI/customFilePicker';
 import Autocomplete from './AutoComplete';
 import CldImage from './CldImage';
 
+import { useCurrentGameConfig } from '../context/currentGameConfig';
 
 // Cloudinary Widget and the Fun Stuff
 // import CloudinaryUploadWidget from './CloudinaryUploadWidget';
@@ -18,10 +19,17 @@ import CldImage from './CldImage';
 
 // TO DO:
 // Auto Select Hero Image when selecting a hero.
+// Add 'memo' to the mix.. seems ideal for this as it rerenders multiple times with the same info for no apparent reason
 
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
     const [LogoFiles, setLogoFiles] = useState([]);
+
+    const { currentGameConfig } = useCurrentGameConfig();
+
+    // useEffect(() => {
+    //     console.log('Current Game Config:', currentGameConfig);
+    // }, [currentGameConfig]);
 
 
     // const [publicId, setPublicId] = useState("");
@@ -52,6 +60,13 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     
     //   const myImage = cld.image(publicId);
     
+
+    useEffect(() => {
+        console.log("Current Game Heroes from currentGameConfigs:");
+
+        const currentHeroes = currentGameConfig[currentGame];
+        console.log(currentHeroes);
+    }, []);
 
 
 
