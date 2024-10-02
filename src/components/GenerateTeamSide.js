@@ -1,10 +1,8 @@
-import React, {useEffect, useState, memo} from 'react';
-import { Form, Button } from 'react-bootstrap';
+import React, { useEffect, useState} from 'react';
+import { Form} from 'react-bootstrap';
 import ImageFileSelector from './UI/ImageFileSelector';
 import CustomFilePicker from './UI/customFilePicker';
 import Autocomplete from './AutoComplete';
-import CldImage from './CldImage';
-
 import { useCurrentGameConfig } from '../context/currentGameConfig';
 
 // Cloudinary Widget and the Fun Stuff
@@ -27,39 +25,15 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
     const { currentGameConfig } = useCurrentGameConfig();
 
-    // useEffect(() => {
-    //     console.log('Current Game Config:', currentGameConfig);
-    // }, [currentGameConfig]);
+
+    // Believe we need to refine this as its scattered.. We send over 'teamInfo from Match.js, then we set teamLogoUrl here from teamInfo.teamLogoURL.. this is updated 
+    useEffect(() => {
+        if (teamInfo.teamLogoUrl !== teamLogoUrl) {
+            setTeamInfo({ ...teamInfo, teamLogoUrl: teamLogoUrl });
+        }
+    }, [teamLogoUrl]);
 
 
-    // const [publicId, setPublicId] = useState("");
-    // const [cloudName] = useState("ddnp1mpva");
-    // const [uploadPreset] = useState("bgg-logos");
-
-    // const [uwConfig] = useState({
-    //     cloudName,
-    //     uploadPreset,
-    //     cropping: true, //add a cropping step
-    //     // showAdvancedOptions: true,  //add advanced options (public_id and tag)
-    //     // sources: [ "local", "url"], // restrict the upload sources to URL and local files
-    //     // multiple: false,  //restrict upload to a single file
-    //     // folder: "user_images", //upload files to the specified folder
-    //     // tags: ["users", "profile"], //add the given tags to the uploaded files
-    //     // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
-    //     clientAllowedFormats: ["image"], //restrict uploading to image files only
-    //     maxImageFileSize: 2500000,  //restrict file size to less than 2MB
-    //     // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
-    //     // theme: "purple", //change to a purple theme
-    //   });
-
-    //   const cld = new Cloudinary({
-    //     cloud: {
-    //       cloudName
-    //     }
-    //   });
-    
-    //   const myImage = cld.image(publicId);
-    
 
     useEffect(() => {
         console.log("All Configs - generateTeamside:", currentGameConfig);
@@ -75,7 +49,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
 
     const handleFileSelect = (image) => {
-        console.log("Image", image);
+        console.log("SelectedTeamLogo Image", image);
         setTeamLogoUrl(image);
         handleTeamInfoChange({ target: { value: image } }, `${team}Logo`);
     };
@@ -86,7 +60,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             console.error("Error: Game configuration or roles not found.");
             return [];
         }
-    
+
         const rolesConfig = currentGameConfig.roles.role;
         if (!rolesConfig) {
             console.error(`Error: Role configuration for ${currentGame} not found.`);
@@ -102,18 +76,18 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             console.error("Error: Game configuration or heroes not found.");
             return [];
         }
-    
+
         if (!role) {
             // Return all heroes if no role is selected
             return Object.values(currentGameConfig.heroes).flatMap(roleConfig => roleConfig.hero.map(hero => hero.name));
         }
-    
+
         const roleConfig = currentGameConfig.heroes[role];
         if (!roleConfig || !roleConfig.hero) {
             console.error(`Error: Role configuration for ${role} not found.`);
             return [];
         }
-    
+
         const heroes = roleConfig.hero.map(hero => hero.name);
         console.log("Current heroes from the config:", heroes);
         return heroes;
@@ -133,6 +107,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     const handleFileChange = (event, index) => {
         const file = event.target.files[0];
         if (file) {
+            //  this is setting the image url for the player.. we dont reeally wanna use a blob...
+            // console.log("The File is:", file.name);
             const imageUrl = URL.createObjectURL(file);
             const newPlayers = players.map((player, i) =>
                 i === index ? { ...player, image: file, imageUrl: imageUrl } : player
@@ -146,6 +122,62 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     // It ends up causing the whole form to reset/reload.. every single input/combobox etc just resets to default values which makes no apparent sense to me..
     // This was fixed and was caused by the server seeing a chagned file in a non public folder causing it to rerender everything.
     // 
+    // const handleTeamInfoChange = async (event, field) => {
+    //     // Handle file upload separately for clarity
+    //     if (event.preventDefault) {
+    //         event.preventDefault();
+    //     }
+
+    //     const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
+    //     const newTeamInfo = { ...teamInfo, [field]: value };
+
+    //     console.log('Updated Team Info:', newTeamInfo);
+
+    //     if (event.target.type === 'file') {
+    //         await handleFileUpload(event.target.files[0], newTeamInfo);
+    //     }
+
+    //     // Update the state with the new team info
+    //     setTeamInfo(newTeamInfo); // this is sending info back to Match.js for use at the server level
+    //     console.log('Final Team Info:', newTeamInfo);
+    // };
+
+    // const handleFileUpload = async (file, newTeamInfo) => {
+    //     console.log("Uploading Files: ", file);
+
+    //     const logoFileExtension = newTeamInfo.teamLogo.split('.').pop();
+    //     newTeamInfo.teamLogoUrl = `http://localhost:8080/uploads/teamLogos/${newTeamInfo.teamName}.${logoFileExtension}`;
+    //     newTeamInfo.teamLogo = file.name;
+
+    //     console.log("We are uploading this file:", file);
+
+    //     const formData = new FormData();
+    //     formData.append('teamLogo', file);
+    //     formData.append('teamName', newTeamInfo.teamName);
+    //     formData.append('folder', 'BGGTOOL-LOGOS');
+
+    //     try {
+    //         const response = await fetch('http://localhost:8080/api/uploadImage', {
+    //             method: 'POST',
+    //             body: formData
+    //         });
+
+    //         if (response.ok) {
+    //             const data = await response.json();
+    //             console.log('File uploaded successfully:', data);
+
+    //             // Ideally, update teamLogoUrl with the response data here, for example:
+    //             // newTeamInfo.teamLogoUrl = data.secure_url;  // if cloudinary or server returns URL
+    //         } else {
+    //             console.error('Error uploading file:', response.statusText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error uploading file:', error);
+    //     }
+    // };
+
+
+
     const handleTeamInfoChange = async (event, field) => {
         if (event.preventDefault) {
             event.preventDefault();
@@ -174,11 +206,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
    
 
             try {
-                // const response = await fetch('http://localhost:8080/upload', {
-                //     method: 'POST',
-                //     body: formData
-                // });
-
                     // setting a var for cloudinary folder
                 formData.append('folder', 'BGGTOOL-LOGOS');
                 const response = await fetch('http://localhost:8080/api/uploadImage', {
@@ -205,6 +232,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         console.log('Final Team Info:', newTeamInfo);
     };
 
+
     const handleFileClick = (id) => {
         const fileInput = document.getElementById(id);
         fileInput.click();
@@ -221,9 +249,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                     const data = await response.json();
                     console.log('TeamLogo Files:', data);
 
-
                     setLogoFiles(data); // currently not being used since moving thigns...
-                    ///    
                 } else {
                     console.error('Error fetching TeamLogo files:', response.statusText);
                 }
@@ -232,12 +258,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             }
         }
         FetchTeamLogos();
-        }, []);
-
-        
-    const handleSelect = (item) => {
-        handleTeamInfoChange({ target: { value: item.teamName } }, 'teamName');
-    };
+    }, []);
 
 
     return (
@@ -248,15 +269,16 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 <div className="grid-item">
                     <Form.Group controlId={`teamName`}>
                         <Form.Label>Team Name</Form.Label>
-                        <Autocomplete 
+                        <Autocomplete
                             items={LogoFiles}
-                            onSelect={handleSelect}
+                            onSelect={(selectedTeam) => console.log('Selected:', selectedTeam)} // not sure we need this really
                             teamName={teamInfo.teamName}
+                            handleTeamInfoChange={handleTeamInfoChange} // Pass the handler here
                             className='team-name-input'
-                            placeholder='Type a team name'
                         />
                     </Form.Group>
                 </div>
+
 
                 {/* Team Info Box*/}
                 <div className="grid-item">
@@ -276,36 +298,17 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                     <Form.Group controlId={`teamLogo`}>
                         <Form.Label>Logo</Form.Label>
                         <div className="d-flex align-items-center">
-                        <div className="image-container">
+                            <div className="image-container">
 
-                            {/* Custom File picker Part1 */}
-                            <ImageFileSelector
-                                logoURL={teamLogoUrl}
-                                onClick={() => document.getElementById('filePickerButton').click()}
-                            />
+                                {/* Custom File picker Part1 */}
+                                <ImageFileSelector
+                                    logoURL={teamLogoUrl}
+                                    onClick={() => document.getElementById('filePickerButton').click()}
+                                />
 
-                            {/* Opens the component */}
-                            {/* Custom File Picker part2 */}
-                            <CustomFilePicker onSelect={handleFileSelect} />
-
-                                {/* THE OG FILE SELECTOR - Part 1 */}
-                                 {/* <ImageFileSelector
-                                    logoURL={teamInfo.teamLogoUrl}
-                                    onClick={() => handleFileClick(`selectTeamLogo-${team}`)}
-                                />  */}
-                        </div>
-
-
-                                {/* The OG File Selector - Part2 */}
-                            {/* <Form.Control
-                                type="file"
-                                accept='image/*'
-                                className="d-none"
-                                // id={`selectTeamLogo`}
-                                id={`selectTeamLogo-${team}`}
-
-                                onChange={(e) => handleTeamInfoChange(e, `${team}Logo`)}
-                            /> */}
+                                {/* Opens the component */}
+                                <CustomFilePicker onSelect={handleFileSelect} />
+                            </div>
                         </div>
 
 

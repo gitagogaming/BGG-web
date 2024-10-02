@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<!-- HERO_CONFIG needs to load/get infrom from the XAML file now instead.. we need to make it available in a json call -->
 <head>
   <script>
     async function loadHeroConfigs() {
@@ -615,9 +615,13 @@
   <script>
     const previousHeroData = {};
 
+
+
     
     async function initialize() {
       let HERO_CONFIGS = await loadHeroConfigs();
+      let brandingInputs = await fetch(`http://localhost:8080/getValue?path=general`);
+      let brandingJson = await brandingInputs.json();
 
       async function interval() {
         // SET team to 1 for left, 2 for right.
@@ -626,14 +630,12 @@
         let teamJson = await fetch(`http://localhost:8080/getValue?path=teams.team${team}`);
         let teamData = await teamJson.json();
 
+        console.log("BRANADING COLOR? ", brandingJson)
 
-        /// -- WHAT IS COLOR THEME COMING FROM?  IS THIS FROM THE GENERAL TAB?  IF SO WHY ONLY 3... IM SO CONFUSED
-        let colortheme1txt = await fetch('../scoreboard/general/colortheme1.txt');
-        colortheme1txt = await colortheme1txt.text();
-        let colortheme2txt = await fetch('../scoreboard/general/colortheme2.txt');
-        colortheme2txt = await colortheme2txt.text();
-        let colortheme3txt = await fetch('../scoreboard/general/colortheme3.txt');
-        colortheme3txt = await colortheme3txt.text();
+        let colortheme1txt = brandingJson.color.BGG_C1.value;
+        let colortheme2txt = brandingJson.color.BGG_C2.value;
+        let colortheme3txt = brandingJson.color.BGG_C3.value;
+
 
         $('body').css("border-color", (colortheme3txt));
         $('span.fullname').css("color", (colortheme3txt));
@@ -649,22 +651,7 @@
         // console.log(`Original TeamLogoUrl: ${teamLogoUrl}`);
 
         if (teamLogoUrl !== "") {
-          // const encodedTeamLogoUrl = encodeURIComponent(teamLogoUrl);
-          // console.log(`Encoded TeamLogoUrl: ${encodedTeamLogoUrl}`);
-
-          // const imageUrl = `/uploads/teamLogos/${encodedTeamLogoUrl}`;
-          // console.log(`Image URL: ${imageUrl}`);
-
-          // if (teamLogoUrl instanceof Blob) {
-          //   // Create an object URL from the Blob
-          //   console.log('Blob detected');
-          //   imageUrl = URL.createObjectURL(teamLogoUrl);
-          // } else {
-            // Use the URL directly if it's not a Blob
-            // console.log('Not a Blob');
-            imageUrl = teamLogoUrl;
-          // }
-
+          imageUrl = teamLogoUrl;
 
           document.querySelector(".teamlogo").style.backgroundImage = `url('${imageUrl}')`;
           $('.teamname').css("left", "200px");
@@ -688,9 +675,9 @@
           .replace(/&/gi, "</b>&<b>") + "</b></div>";
         $('.teamname').html(teamformatted);
 
+
         let t1colortxt = teamData.teamColor;
-        let color = t1colortxt;
-        $('div').css("border-color", color);
+        $('div').css("border-color", t1colortxt);
 
         for (let i = 0; i < 6; ++i) {
           let heroName = teamData.players[i].hero.trim();
@@ -708,21 +695,9 @@
           }
 
           let t1p1roletxt = teamData.players[i].role;
-
-          ///// ----------- was this code for the 6th player???
-          // let t1p6infotxt = await fetch('../scoreboard/match1/t' + team + 'p' + (i + 1) + 'info.txt');
-          // t1p6infotxt = await t1p6infotxt.text();
-          // $("#teamplayer" + (i + 1) + "role div.rolecolor").css("-webkit-mask-image", "url(\"../scoreboard/roles/" + (t1p1roletxt).replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") + ".png\")");
-          // let check2 = (t1p6infotxt).replace(/\n/gi, "").replace(/\r/gi, "");
-          // let unformat2 = (t1p6infotxt)
-          // let node2 = $("#teamplayer" + (i + 1) + "name");
-          // if (check2 != "") {
-          //   node2.text(unformat2);
-          // } else {
-          //   node2.text(t1p1roletxt);
-          // }
-
           $("#teamplayer" + (i + 1) + "role div.rolecolor").css("-webkit-mask-image", "url(\"../scoreboard/roles/" + (t1p1roletxt).replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") + ".png\")");
+
+
           let node2 = $("#teamplayer" + (i + 1) + "name");
           node2.text(t1p1roletxt);
 
@@ -737,24 +712,12 @@
             node1.text("Player " + (i + 1));
           }
         }
-
-        // Ive absolutely no idea what this is doing or the purpose behind it?
-        // for (let g = 0; g < 2; ++g) {
-        //   let data = await fetch("../scoreboard/general/image" + ((g * 14) + 1) + ".png");
-        //   data = await data.arrayBuffer();
-        //   let bytes = new Uint8Array(data);
-        //   let str = "";
-        //   for (let b of bytes) {
-        //     str += String.fromCharCode(b);
-        //   }
-        //   document.querySelector(".image" + (g + 1)).style.backgroundImage = "url(data:image/jpeg;base64," + btoa(str) + ")";
-        // }
       }
 
       const initialDelay = 100;
       setTimeout(() => {
         interval(); 
-        setInterval(interval, 1000); 
+        setInterval(interval, 3000); 
       }, initialDelay);
     }
 

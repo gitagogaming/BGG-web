@@ -7,6 +7,8 @@ import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 
 
+
+
 const handleFileClick = (id) => {
     document.getElementById(id).click();
 };
@@ -27,6 +29,8 @@ const General = ({ saveState }) => {
     const [inputs, setInputs] = useState({});
     const [columns, setColumns] = useState([]);
 
+    
+
 
     // The 'Add Item' button is a dual button.. by default it only made the one section of it clickable.. I didnt like it..
     const handleDropdownClick = (e) => {
@@ -41,47 +45,10 @@ const General = ({ saveState }) => {
 
     useEffect(() => {
         const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
-        const savedColumns = JSON.parse(localStorage.getItem('columns')) || [];
+        const savedColumns = JSON.parse(localStorage.getItem('columns')) || ["file", "text", "color"];
         setInputs(savedInputs);
         setColumns(savedColumns);
     }, []);
-
-    // const saveState = async () => {
-    //     localStorage.setItem('inputs', JSON.stringify(inputs));
-    //     localStorage.setItem('columns', JSON.stringify(columns));
-
-
-    //     setStatus('Layout updated!', 'success');
-
-    //     if (onGenerateJSON) {
-    //         const response = await fetch('http://localhost:8080/getFullJson');
-    //         const existingData = await response.json();
-
-    //         // Group inputs by type
-    //         const groupedInputs = {};
-    //         Object.entries(inputs).forEach(([key, value]) => {
-    //             if (!groupedInputs[value.type]) {
-    //                 groupedInputs[value.type] = {};
-    //             }
-    //             groupedInputs[value.type][key] = value;
-    //         });
-
-    //         const updatedData = {
-    //             ...existingData,
-    //             general: groupedInputs
-    //         };
-
-    //         await fetch('http://localhost:8080/update-json', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(updatedData)
-    //         });
-
-    //         console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
-    //     }
-    // };
 
 
 
@@ -155,6 +122,7 @@ const General = ({ saveState }) => {
     const handleFileChange = (inputId, event) => {
         const file = event.target.files[0];
         if (file) {
+            // we can get rid of this objectURL stuff soon...
             const url = URL.createObjectURL(file);
             setInputs(prevInputs => ({
                 ...prevInputs,

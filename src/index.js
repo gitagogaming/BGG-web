@@ -16,6 +16,6 @@ root.render(
   <React.StrictMode>
     <CurrentGameConfigProvider>
       <App />
-      </CurrentGameConfigProvider>
+    </CurrentGameConfigProvider>
   </React.StrictMode>
 );

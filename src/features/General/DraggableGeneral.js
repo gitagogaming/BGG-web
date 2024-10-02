@@ -4,7 +4,6 @@ import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col,
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faGrip, faCog, faQuestionCircle, faClipboard, faWindowClose, faLock } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
-// import _ from 'lodash';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -25,7 +24,7 @@ const ReactGridLayout = WidthProvider(RGL);
 // Option to have a 'parent card' which will ahve children items in it.. 
 // - currently an item is refered to as general.file.FILENAMEHERE.url but if we have a parent card then it would be general.PARENTCARD.FILENAMEHERE.url instead
 // -- This would allow users to have a card that has multiple items in it that relate to one another, like player name, logo, color, tagline etc.. whatever they want
-
+// make some default inputs for the user to start with so they can see how it works and for colors for basic app branding colors and logo
 
 const handleFileClick = (id) => {
     document.getElementById(id).click();
@@ -68,8 +67,8 @@ const renderTooltip = (input, handleCopy) => (
 );
 
 const General = ({ saveState }) => {
-    const [inputs, setInputs] = useState({});
-    const [layout, setLayout] = useState([]);
+    // const [inputs, setInputs] = useState({});
+    // const [layout, setLayout] = useState([]);
     const columns = ["file", "text", "color"];
 
 
@@ -96,19 +95,53 @@ const General = ({ saveState }) => {
         });
     };
 
+    // According to "docs" we should avoid useEffect in this type of situation as its not needed.. just put in the function?? perhaps not this one.. 
+    // https://react.dev/learn/you-might-not-need-an-effect
+    // useEffect(() => {
+    //     // Retrieve saved inputs from localStorage
+    //     const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
+    //     const newLayout = [];
+    //     let x = 0; // Initialize x position for default layout
+    
+    //     // Merge defaultInputs with savedInputs (savedInputs take precedence)
+    //     const mergedInputs = { ...defaultInputs, ...savedInputs };
+    
+    //     // Loop through merged inputs to construct layout
+    //     Object.keys(mergedInputs).forEach((key) => {
+    //         const input = mergedInputs[key];
+    
+    //         if (input.layout) {
+    //             // If layout exists, push it to the newLayout array
+    //             newLayout.push(input.layout);
+    //         } else {
+    //             // If layout doesn't exist, create a default one
+    //             const defaultItem = {
+    //                 id: key,
+    //                 type: input.type || "text",
+    //                 label: input.label || key,
+    //                 value: input.value || "",
+    //                 column: input.column || "text",
+    //                 layout: {
+    //                     w: 2,
+    //                     h: 2,
+    //                     x: x,
+    //                     y: 0,
+    //                     i: key,
+    //                     moved: false,
+    //                     static: false
+    //                 }
+    //             };
+    //             newLayout.push(defaultItem.layout);
+    //             x += 2; // Increment x position for the next item
+    //         }
+    //     });
 
-    // Loading Inputs when the component mounts
-    useEffect(() => {
-        const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
-        const newLayout = [];
-        Object.keys(savedInputs).forEach((key, i) => {
-            newLayout.push(savedInputs[key].layout);
-        });
-
-        setInputs(savedInputs);
-        setLayout(newLayout);
-    }, []);
-
+    //     localStorage.setItem('inputs', JSON.stringify(mergedInputs));
+    
+    //     // Save inputs and layout states
+    //     setInputs(mergedInputs);
+    //     setLayout(newLayout);
+    // }, []);
 
 
 
@@ -124,17 +157,17 @@ const General = ({ saveState }) => {
         }
     };
 
-    const toggleLockInput = (inputId, event) => {
-        if (event.ctrlKey) {
-            setInputs(prevInputs => {
-                const newInputs = { ...prevInputs };
-                newInputs[inputId].layout.static = !newInputs[inputId].layout.static;
-                return newInputs;
-            });
+    // const toggleLockInput = (inputId, event) => {
+    //     if (event.ctrlKey) {
+    //         setInputs(prevInputs => {
+    //             const newInputs = { ...prevInputs };
+    //             newInputs[inputId].layout.static = !newInputs[inputId].layout.static;
+    //             return newInputs;
+    //         });
 
-            localStorage.setItem('inputs', JSON.stringify(inputs));
-        }
-    };
+    //         localStorage.setItem('inputs', JSON.stringify(inputs));
+    //     }
+    // };
 
     const renameInput = (inputId) => {
         let newLabel = null;
@@ -237,7 +270,7 @@ const General = ({ saveState }) => {
             };
 
             localStorage.setItem('inputs', JSON.stringify(newInputs));
-            // localStorage.setItem('columns', JSON.stringify(columns));
+            localStorage.setItem('columns', JSON.stringify(columns));
 
             return newInputs;
         });
@@ -283,7 +316,135 @@ const General = ({ saveState }) => {
         }
     };
 
+    // These are default inputs we need to make sure are always present for the current implementation of the UI..
+    // The Color Branding should be LOCKED
+    // The Branding logo should be LOCKED for one of them
+    const defaultInputs = {
+        "BGG_C1": {
+            "id": "BGG_C1",
+            "type": "color",
+            "label": "BGG_C1",
+            "value": "#FFFFFF",
+            "column": "color",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 10,
+                "y": 0,
+                "i": "BGG_C1",
+                "moved": false,
+                "static": true
+            }
+        },
+        "BGG_C2": {
+            "id": "BGG_C2",
+            "type": "color",
+            "label": "BGG_C2",
+            "value": "#000000",
+            "column": "color",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 10,
+                "y": 2,
+                "i": "BGG_C2",
+                "moved": false,
+                "static": true
+            }
+        },
+        "BGG_C3": {
+            "id": "BGG_C3",
+            "type": "color",
+            "label": "BGG_C3",
+            "value": "#131131",
+            "column": "color",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 10,
+                "y": 4,
+                "i": "BGG_C3",
+                "moved": false,
+                "static": true
+            }
+        },
+        "BGG_L1": {
+            "id": "BGG_L1",
+            "type": "file",
+            "label": "BGG_L1",
+            "value": "",
+            "column": "file",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 10,
+                "y": 6,
+                "i": "BGG_L1",
+                "moved": false,
+                "static": true
+            }
+        },
+        "BGG_L2": {
+            "id": "BGG_L2",
+            "type": "file",
+            "label": "BGG_L2",
+            "value": "",
+            "column": "file",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 10,
+                "y": 8,
+                "i": "BGG_L2",
+                "moved": false,
+                "static": true
+            }
+        }
+    };
 
+    // Retrieve saved inputs from localStorage
+    const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
+    const newLayout = [];
+    let x = 0; // Initialize x position for default layout
+
+    // Merge defaultInputs with savedInputs (savedInputs take precedence)
+    const mergedInputs = { ...defaultInputs, ...savedInputs };
+
+    // Loop through merged inputs to construct layout
+    Object.keys(mergedInputs).forEach((key) => {
+        const input = mergedInputs[key];
+
+        if (input.layout) {
+            // If layout exists, push it to the newLayout array
+            newLayout.push(input.layout);
+        } else {
+            // If layout doesn't exist, create a default one
+            const defaultItem = {
+                id: key,
+                type: input.type || "text",
+                label: input.label || key,
+                value: input.value || "",
+                column: input.column || "text",
+                layout: {
+                    w: 2,
+                    h: 2,
+                    x: x,
+                    y: 0,
+                    i: key,
+                    moved: false,
+                    static: false
+                }
+            };
+            newLayout.push(defaultItem.layout);
+            x += 2; // Increment x position for the next item
+        }
+    });
+
+    localStorage.setItem('inputs', JSON.stringify(mergedInputs));
+
+    // Initialize state directly
+    const [inputs, setInputs] = useState(mergedInputs);
+    const [layout, setLayout] = useState(newLayout);
     return (
         <div >
             {copySuccess && (
@@ -318,16 +479,19 @@ const General = ({ saveState }) => {
                         <div key={input.id} className="general-grid-item">
                             <div className="general-grid-item-content">
                                 <div className="general-grid-item-title">
-                                    <label htmlFor={input.id} className="general-label-width">
-                                        {input.label}
-                                        <FontAwesomeIcon
-                                            icon={faEdit}
-                                            className="edit-icon pl-2"
-                                            onClick={() => renameInput(input.id)}
-                                            style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue' }}
-                                        />
+                                <label htmlFor={input.id} className="general-label-width">
+                                {input.label}
 
-                                    </label>
+                                {/* If input is in default inputs then we do not allow edits */}
+                                {!defaultInputs[input.id] && (
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className="edit-icon pl-2"
+                                        onClick={() => renameInput(input.id)}
+                                        style={{ cursor: 'pointer', marginLeft: 'auto', color: 'blue' }}
+                                    />
+                                )}
+                            </label>
                                 </div>
                                 <div className="general-grid-item-body">
                                     {input.type === 'text' && (
@@ -356,8 +520,8 @@ const General = ({ saveState }) => {
                                                 >
                                                     <img src={input.url} alt="Selected"
                                                         style={{
-                                                            position: 'absolute', width: '60px', height: '60px',
-                                                            bottom: -15, left: 95,
+                                                            position: 'absolute', width: '50px', height: '50px',
+                                                            bottom: -10, left: 105,
                                                             cursor: 'pointer'
                                                         }}
                                                         onClick={() => handleFileClick(input.id)}
@@ -367,8 +531,8 @@ const General = ({ saveState }) => {
                                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Picture_icon_BLACK.svg/271px-Picture_icon_BLACK.svg.png"
                                                     alt="Placeholder Image..."
                                                     style={{
-                                                        position: 'absolute', width: '60px', height: '60px',
-                                                        bottom: -15, left: 95,
+                                                        position: 'absolute', width: '50px', height: '50px',
+                                                        bottom: -10, left: 105,
                                                         cursor: 'pointer',
                                                         opacity: 0.5
                                                     }}
@@ -382,7 +546,7 @@ const General = ({ saveState }) => {
                                             id={input.id}
                                             type="color"
                                             className="form-control mr-2"
-                                            style={{ position: 'absolute', width: '60px', height: '60px', bottom: 10, left: 105, border: 0 }}
+                                            style={{ position: 'absolute', width: '50px', height: '50px', bottom: 15, left: 115, border: 0, outline: '1px solid black' }}
                                             value={input.value}
                                             onChange={(e) => handleInputChange(input.id, e.target.value)}
                                         />
@@ -400,7 +564,7 @@ const General = ({ saveState }) => {
                                             />
                                         </OverlayTrigger>
 
-                                        {!input.layout.static && (
+                                        {input.layout && !input.layout.static && (
                                             <FontAwesomeIcon
                                                 icon={faWindowClose}
                                                 className="delete-icon"
@@ -411,7 +575,7 @@ const General = ({ saveState }) => {
 
                                     </div>
                                     {/* keeping it bottom right until we figure out how to resize properly */}
-                                    {!input.layout.static ? (
+                                    {input.layout && !input.layout.static ? (
                                         <FontAwesomeIcon
                                             icon={faGrip}
                                             className="drag-handle"
