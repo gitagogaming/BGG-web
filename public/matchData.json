@@ -1,63 +1,63 @@
 {
   "teams": {
     "team1": {
-      "teamName": "HMMMMMsss",
-      "teamInfo": "Some team info",
-      "teamLogo": "OIG3.jpg",
-      "teamLogoUrl": "blob:http://localhost:8080/27343ca6-8416-4db8-b846-d1232f4cf065",
+      "teamName": "I think I got it//fsaf",
+      "teamInfo": "",
+      "teamLogo": "",
+      "teamLogoUrl": "/uploads/teamLogos/default.png",
       "teamScore": 0,
-      "teamColor": "#ee00ff",
-      "teamGroup": "A",
+      "teamColor": "#da4444",
+      "teamGroup": "",
       "players": [
         {
-          "player": "P1",
-          "playerName": "test",
-          "hero": "Reinhardt",
+          "player": "",
+          "playerName": "TestTank1",
+          "hero": "Ana",
+          "role": "Support",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "TestDPS1",
+          "hero": "Genji",
+          "role": "DPS",
+          "info": "",
+          "image": {},
+          "imageUrl": "blob:http://localhost:8080/b8b8fac8-0813-4f12-87d7-cfdfb8d5a2f0"
+        },
+        {
+          "player": "",
+          "playerName": "TestDPS2",
+          "hero": "D.Va",
           "role": "Tank",
-          "info": "Gtag",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "P2",
-          "playerName": "Yoooooo",
-          "hero": "Doomfist",
-          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P3",
-          "playerName": "Player3",
-          "hero": "Echo",
-          "role": "DPS",
+          "player": "",
+          "playerName": "TestDPS3",
+          "hero": "Wrecking Ball",
+          "role": "Tank",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P4",
-          "playerName": "GITAGO",
-          "hero": "Lúcio",
+          "player": "",
+          "playerName": "TestSupport1",
+          "hero": "Ana",
           "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P5",
-          "playerName": "THEGUY",
-          "hero": "Brigitte",
-          "role": "Support",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "P6",
-          "playerName": "fasfaf",
-          "hero": "Baptiste",
+          "player": "",
+          "playerName": "TestSupport2",
+          "hero": "Mercy",
           "role": "Support",
           "info": "",
           "image": null,
@@ -66,64 +66,64 @@
       ]
     },
     "team2": {
-      "teamName": "Mock Team 2fff",
-      "teamInfo": "Some team info",
-      "teamLogo": "OIG3.jpg",
-      "teamLogoUrl": "blob:http://localhost:8080/cc37751f-a0ba-492d-a5e1-c3925b97ceb4",
+      "teamName": "The Dizzles",
+      "teamInfo": "",
+      "teamLogo": "",
+      "teamLogoUrl": "http://localhost:8080/uploads/teamLogos/2000_5fc33fa78317d-min.png.png",
       "teamScore": 0,
-      "teamColor": "#37c70f",
-      "teamGroup": "B",
+      "teamColor": "",
+      "teamGroup": "",
       "players": [
         {
-          "player": "P1",
+          "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Ashe",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P2",
+          "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Roadhog",
+          "role": "Tank",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P3",
+          "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Genji",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P4",
+          "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Cassidy",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P5",
+          "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Zenyatta",
+          "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
-          "player": "P6",
+          "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Baptiste",
+          "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -135,48 +135,134 @@
     "selectedMap": "",
     "mapData": [
       {
-        "map": "Map 1",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       },
       {
-        "map": "Map 2",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       },
       {
-        "map": "Map 3",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       },
       {
-        "map": "Map 4",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       },
       {
-        "map": "Map 5",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       },
       {
-        "map": "Map 6",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       },
       {
-        "map": "Map 7",
+        "map": "",
         "team1Score": 0,
         "team2Score": 0,
         "completed": false
       }
     ]
   },
-  "currentGame": "Overwatch"
+  "currentGame": "Overwatch",
+  "general": {
+    "color": {
+      "BGG_C1": {
+        "id": "BGG_C1",
+        "type": "color",
+        "label": "BGG_C1",
+        "value": "#ffffff",
+        "column": "color",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 10,
+          "y": 0,
+          "i": "BGG_C1",
+          "moved": false,
+          "static": true
+        }
+      },
+      "BGG_C2": {
+        "id": "BGG_C2",
+        "type": "color",
+        "label": "BGG_C2",
+        "value": "#121212",
+        "column": "color",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 10,
+          "y": 2,
+          "i": "BGG_C2",
+          "moved": false,
+          "static": true
+        }
+      },
+      "BGG_C3": {
+        "id": "BGG_C3",
+        "type": "color",
+        "label": "BGG_C3",
+        "value": "#131131",
+        "column": "color",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 10,
+          "y": 4,
+          "i": "BGG_C3",
+          "moved": false,
+          "static": true
+        }
+      }
+    },
+    "file": {
+      "BGG_L1": {
+        "id": "BGG_L1",
+        "type": "file",
+        "label": "BGG_L1",
+        "value": "",
+        "column": "file",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 10,
+          "y": 6,
+          "i": "BGG_L1",
+          "moved": false,
+          "static": true
+        }
+      },
+      "BGG_L2": {
+        "id": "BGG_L2",
+        "type": "file",
+        "label": "BGG_L2",
+        "value": "",
+        "column": "file",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 10,
+          "y": 8,
+          "i": "BGG_L2",
+          "moved": false,
+          "static": true
+        }
+      }
+    }
+  }
 }
