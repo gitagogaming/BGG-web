@@ -280,7 +280,8 @@ const General = ({ saveState }) => {
             x: (layout.length * 2) % 12,
             y: Math.floor(layout.length / 6) * 2,
             w: 2,
-            h: 2, // Fixed height to accommodate two rows
+            // h: 2, // Fixed height to accommodate two rows
+            h: type === 'color' ? 1 : 2,
             i: id
             // static: true
         }]);
@@ -328,7 +329,7 @@ const General = ({ saveState }) => {
             "column": "color",
             "layout": {
                 "w": 2,
-                "h": 2,
+                "h": 1,
                 "x": 10,
                 "y": 0,
                 "i": "BGG_C1",
@@ -344,9 +345,9 @@ const General = ({ saveState }) => {
             "column": "color",
             "layout": {
                 "w": 2,
-                "h": 2,
+                "h": 1,
                 "x": 10,
-                "y": 2,
+                "y": 1,
                 "i": "BGG_C2",
                 "moved": false,
                 "static": true
@@ -360,10 +361,26 @@ const General = ({ saveState }) => {
             "column": "color",
             "layout": {
                 "w": 2,
-                "h": 2,
+                "h": 1,
                 "x": 10,
-                "y": 4,
+                "y": 2,
                 "i": "BGG_C3",
+                "moved": false,
+                "static": true
+            }
+        },
+        "BGG_C4": {
+            "id": "BGG_C4",
+            "type": "color",
+            "label": "BGG_C4",
+            "value": "#C0BEE9",
+            "column": "color",
+            "layout": {
+                "w": 2,
+                "h": 1,
+                "x": 10,
+                "y": 3,
+                "i": "BGG_C4",
                 "moved": false,
                 "static": true
             }
@@ -372,13 +389,13 @@ const General = ({ saveState }) => {
             "id": "BGG_L1",
             "type": "file",
             "label": "BGG_L1",
-            "value": "",
+            "value": "Scoreboard/General/image15.png",
             "column": "file",
             "layout": {
                 "w": 2,
                 "h": 2,
                 "x": 10,
-                "y": 6,
+                "y": 4,
                 "i": "BGG_L1",
                 "moved": false,
                 "static": true
@@ -388,16 +405,64 @@ const General = ({ saveState }) => {
             "id": "BGG_L2",
             "type": "file",
             "label": "BGG_L2",
-            "value": "",
+            "value": "Scoreboard/General/image15.png",
             "column": "file",
             "layout": {
                 "w": 2,
                 "h": 2,
                 "x": 10,
-                "y": 8,
+                "y": 6,
                 "i": "BGG_L2",
                 "moved": false,
                 "static": true
+            }
+        },
+        "BGG_TAGLINE": {
+            "id": "BGG_TAGLINE",
+            "type": "text",
+            "label": "BGG_TAGLINE",
+            "value": "Powered by Broadcast.GG",
+            "column": "text",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 10,
+                "y": 8,
+                "i": "BGG_TAGLINE",
+                "moved": false,
+                "static": true
+            }
+        },
+        "Caster1": {
+            "id": "Caster1",
+            "type": "text",
+            "label": "Caster1",
+            "value": "Caster 1",
+            "column": "text",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 0,
+                "y": 0,
+                "i": "Caster1",
+                "moved": false,
+                "static": false
+            }
+        },
+        "Caster2": {
+            "id": "Caster2",
+            "type": "text",
+            "label": "Caster2",
+            "value": "Caster 2",
+            "column": "text",
+            "layout": {
+                "w": 2,
+                "h": 2,
+                "x": 0,
+                "y": 2,
+                "i": "Caster2",
+                "moved": false,
+                "static": false
             }
         }
     };
@@ -499,7 +564,7 @@ const General = ({ saveState }) => {
                                             id={input.id}
                                             type="text"
                                             className="form-control mr-2"
-                                            style={{ width: '120px' }}
+                                            style={{ width: '85%' }}
                                             value={input.value}
                                             onChange={(e) => handleInputChange(input.id, e.target.value)}
                                         />
@@ -546,7 +611,7 @@ const General = ({ saveState }) => {
                                             id={input.id}
                                             type="color"
                                             className="form-control mr-2"
-                                            style={{ position: 'absolute', width: '50px', height: '50px', bottom: 15, left: 115, border: 0, outline: '1px solid black' }}
+                                            style={{ position: 'absolute', width: '40%', height: '70%', bottom: '15%', left: '40%', border: 0, outline: '1px solid black' }}
                                             value={input.value}
                                             onChange={(e) => handleInputChange(input.id, e.target.value)}
                                         />
@@ -584,13 +649,14 @@ const General = ({ saveState }) => {
                                         />
 
                                     ) : (
-                                        <FontAwesomeIcon
-                                            icon={faLock}
-                                            className="lock-icon"
-                                            style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5px', right: '5px', color: 'gray' }}
-                                            onClick={() => alert('This item is locked and cannot be moved.')}
-                                        // onClick={(event) => toggleLockInput(input.id, event)}
-                                        />
+                                        <></>
+                                        // <FontAwesomeIcon
+                                        //     icon={faLock}
+                                        //     className="lock-icon"
+                                        //     style={{ width: '15px', height: '15px', position: 'absolute', bottom: '5px', right: '5px', color: 'gray' }}
+                                        //     onClick={() => alert('This item is locked and cannot be moved.')}
+                                        // // onClick={(event) => toggleLockInput(input.id, event)}
+                                        // />
                                     )}
 
                                 </div>

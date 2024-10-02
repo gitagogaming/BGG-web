@@ -620,8 +620,8 @@
     
     async function initialize() {
       let HERO_CONFIGS = await loadHeroConfigs();
-      let brandingInputs = await fetch(`http://localhost:8080/getValue?path=general`);
-      let brandingJson = await brandingInputs.json();
+      let themeInputColors = await fetch(`http://localhost:8080/getValue?path=general.color`);
+      let themeColors = await themeInputColors.json();
 
       async function interval() {
         // SET team to 1 for left, 2 for right.
@@ -630,11 +630,11 @@
         let teamJson = await fetch(`http://localhost:8080/getValue?path=teams.team${team}`);
         let teamData = await teamJson.json();
 
-        console.log("BRANADING COLOR? ", brandingJson)
+        console.log("BRANADING COLOR? ", themeColors)
 
-        let colortheme1txt = brandingJson.color.BGG_C1.value;
-        let colortheme2txt = brandingJson.color.BGG_C2.value;
-        let colortheme3txt = brandingJson.color.BGG_C3.value;
+        let colortheme1txt = themeColors.BGG_C1.value;
+        let colortheme2txt = themeColors.BGG_C2.value;
+        let colortheme3txt = themeColors.BGG_C3.value;
 
 
         $('body').css("border-color", (colortheme3txt));
