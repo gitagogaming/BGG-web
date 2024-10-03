@@ -66,9 +66,7 @@ const renderTooltip = (input, handleCopy) => (
     </Popover>
 );
 
-const General = ({ saveState }) => {
-    // const [inputs, setInputs] = useState({});
-    // const [layout, setLayout] = useState([]);
+const General = ({ onUpdate }) => {
     const columns = ["file", "text", "color"];
 
 
@@ -81,6 +79,15 @@ const General = ({ saveState }) => {
     const [copySuccess, setCopySuccess] = useState(false);
     const [animationClass, setAnimationClass] = useState('');
 
+
+    const handleSave = () => {
+        onUpdate({
+            generalData: {
+                inputs,
+                columns
+            }
+        });
+    };
 
 
     // Copy API Route to Clipboard (Popover/ToolTip)
@@ -510,6 +517,7 @@ const General = ({ saveState }) => {
     // Initialize state directly
     const [inputs, setInputs] = useState(mergedInputs);
     const [layout, setLayout] = useState(newLayout);
+    
     return (
         <div >
             {copySuccess && (
@@ -678,7 +686,7 @@ const General = ({ saveState }) => {
                         </Col>
                         <Col className="text-right">
                             <ButtonGroup size='sm' className="custom-button-group">
-                                <Button onClick={() => saveState(inputs, columns)} variant="primary" className="">Save Layout</Button>
+                                <Button onClick={handleSave} variant="primary" className="">Save Layout</Button>
                                 <DropdownButton as={ButtonGroup} title={<FontAwesomeIcon icon={faCog} />} variant="secondary" id="dropdown-basic">
                                     <Dropdown.Item
                                         onClick={() => setCollision(!collision)}

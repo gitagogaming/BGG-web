@@ -24,18 +24,122 @@ function App() {
     const [currentgame, setSelectedGame] = useState('');
     const generateJSONRef = useRef(null);
 
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef(null);                       // Loading from configs folder
+    const [gameConfigs, setGameConfigs] = useState([]);     // Setting the game config to be used in the app
+    const { currentGameConfig, setCurrentGameConfig } = useCurrentGameConfig();
+
+
+
     const [uploadStatus, setUploadStatus] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
     const [statusVariant, setStatusVariant] = useState('success'); 
 
-    // Loading from configs folder
-    const [gameConfigs, setGameConfigs] = useState([]);
-
-    // Setting the game config to be used in the app
-    const { currentGameConfig, setCurrentGameConfig } = useCurrentGameConfig();
 
 
+
+    const unifiedUpdateFunction = async (data) => {
+        const { matchData, generalData } = data;
+    
+        if (matchData) {
+            try {
+                // Ensure we're not overwriting existing data unnecessarily
+                const response = await fetch('http://localhost:8080/getFullJson');
+                const existingData = await response.json();
+    
+                // Helper function to safely merge player data
+                const mergePlayerData = (existingPlayers = [], newPlayers = []) => {
+                    return newPlayers.map((player, index) => ({
+                        ...(existingPlayers[index] || {}),
+                        ...player
+                    }));
+                };
+    
+                const updatedData = {
+                    ...existingData,
+                    ...matchData,
+                    teams: {
+                        team1: {
+                            ...(existingData.teams?.team1 || {}),
+                            ...(matchData.teams?.team1 || {}),
+                            players: mergePlayerData(
+                                existingData.teams?.team1?.players,
+                                matchData.teams?.team1?.players
+                            )
+                        },
+                        team2: {
+                            ...(existingData.teams?.team2 || {}),
+                            ...(matchData.teams?.team2 || {}),
+                            players: mergePlayerData(
+                                existingData.teams?.team2?.players,
+                                matchData.teams?.team2?.players
+                            )
+                        }
+                    },
+                    maps: {
+                        ...(existingData.maps || {}),
+                        ...(matchData.maps || {})
+                    }
+                };
+    
+                await fetch('http://localhost:8080/update-json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+    
+                console.log("Match data updated:", JSON.stringify(updatedData, null, 2));
+                localStorage.setItem('currentMatchData', JSON.stringify(updatedData));
+            } catch (error) {
+                console.error("Error updating match data:", error);
+                setStatus('Error updating match data', 'error');
+                return;
+            }
+        }
+    
+        // Handle general data update
+        if (generalData) {
+            try {
+                const { inputs, columns } = generalData;
+    
+                localStorage.setItem('inputs', JSON.stringify(inputs));
+                localStorage.setItem('columns', JSON.stringify(columns));
+    
+                const response = await fetch('http://localhost:8080/getFullJson');
+                const existingData = await response.json();
+    
+                const groupedInputs = {};
+                Object.entries(inputs).forEach(([key, value]) => {
+                    if (!groupedInputs[value.type]) {
+                        groupedInputs[value.type] = {};
+                    }
+                    groupedInputs[value.type][key] = value;
+                });
+    
+                const updatedData = {
+                    ...existingData,
+                    general: groupedInputs
+                };
+    
+                await fetch('http://localhost:8080/update-json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+    
+                console.log("General data updated:", JSON.stringify(updatedData, null, 2));
+            } catch (error) {
+                console.error("Error updating general data:", error);
+                setStatus('Error updating general data', 'error');
+                return;
+            }
+        }
+    
+        setStatus('Data updated!', 'success');
+    };
 
 
     // const loadConfigs = async () => {
@@ -115,48 +219,6 @@ function App() {
         };
 
 
-    // const saveState = async (inputs, columns) => {
-    //     localStorage.setItem('inputs', JSON.stringify(inputs));
-    //     localStorage.setItem('columns', JSON.stringify(columns));
-
-    //     setStatus('Layout updated!', 'success');
-
-    //     // Check if fullJson is empty and try to load it from local storage
-    //     let currentFullJson = fullJson;
-    //     if (Object.keys(currentFullJson).length === 0) {
-    //         currentFullJson = JSON.parse(localStorage.getItem('fullJson')) || {};
-    //     }
-
-    //     // Group inputs by type
-    //     const groupedInputs = {};
-    //     Object.entries(inputs).forEach(([key, value]) => {
-    //         if (!groupedInputs[value.type]) {
-    //             groupedInputs[value.type] = {};
-    //         }
-    //         groupedInputs[value.type][key] = value;
-    //     });
-
-    //     const updatedData = {
-    //         ...currentFullJson,
-    //         general: groupedInputs
-    //     };
-
-    //     // Update local storage
-    //     localStorage.setItem('fullJson', JSON.stringify(updatedData));
-    //     setFullJson(updatedData);
-
-    //     // Update server
-    //     await fetch('http://localhost:8080/update-json', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(updatedData)
-    //     });
-
-    //     console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
-    // };
-
     const saveState = async (inputs, columns) => {
         localStorage.setItem('inputs', JSON.stringify(inputs));
         localStorage.setItem('columns', JSON.stringify(columns));
@@ -205,6 +267,8 @@ function App() {
                 onGenerateJSON={(generateJSON) => generateJSONRef.current = generateJSON} 
                 setCurrentGame={setSelectedGame}
                 currentGame={currentgame}
+                onUpdate={unifiedUpdateFunction}
+
                 />;
 
             case 'general':
@@ -225,6 +289,8 @@ function App() {
                 // onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
                 setStatus={setStatus}
                 saveState={saveState}
+                onUpdate={unifiedUpdateFunction}
+
                 />;
 
             default:

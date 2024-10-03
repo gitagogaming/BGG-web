@@ -62,7 +62,7 @@ const defaultMatchData = {
     }
 };
 
-const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
+const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
 
@@ -75,45 +75,9 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
 
     const { currentGameConfig } = useCurrentGameConfig();
 
-    // how to pass the ongeneratejson to other compoennts withut having to pass it down the tree
 
 
-
-
-    // useEffect(() => {
-    //     const loadMatchData = async () => {
-    //         try {
-    //             console.log('Fetching match data...');
-    //             let data;
-    
-    //             const localData = localStorage.getItem('currentMatchData');
-    //             if (localData) {
-    //                 console.log('Using local data...');
-    //                 data = JSON.parse(localData);
-    //             } else {
-    //                 console.log('No local data found, using default configuration...');
-    //                 data = defaultMatchData;
-    //             }
-    
-    //             const filledData = { ...defaultMatchData, ...data };
-    
-    //             setCurrentGame(filledData.currentGame);
-    //             setTeam1Players(filledData.teams.team1.players);
-    //             setTeam2Players(filledData.teams.team2.players);
-    //             setTeam1Info(filledData.teams.team1);
-    //             setTeam2Info(filledData.teams.team2);
-    //             setMaps(filledData.maps);
-    //             setIsLoading(false);
-    //         } catch (error) {
-    //             console.error('Error fetching match data:', error);
-    //         }
-    //     };
-
-    //     loadMatchData();
-    // }, [setCurrentGame]);
-
-
-
+    // we can likely seperate this into two funcsone for setting maps and current game based on setcurentGame and then one that is used to do the actual update if
     useEffect(() => {
         // Fetch the JSON data from localStorage or use DefaultMatchData
         const fetchMatchData = async () => {
@@ -124,7 +88,6 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
                 const response = localStorage.getItem('currentMatchData');
                 console.log('Response:', response);
     
-                // If response is not found in localStorage
                 if (response) {
                     const data = JSON.parse(response); // Parse the JSON string from localStorage
                     const filledData = { ...defaultMatchData, ...data };
@@ -137,16 +100,15 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
                     setMaps(filledData.maps);
                 } else {
                     console.log('No match data found, using default data...');
-                    // Use DefaultMatchData and store it in localStorage
-                    const defaultData = defaultMatchData; // Assuming `DefaultMatchData` is defined somewhere
-                    localStorage.setItem('currentMatchData', JSON.stringify(defaultData));
+                    // Using & Storing DefaultMatchData if not found in local storage 
+                    localStorage.setItem('currentMatchData', JSON.stringify(defaultMatchData));
     
-                    setCurrentGame(defaultData.currentGame);
-                    setTeam1Players(defaultData.teams.team1.players);
-                    setTeam2Players(defaultData.teams.team2.players);
-                    setTeam1Info(defaultData.teams.team1);
-                    setTeam2Info(defaultData.teams.team2);
-                    setMaps(defaultData.maps);
+                    setCurrentGame(defaultMatchData.currentGame);
+                    setTeam1Players(defaultMatchData.teams.team1.players);
+                    setTeam2Players(defaultMatchData.teams.team2.players);
+                    setTeam1Info(defaultMatchData.teams.team1);
+                    setTeam2Info(defaultMatchData.teams.team2);
+                    setMaps(defaultMatchData.maps);
                 }
     
                 setIsLoading(false);
@@ -158,121 +120,6 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
         fetchMatchData();
     }, [setCurrentGame]);
     
-
-
-    ///// OLD WORKING but from Json.. TEAM NAME UPDATE DONT WORK DUE TO AUTOCOMPLETE ISSUE 
-    // useEffect(() => {
-    //     // Fetch the JSON data from the server
-    //     const fetchMatchData = async () => {
-    //         try {
-    //             console.log('Fetching match data...');
-    //             const response = await fetch('/matchData.json');
-    //             console.log('Response:', response);
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 const filledData = { ...defaultMatchData, ...data };
-
-    //                 setCurrentGame(filledData.currentGame);
-
-    //                 setTeam1Players(filledData.teams.team1.players);
-    //                 setTeam2Players(filledData.teams.team2.players);
-
-    //                 setTeam1Info(filledData.teams.team1);
-    //                 setTeam2Info(filledData.teams.team2);
-
-    //                 setMaps(filledData.maps);
-
-    //                 setIsLoading(false);
-    //             } else {
-    //                 console.error('Failed to fetch match data:', response.statusText);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching match data:', error);
-    //         }
-    //     };
-    
-    //     fetchMatchData();
-    // }, [setCurrentGame]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Currently this is firing due to app.js sending over the setCurrentGame func, thats really about it..
-    // useEffect(() => {
-    //     // Fetch the JSON data from the server
-    //     const fetchMatchData = async () => {
-    //         try {
-    //             console.log('Fetching match data...');
-
-    //             // this is meant to represent a previous save game file incase of a reboot/crash or something lets say
-    //             // - should be moved to local storage instead...
-    //             // const response = await fetch('/matchData.json');
-    //             // const currentMatchData = await response.json();
-                
-    //             const currentMatchData = localStorage.getItem('currentMatchData');
-
-    //             console.log('Response:', currentMatchData);
-    //             if (currentMatchData) {
-    //                 // const data = await response.json();
-    //                 const data = currentMatchData;
-    //                 const filledData = { ...defaultMatchData, ...data };
-    //                 // const filledData = { ...JSON.parse(data) };
-
-    //                 console.log("this is the filled data", filledData);
-
-    //                 setCurrentGame(filledData.currentGame);
-
-    //                 setTeam1Players(filledData.teams.team1.players);
-    //                 setTeam2Players(filledData.teams.team2.players);
-
-    //                 setTeam1Info(filledData.teams.team1);
-    //                 setTeam2Info(filledData.teams.team2);
-
-                    
-    //                 setMaps(filledData.maps);
-
-    //                 // setMaps(defaultMatchData.maps);
-
-              
-
-    //                 setIsLoading(false);
-    //             } else {
-    //                 // console.error('Failed to fetch match data:', response.statusText);
-    //                 console.error('Failed to fetch match data:', currentMatchData);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching match data:', error);
-    //         }
-    //     };
-
-    //     fetchMatchData();
-    // }, []);
-    // }, [setCurrentGame]);
-
-
-
-    // Getting the map list based on what has been loaded from the new game config via xaml thats loaded into json
-    // const getMapList = () => {
-    //     if (!currentGameConfig || !currentGameConfig[currentGame] || !currentGameConfig[currentGame].maps) {
-    //         console.error("Error: Game configuration or maps not found.");
-    //         return [];
-    //     }
-    //     const currentMaps = currentGameConfig[currentGame].maps.map;
-    //     console.log("Current maps from the config thingy", currentMaps);
-    //     return currentMaps || [];
-    // }
 
     const getMapList = () => {
         if (!currentGameConfig || !currentGameConfig.maps) {
@@ -323,7 +170,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
             }))
         };
 
-        const jsonData = {
+        const matchData = {
             teams: {
                 team1: team1Data,
                 team2: team2Data
@@ -339,16 +186,19 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame}) => {
         };
         
         // Send JSON data to the server
-        await fetch('http://localhost:8080/update-json', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        });
+        // await fetch('http://localhost:8080/update-json', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(jsonData)
+        // });
 
-        console.log("To-Server", JSON.stringify(jsonData, null, 2));
-        localStorage.setItem('currentMatchData', JSON.stringify(jsonData));
+        // console.log("To-Server", JSON.stringify(jsonData, null, 2));
+        // localStorage.setItem('currentMatchData', JSON.stringify(jsonData));
+        console.log("match data from mathc.js", matchData);
+        onUpdate({ matchData });
+
     };
 
     // Call the onGenerateJSON prop with the generateJSON function
