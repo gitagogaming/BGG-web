@@ -144,6 +144,11 @@ body {
     align-items: center;
 }
 
+.image-container.teamLogo{
+    height: 50%;
+    width: 50%;
+}
+
 .image-preview {
     max-height: 100%;
     max-width: 100%;

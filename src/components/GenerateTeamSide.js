@@ -25,18 +25,32 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
     const { currentGameConfig } = useCurrentGameConfig();
 
-
-    // Believe we need to refine this as its scattered.. We send over 'teamInfo from Match.js, then we set teamLogoUrl here from teamInfo.teamLogoURL.. this is updated 
+    // when typing in team name this edits as team2 or team1 as expected.. but it doesnt for logo..
+    // unsure if this is needed in the end
     useEffect(() => {
         if (teamInfo.teamLogoUrl !== teamLogoUrl) {
+            console.log("GenTeamSide: Setting Team Logo URL:", teamInfo.teamLogoUrl, "for Team:", team);
             setTeamInfo({ ...teamInfo, teamLogoUrl: teamLogoUrl });
         }
-    }, [teamLogoUrl]);
+    }, [teamInfo]);
+
+    console.log(`GenTeamSide: We have loaded GenerateTeamSide for ${team}`);
+
+    
+
+
+    // Believe we need to refine this as its scattered.. We send over 'teamInfo from Match.js, then we set teamLogoUrl here from teamInfo.teamLogoURL.. this is updated 
+    // useEffect(() => {
+    //     if (teamInfo.teamLogoUrl !== teamLogoUrl) {
+    //         console.log("Setting Team Logo URL:", teamInfo.teamLogoUrl, "for Team:", team);
+    //         setTeamInfo({ ...teamInfo, teamLogoUrl: teamLogoUrl });
+    //     }
+    // }, [teamLogoUrl]);
 
 
 
     useEffect(() => {
-        console.log("All Configs - generateTeamside:", currentGameConfig);
+        // console.log("All Configs - generateTeamside:", currentGameConfig);
         const curConfig = currentGameConfig[currentGame];
 
         if (curConfig) {
@@ -49,8 +63,9 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
 
     const handleFileSelect = (image) => {
-        console.log("SelectedTeamLogo Image", image);
+        // console.log("SelectedTeamLogo Image", image);
         setTeamLogoUrl(image);
+        console.log("GenTeamSide: Setting Team Logo for Team:", team, "to:", image, `${team}Logo`);
         handleTeamInfoChange({ target: { value: image } }, `${team}Logo`);
     };
 
@@ -177,19 +192,15 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     // };
 
 
-
+    // EVERY time the user types in a team name it causes this to run.. this is literally ever keypress.. this is NOT ideal
+    // there is a part at the bottom where it sends to the server.. this is alot of overhead
     const handleTeamInfoChange = async (event, field) => {
         if (event.preventDefault) {
             event.preventDefault();
         }
         
-
-        console.log("The event is:", event);
-
         const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
         const newTeamInfo = { ...teamInfo, [field]: value };
-
-        console.log('Updated Team Info:', newTeamInfo);
 
         if (event.target.type === 'file') {
             console.log("Uploading Files: ", event.target.files);
@@ -228,7 +239,10 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         }
 
         // Update the state with the new team info
-        setTeamInfo(newTeamInfo); // this is sending info back to Match.js for use at server level
+
+        // EVERY time the user types in a team name it causes this to run.. this is literally ever keypress.. this is NOT ideal..
+        // really seems to just be for the team name..  perhaps not as bad as i think...
+        setTeamInfo(newTeamInfo); // this is sending info back to Match.js 
         console.log('Final Team Info:', newTeamInfo);
     };
 
@@ -296,18 +310,22 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                 {/* Team Logo */}
                 <div className="grid-item">
                     <Form.Group controlId={`teamLogo`}>
-                        <Form.Label>Logo</Form.Label>
+                        {/* <Form.Label>Logo</Form.Label> */}
                         <div className="d-flex align-items-center">
-                            <div className="image-container">
+                            <div className="image-container teamLogo">
 
                                 {/* Custom File picker Part1 */}
                                 <ImageFileSelector
+                                    // team = {team}
                                     logoURL={teamLogoUrl}
-                                    onClick={() => document.getElementById('filePickerButton').click()}
+                                    // onClick={() => document.getElementById('filePickerButton').click()}
+                                    onClick={() => handleFileClick(`filePickerButton-${team}`)}
+                                    // id={`filePickerButton-${team}`}
+
                                 />
 
                                 {/* Opens the component */}
-                                <CustomFilePicker onSelect={handleFileSelect} />
+                                <CustomFilePicker onSelect={handleFileSelect} team = {team}/>
                             </div>
                         </div>
 

@@ -14,11 +14,12 @@ import LocalAlbum from '../LocalAlbum';
 // 1. This can now do local uploads and cloudinary uploads depending on if we set upload type..
 // - Question is, how can we still use the upload cloudinary widget in the same way as this component?
 
-const CustomFilePicker = ({ onSelect }) => {
+const CustomFilePicker = ({ onSelect, team }) => {
     const [show, setShow] = useState(false);
     const [allItems, setAllItems] = useState([]);
     const [uploadType, setUploadType] = useState('local'); // cloud or local
     const [cloudImages, setCloudImages] = useState([]);
+    
 
     // Cloudinary Setup
     const [publicId, setPublicId] = useState("");
@@ -133,7 +134,12 @@ const CustomFilePicker = ({ onSelect }) => {
 
     return (
         <>
-            <Button id="filePickerButton" variant="secondary" onClick={handleShow} className="d-none">
+            <Button 
+                // id="filePickerButton"
+                id={`filePickerButton-${team}`}
+                variant="secondary"
+                onClick={handleShow}
+                className="d-none">
                 Select Image
             </Button>
 
