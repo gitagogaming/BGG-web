@@ -1,9 +1,12 @@
-import React, { useEffect, useState} from 'react';
-import { Form} from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ImageFileSelector from './UI/ImageFileSelector';
 import CustomFilePicker from './UI/customFilePicker';
 import Autocomplete from './AutoComplete';
 import { useCurrentGameConfig } from '../context/currentGameConfig';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
 
 // Cloudinary Widget and the Fun Stuff
 // import CloudinaryUploadWidget from './CloudinaryUploadWidget';
@@ -36,8 +39,12 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
     console.log(`GenTeamSide: We have loaded GenerateTeamSide for ${team}`);
 
-    
 
+    const renderTooltip = (message) => (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            {message}
+        </Tooltip>
+    );
 
     // Believe we need to refine this as its scattered.. We send over 'teamInfo from Match.js, then we set teamLogoUrl here from teamInfo.teamLogoURL.. this is updated 
     // useEffect(() => {
@@ -137,7 +144,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     // We are trying to upload to the server.. and it works as expected but when we upload multiple times in a row WITHOUT changing the team name
     // It ends up causing the whole form to reset/reload.. every single input/combobox etc just resets to default values which makes no apparent sense to me..
     // This was fixed and was caused by the server seeing a chagned file in a non public folder causing it to rerender everything.
-    
+
 
 
     // EVERY time the user types in a team name it causes this to run.. this is literally ever keypress.. this is NOT ideal
@@ -146,7 +153,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         if (event.preventDefault) {
             event.preventDefault();
         }
-        
+
         const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
         const newTeamInfo = { ...teamInfo, [field]: value };
 
@@ -162,10 +169,10 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             formData.append('teamLogo', value);
             formData.append('teamName', newTeamInfo.teamName);
 
-   
+
 
             try {
-                    // setting a var for cloudinary folder
+                // setting a var for cloudinary folder
                 formData.append('folder', 'BGGTOOL-LOGOS');
                 const response = await fetch('http://localhost:8080/api/uploadImage', {
                     method: 'POST',
@@ -272,7 +279,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                                 <CustomFilePicker
                                     buttonID={`filePickerButton-${team}`}
                                     onSelect={handleFileSelect}
-                                    team = {team}
+                                    team={team}
                                 />
                             </div>
                         </div>
@@ -427,26 +434,40 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                                 <div className="image-container">
 
                                     <ImageFileSelector
-                                        logoURL={player.imageUrl}
+                                        logoURL={player.imageUrl || `/configs/${currentGame}/images/heroes/${player.hero}.png`}
                                         onClick={() => handleFileClick(`selectHeroImage${index}-${team}`)}
                                     />
-                               
-                                <Form.Control
-                                    type="file"
-                                    className="d-none"
-                                    id={`selectHeroImage${index}-${team}`}
-                                    onChange={(e) => handleFileChange(e, index)}
-                                />
-                                
-                                {/* How can we make the custom file picker work instead of the default 'form control' input type above.. */}
-                                {/* CustomFilePicker can be used direclty with ImageFileSelector component but CustomFilePicker is set up to handle team logos currently.. */}
-                                {/* <CustomFilePicker
+                                    <Form.Control
+                                        type="file"
+                                        className="d-none"
+                                        id={`selectHeroImage${index}-${team}`}
+                                        onChange={(e) => handleFileChange(e, index)}
+                                    />
+
+                                    {/* How can we make the custom file picker work instead of the default 'form control' input type above.. */}
+                                    {/* CustomFilePicker can be used direclty with ImageFileSelector component but CustomFilePicker is set up to handle team logos currently.. */}
+                                    {/* <CustomFilePicker
                                     buttonID={`selectHeroImage${index}-${team}`}
                                     onSelect={handleFileChange}
                                     team = {team}
-                                />
-                                 */}
-                                 </div>
+                                    />
+                                    */}
+                                </div>
+
+
+                                {/* Clear Hero Image Button */}
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={renderTooltip("Clear Image")}
+                                    delay={{ show: 450, hide: 100 }}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faTrashCan}
+                                        className="d-flex justify-content-center align-items-center"
+                                        onClick={() => handleInputChange({ target: { value: '' } }, index, 'imageUrl')}
+                                    />
+                                </OverlayTrigger>
+                                
                             </div>
                         </Form.Group>
                     </div>
