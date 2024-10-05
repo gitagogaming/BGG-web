@@ -14,16 +14,15 @@ import { useCurrentGameConfig } from '../context/currentGameConfig';
 // 2. ✅ When setting away team logo, it updates the home team only.
 
 // TO DO:
-// Auto Select Hero Image when selecting a hero.
+// ✅ Auto Select Hero Image when selecting a hero.
 // Add 'memo' to the mix.. seems ideal for this as it rerenders multiple times with the same info for no apparent reason
 
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
     const [LogoFiles, setLogoFiles] = useState([]);
-
     const { currentGameConfig } = useCurrentGameConfig();
+    const localURL = `http://localhost:8080`;
 
-    // when typing in team name this edits as team2 or team1 as expected.. but it doesnt for logo..
     // unsure if this is needed in the end
     useEffect(() => {
         if (teamInfo.teamLogoUrl !== teamLogoUrl) {
@@ -113,7 +112,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         const file = event.target.files[0];
         if (file) {
             //  this is setting the image url for the player..
-            const imageUrl = `http://localhost:8080/uploads/teamLogos/${file.name}`;
+            const imageUrl = `${localURL}/uploads/teamLogos/${file.name}`;
             const newPlayers = players.map((player, i) =>
                 i === index ? { ...player, image: file, imageUrl: imageUrl } : player
             );
@@ -137,7 +136,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             console.log("Uploading Files: ", event.target.files);
 
             let logoFileExtension = newTeamInfo.teamLogo.split('.').pop();
-            newTeamInfo.teamLogoUrl = `http://localhost:8080/uploads/teamLogos/${newTeamInfo.teamName}.${logoFileExtension}`;
+            newTeamInfo.teamLogoUrl = `${localURL}/uploads/teamLogos/${newTeamInfo.teamName}.${logoFileExtension}`;
             newTeamInfo.teamLogo = value.name;
 
             // Upload the file to the server
@@ -148,9 +147,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
 
             try {
-                // setting a var for cloudinary folder
                 formData.append('folder', 'BGGTOOL-LOGOS');
-                const response = await fetch('http://localhost:8080/api/uploadImage', {
+                const response = await fetch(`${localURL}/api/uploadImage`, {
                     method: 'POST',
                     body: formData
                 });
@@ -188,7 +186,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         // Fetching the team logo files from the server, used for 'autoComplete' for team names
         const FetchTeamLogos = async () => {
             try {
-                const response = await fetch('http://localhost:8080/getLogoFiles');
+                const response = await fetch(`${localURL}/getLogoFiles`);
                 if (response.ok) {
                     const data = await response.json();
                     setLogoFiles(data);

@@ -16,7 +16,7 @@ const ImageFileSelector = ({ logoURL, onClick }) => {
                 alt="TeamLogo"
                 style={{ width: '150px', height: '150px' }}
             />
-            <div className="text-center text-ellipsis">
+            <div className="text-center text-ellipsis" style={{ direction: 'rtl'}}>
                 {/* {logoURL.split('/').pop()} */}
                 {logoURL}
             </div>
