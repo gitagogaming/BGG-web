@@ -184,22 +184,24 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     };
 
 
-
-    // Fetching the team logo files from the server, used for 'autoComplete' for team names
-    const FetchTeamLogos = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/getLogoFiles');
-            if (response.ok) {
-                const data = await response.json();
-                setLogoFiles(data);
-            } else {
-                console.error('Error fetching TeamLogo files:', response.statusText);
+    useEffect(() => {
+        // Fetching the team logo files from the server, used for 'autoComplete' for team names
+        const FetchTeamLogos = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/getLogoFiles');
+                if (response.ok) {
+                    const data = await response.json();
+                    setLogoFiles(data);
+                } else {
+                    console.error('Error fetching TeamLogo files:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching TeamLogo files:', error);
             }
-        } catch (error) {
-            console.error('Error fetching TeamLogo files:', error);
         }
+        FetchTeamLogos();
     }
-    FetchTeamLogos();
+    , []);
 
     return (
         <div>
