@@ -1,111 +1,55 @@
 {
   "teams": {
     "team1": {
-      "teamName": "button-pusher",
-      "teamInfo": "",
+      "teamName": "default",
+      "teamInfo": "Some team info",
       "teamLogo": "",
-      "teamLogoUrl": "/uploads/teamLogos/default.png",
-      "teamScore": "3",
-      "teamColor": "#da4444",
+      "teamLogoUrl": "/uploads/teamLogos/2000_5fc33fa78317d-min.png.png",
+      "teamScore": 0,
+      "teamColor": "#6f0ce9",
       "teamGroup": "",
       "players": [
         {
           "player": "",
-          "playerName": "TestTank1",
-          "hero": "Ana",
-          "role": "Support",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "TestDPS1",
-          "hero": "Genji",
-          "role": "DPS",
+          "playerName": "Player1111",
+          "hero": "Winston",
+          "role": "Tank",
           "info": "",
           "image": {},
-          "imageUrl": "blob:http://localhost:8080/b8b8fac8-0813-4f12-87d7-cfdfb8d5a2f0"
+          "imageUrl": ""
         },
         {
           "player": "",
-          "playerName": "TestDPS2",
-          "hero": "D.Va",
-          "role": "Tank",
+          "playerName": "Yoooooo",
+          "hero": "Doomfist",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
           "player": "",
-          "playerName": "TestDPS3",
-          "hero": "Wrecking Ball",
-          "role": "Tank",
+          "playerName": "SIGMAAA",
+          "hero": "Echo",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
           "player": "",
-          "playerName": "TestSupport1",
-          "hero": "Ana",
-          "role": "Support",
+          "playerName": "",
+          "hero": "Hanzo",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
         },
         {
           "player": "",
-          "playerName": "TestSupport2",
+          "playerName": "",
           "hero": "Mercy",
           "role": "Support",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        }
-      ]
-    },
-    "team2": {
-      "teamName": "The Dizzles",
-      "teamInfo": "",
-      "teamLogo": "",
-      "teamLogoUrl": "http://localhost:8080/uploads/teamLogos/2000_5fc33fa78317d-min.png.png",
-      "teamScore": 0,
-      "teamColor": "",
-      "teamGroup": "",
-      "players": [
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Ashe",
-          "role": "DPS",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Roadhog",
-          "role": "Tank",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Genji",
-          "role": "DPS",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Cassidy",
-          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -118,12 +62,68 @@
           "info": "",
           "image": null,
           "imageUrl": null
+        }
+      ]
+    },
+    "team2": {
+      "teamName": "TeamBs",
+      "teamInfo": "asfaf",
+      "teamLogo": "OIG3.jpg",
+      "teamLogoUrl": "/uploads/teamLogos/utility/defaultUtility.jpg",
+      "teamScore": 0,
+      "teamColor": "#e42121",
+      "teamGroup": "",
+      "players": [
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "Raze",
+          "role": "Duelist",
+          "info": "",
+          "image": {},
+          "imageUrl": ""
         },
         {
           "player": "",
           "playerName": "",
-          "hero": "Baptiste",
-          "role": "Support",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -285,7 +285,7 @@
         "id": "BGG_TAGLINE",
         "type": "text",
         "label": "BGG_TAGLINE",
-        "value": "Powered by Broadcast.GG",
+        "value": "Powered By The Broadcast.GG",
         "column": "text",
         "layout": {
           "w": 2,
@@ -301,7 +301,7 @@
         "id": "Caster1",
         "type": "text",
         "label": "Caster1",
-        "value": "Caster 1",
+        "value": "Caster 1saff",
         "column": "text",
         "layout": {
           "w": 2,
@@ -325,6 +325,22 @@
           "x": 0,
           "y": 2,
           "i": "Caster2",
+          "moved": false,
+          "static": false
+        }
+      },
+      "MyText": {
+        "id": "MyText",
+        "type": "text",
+        "label": "MyText ",
+        "value": "",
+        "column": "text",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 0,
+          "y": 4,
+          "i": "MyText",
           "moved": false,
           "static": false
         }
