@@ -398,12 +398,12 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                     {/*  Player Select Hero Image  */}
                     <div className="grid-item">
                         <Form.Group controlId={`heroImage${index}`}>
-                            <Form.Label>Image</Form.Label>
+                            {/* <Form.Label>Image</Form.Label> */}
                             <div className="d-flex align-items-center">
                                 <div className="image-container">
 
                                     <ImageFileSelector
-                                        logoURL={player.imageUrl || `/configs/${currentGame}/images/heroes/${player.hero}.png`}
+                                        logoURL={player.imageUrl || `/configs/${currentGame}/images/heroes/icons/Icon-${player.hero}.webp`}
                                         onClick={() => handleFileClick(`selectHeroImage${index}-${team}`)}
                                     />
                                     <Form.Control
@@ -432,7 +432,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                                 >
                                     <FontAwesomeIcon
                                         icon={faTrashCan}
-                                        className="d-flex justify-content-center align-items-center"
+                                        className="d-flex justify-content-center align-items-center p-2"
                                         onClick={() => handleInputChange({ target: { value: '' } }, index, 'imageUrl')}
                                     />
                                 </OverlayTrigger>

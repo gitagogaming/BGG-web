@@ -133,11 +133,15 @@ body {
     flex-direction: column;
     height: calc(var(--itemSize) *2);
     justify-content: center;
+    align-items: center;
+
 }
 
 .image-container {
-    height: var(--itemSize);
-    width: var(--itemSize);
+    /* height: var(--itemSize);
+    width: var(--itemSize); */
+    height: 40%;
+    width: 40%;
     border: 1px dotted #424242;
     display: flex;
     justify-content: center;
