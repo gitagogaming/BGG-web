@@ -36,6 +36,23 @@ function App() {
 
 
 
+    const exportMatchData = async () => {
+        try {
+            // const response = await fetch('http://localhost:8080/export-matchData');
+            await fetch('http://localhost:8080/export-matchData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Exported data' })
+            });
+            // const data = await response.json();
+            // console.log("Exported data:", data);
+        } catch (error) {
+            console.error('Error exporting match data:', error);
+        }
+    };
+    
 
     const unifiedUpdateFunction = async (data) => {
         const { matchData, generalData } = data;
@@ -355,7 +372,11 @@ function App() {
                                 >{game}
                                 </Dropdown.Item>
                             ))}
-            
+
+                        <Dropdown.Divider />
+                        <Dropdown.ItemText>Export Game</Dropdown.ItemText>
+                        <Dropdown.Item onClick={exportMatchData}>Export Game</Dropdown.Item>
+
                     </DropdownButton>
                     <input
                         type="file"

@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
 import ImageFileSelector from './UI/ImageFileSelector';
 import CustomFilePicker from './UI/customFilePicker';
 import Autocomplete from './AutoComplete';
 import { useCurrentGameConfig } from '../context/currentGameConfig';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-
-
-// Cloudinary Widget and the Fun Stuff
-// import CloudinaryUploadWidget from './CloudinaryUploadWidget';
-// import { Cloudinary } from "@cloudinary/url-gen";
-// import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
-
 
 // ISSUES:
 // 1. ✅ When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
@@ -46,26 +41,16 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         </Tooltip>
     );
 
-    // Believe we need to refine this as its scattered.. We send over 'teamInfo from Match.js, then we set teamLogoUrl here from teamInfo.teamLogoURL.. this is updated 
+
     // useEffect(() => {
-    //     if (teamInfo.teamLogoUrl !== teamLogoUrl) {
-    //         console.log("Setting Team Logo URL:", teamInfo.teamLogoUrl, "for Team:", team);
-    //         setTeamInfo({ ...teamInfo, teamLogoUrl: teamLogoUrl });
+    //     const curConfig = currentGameConfig[currentGame];
+
+    //     if (curConfig) {
+    //         const tanks = currentGameConfig[currentGame].heroes.Tank.hero.map(tank => tank.name);
+    //         console.log("Mapped Tanks:", tanks);
+
     //     }
-    // }, [teamLogoUrl]);
-
-
-
-    useEffect(() => {
-        // console.log("All Configs - generateTeamside:", currentGameConfig);
-        const curConfig = currentGameConfig[currentGame];
-
-        if (curConfig) {
-            const tanks = currentGameConfig[currentGame].heroes.Tank.hero.map(tank => tank.name);
-            console.log("Mapped Tanks:", tanks);
-
-        }
-    }, [currentGameConfig]);
+    // }, [currentGameConfig]);
 
 
 
@@ -122,16 +107,12 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             i === index ? { ...player, [field]: event.target.value } : player
         );
         setPlayers(newPlayers);
-
-        console.log('Updated Players:', newPlayers);
     };
 
     const handleFileChange = (event, index) => {
         const file = event.target.files[0];
         if (file) {
-            //  this is setting the image url for the player.. we dont reeally wanna use a blob...
-            // console.log("The File is:", file.name);
-            // const imageUrl = URL.createObjectURL(file);
+            //  this is setting the image url for the player..
             const imageUrl = `http://localhost:8080/uploads/teamLogos/${file.name}`;
             const newPlayers = players.map((player, i) =>
                 i === index ? { ...player, image: file, imageUrl: imageUrl } : player
@@ -139,11 +120,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             setPlayers(newPlayers);
         }
     };
-
-
-    // We are trying to upload to the server.. and it works as expected but when we upload multiple times in a row WITHOUT changing the team name
-    // It ends up causing the whole form to reset/reload.. every single input/combobox etc just resets to default values which makes no apparent sense to me..
-    // This was fixed and was caused by the server seeing a chagned file in a non public folder causing it to rerender everything.
 
 
 
@@ -205,30 +181,25 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     const handleFileClick = (id) => {
         const fileInput = document.getElementById(id);
         fileInput.click();
-        // fileInput.onchange = (e) => {
-        //     handleTeamInfoChange(e, `${team}Logo`);
-        // };
     };
 
-    useEffect(() => {
-        const FetchTeamLogos = async () => {
-            try {
-                const response = await fetch('http://localhost:8080/getLogoFiles');
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('TeamLogo Files:', data);
 
-                    setLogoFiles(data); // currently not being used since moving thigns...
-                } else {
-                    console.error('Error fetching TeamLogo files:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error fetching TeamLogo files:', error);
+
+    // Fetching the team logo files from the server, used for 'autoComplete' for team names
+    const FetchTeamLogos = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/getLogoFiles');
+            if (response.ok) {
+                const data = await response.json();
+                setLogoFiles(data);
+            } else {
+                console.error('Error fetching TeamLogo files:', response.statusText);
             }
+        } catch (error) {
+            console.error('Error fetching TeamLogo files:', error);
         }
-        FetchTeamLogos();
-    }, []);
-
+    }
+    FetchTeamLogos();
 
     return (
         <div>
@@ -240,9 +211,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                         <Form.Label>Team Name</Form.Label>
                         <Autocomplete
                             items={LogoFiles}
-                            onSelect={(selectedTeam) => console.log('Selected:', selectedTeam)} // not sure we need this really
                             teamName={teamInfo.teamName}
-                            handleTeamInfoChange={handleTeamInfoChange} // Pass the handler here
+                            handleTeamInfoChange={handleTeamInfoChange} 
                             className='team-name-input'
                         />
                     </Form.Group>
@@ -363,7 +333,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             {/* Player Section */}
             {players.map((player, index) => (
                 <div key={index} className={`grid-container players ${team === 'Team2' ? 'reverse' : ''}`}
-                // style={{ height:'50px' }}
                 >
 
                     {/* Player Name */}
@@ -467,7 +436,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
                                         onClick={() => handleInputChange({ target: { value: '' } }, index, 'imageUrl')}
                                     />
                                 </OverlayTrigger>
-                                
+
                             </div>
                         </Form.Group>
                     </div>

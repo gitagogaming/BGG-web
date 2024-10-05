@@ -1,74 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
+
+import { defaultMatchData } from './defaultMatchData';
 import GenerateTeamSide from '../../components/GenerateTeamSide';
-import '../../styles/App.css';
-
-import MatchGames from './MatchGames';
-
 import { useCurrentGameConfig } from '../../context/currentGameConfig';
+
 
 
 
 // we still need to render hero roles/ and heros for based on 'currentGameConfig' solely..
 
-const defaultMatchData = {
-    currentGame: 'Overwatch',
-    teams: {
-        team1: {
-            teamName: '',
-            teamInfo: '',
-            teamLogo: '',
-            teamLogoUrl: '',
-            teamScore: 0,
-            teamColor: '',
-            teamGroup: '',
-            players: Array(6).fill({
-                player: '',
-                playerName: '',
-                hero: '',
-                role: '',
-                info: '',
-                image: null,
-                imageUrl: null
-            })
-        },
-        team2: {
-            teamName: '',
-            teamInfo: '',
-            teamLogo: '',
-            teamLogoUrl: '',
-            teamScore: 0,
-            teamColor: '',
-            teamGroup: '',
-            players: Array(6).fill({
-                player: '',
-                playerName: '',
-                hero: '',
-                role: '',
-                info: '',
-                image: null,
-                imageUrl: null
-            })
-        }
-    },
-    maps: {
-        selectedMap: '',
-        mapData: Array(7).fill({
-            map: '',
-            team1Score: 0,
-            team2Score: 0,
-            completed: false
-        })
-    }
-};
+
 
 const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
-
     const [team1Info, setTeam1Info] = useState({});
     const [team2Info, setTeam2Info] = useState({});
-
     const [maps, setMaps] = useState({});
 
     const [isLoading, setIsLoading] = useState(true);
@@ -99,7 +47,8 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                     setTeam2Info(filledData.teams.team2);
                     setMaps(filledData.maps);
                 } else {
-                    console.log('No match data found, using default data...');
+                    console.info('No match data found, using default data...');
+                    
                     // Using & Storing DefaultMatchData if not found in local storage 
                     localStorage.setItem('currentMatchData', JSON.stringify(defaultMatchData));
     
@@ -118,9 +67,9 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
         };
     
         fetchMatchData();
-    }, [setCurrentGame]);
+    }, []);
     
-
+    // Getting Map List from the currentGameConfig
     const getMapList = () => {
         if (!currentGameConfig || !currentGameConfig.maps) {
             console.error("Error: Game configuration or maps not found.");
@@ -141,39 +90,14 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
     };
 
 
+    // This needs to be replaced/merged up with other update functions
+    //  This way it will also upadte the inputs/columns as well
     const generateJSON = async (event) => {
-        const team1Data = {
-            teamName: team1Info.teamName,
-            teamInfo: team1Info.teamInfo,
-            teamLogo: team1Info.teamLogo,
-            teamLogoUrl: team1Info.teamLogoUrl,
-            teamScore: team1Info.teamScore,
-            teamColor: team1Info.teamColor,
-            teamGroup: team1Info.teamGroup,
-            players: team1Players.map((player, index) => ({
-                player: `P${index + 1}`,
-                ...player
-            }))
-        };
-
-        const team2Data = {
-            teamName: team2Info.teamName,
-            teamInfo: team2Info.teamInfo,
-            teamLogo: team2Info.teamLogo,
-            teamLogoUrl: team2Info.teamLogoUrl,
-            teamScore: team2Info.teamScore,
-            teamColor: team2Info.teamColor,
-            teamGroup: team2Info.teamGroup,
-            players: team2Players.map((player, index) => ({
-                player: `P${index + 1}`,
-                ...player
-            }))
-        };
-
         const matchData = {
             teams: {
-                team1: team1Data,
-                team2: team2Data
+                // team1: team1Data,
+                team1: {...team1Info, players: team1Players},
+                team2: {...team2Info, players: team2Players}
             },
             maps: {
                 selectedMap: maps.selectedMap,
@@ -184,21 +108,9 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
             },
             currentGame: currentGame
         };
-        
-        // Send JSON data to the server
-        // await fetch('http://localhost:8080/update-json', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(jsonData)
-        // });
-
-        // console.log("To-Server", JSON.stringify(jsonData, null, 2));
-        // localStorage.setItem('currentMatchData', JSON.stringify(jsonData));
-        console.log("match data from mathc.js", matchData);
+    
+        console.log("match data from match.js", matchData);
         onUpdate({ matchData });
-
     };
 
     // Call the onGenerateJSON prop with the generateJSON function
@@ -210,6 +122,8 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
     return (
         <Container fluid className="main-container">
             <Row>
+
+                {/* Team 1 Side */}
                 <Col md={6} className="team-side team-side-left py-2">
                     <GenerateTeamSide
                         team="Team1"
@@ -220,6 +134,8 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                         currentGame={currentGame}
                     />
                 </Col>
+
+                {/* Team 2 Side */}
                 <Col md={6} className="team-side team-side-right py-2">
                     <GenerateTeamSide
                         team="Team2"
@@ -230,8 +146,10 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                         currentGame={currentGame}
                     />
                 </Col>
+
             </Row>
 
+            {/* Map Selection */}
             <Row className="bg-white">
                 <Row className="pt-2 pb-3 map-select">
                     <Col >
@@ -251,14 +169,11 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                                 ))}
                             </Form.Control>
                         </Form.Group>
+
                     </Col>
                 </Row>
 
-                {/*  USING MATCHGAMES INSTEAD .. FOR BELOW */}
-                {/* {maps  && 
-                    <MatchGames maps={maps} handleMapChange={handleMapChange} getMapList={getMapList} />
-                    } */}
-
+                {/* Looping over mapData */}
                 {maps.mapData.map((map, index) => (
                     <Col key={index} className=" map-select maps pb-2">
                         <Form.Label className="d-flex justify-content-center">Map {index + 1}</Form.Label>
@@ -275,28 +190,36 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                                 ))}
                             </Form.Control>
                         </Form.Group>
+
+                        {/* Map Score Boxes */}
                         <Row className="mt-2 ">
                             <Col>
                                 <Form.Group controlId={`teamScores${index}`} className="d-flex justify-content-center gap-2">
+
+                                    {/* Team 1 Map Score */}
                                     <Form.Control
                                         type="number"
                                         value={map.team1Score}
                                         onChange={(e) => handleMapChange(index, 'team1Score', e.target.value)}
                                         placeholder="Team 1 Score"
                                         className='score-input'
-
                                     />
+                                    
+                                    <span className="score-separator">-</span>
+
+                                    {/* Team 2 Map Score */}
                                     <Form.Control
                                         type="number"
                                         value={map.team2Score}
                                         onChange={(e) => handleMapChange(index, 'team2Score', e.target.value)}
                                         placeholder="Team 2 Score"
                                         className='score-input'
-
                                     />
                                 </Form.Group>
                             </Col>
                         </Row>
+
+                        {/* Map Completed Checkbox */}
                         <Form.Group controlId={`completed${index}`} className="d-flex justify-content-center mt-2">
                             <Form.Check
                                 type="checkbox"
@@ -306,6 +229,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                             />
 
                         </Form.Group>
+                        
                     </Col>
                 ))}
             </Row>
