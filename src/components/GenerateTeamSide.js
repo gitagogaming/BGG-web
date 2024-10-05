@@ -124,7 +124,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         if (file) {
             //  this is setting the image url for the player.. we dont reeally wanna use a blob...
             // console.log("The File is:", file.name);
-            const imageUrl = URL.createObjectURL(file);
+            // const imageUrl = URL.createObjectURL(file);
+            const imageUrl = `http://localhost:8080/uploads/teamLogos/${file.name}`;
             const newPlayers = players.map((player, i) =>
                 i === index ? { ...player, image: file, imageUrl: imageUrl } : player
             );
@@ -136,60 +137,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     // We are trying to upload to the server.. and it works as expected but when we upload multiple times in a row WITHOUT changing the team name
     // It ends up causing the whole form to reset/reload.. every single input/combobox etc just resets to default values which makes no apparent sense to me..
     // This was fixed and was caused by the server seeing a chagned file in a non public folder causing it to rerender everything.
-    // 
-    // const handleTeamInfoChange = async (event, field) => {
-    //     // Handle file upload separately for clarity
-    //     if (event.preventDefault) {
-    //         event.preventDefault();
-    //     }
-
-    //     const value = event.target.type === 'file' ? event.target.files[0] : event.target.value;
-    //     const newTeamInfo = { ...teamInfo, [field]: value };
-
-    //     console.log('Updated Team Info:', newTeamInfo);
-
-    //     if (event.target.type === 'file') {
-    //         await handleFileUpload(event.target.files[0], newTeamInfo);
-    //     }
-
-    //     // Update the state with the new team info
-    //     setTeamInfo(newTeamInfo); // this is sending info back to Match.js for use at the server level
-    //     console.log('Final Team Info:', newTeamInfo);
-    // };
-
-    // const handleFileUpload = async (file, newTeamInfo) => {
-    //     console.log("Uploading Files: ", file);
-
-    //     const logoFileExtension = newTeamInfo.teamLogo.split('.').pop();
-    //     newTeamInfo.teamLogoUrl = `http://localhost:8080/uploads/teamLogos/${newTeamInfo.teamName}.${logoFileExtension}`;
-    //     newTeamInfo.teamLogo = file.name;
-
-    //     console.log("We are uploading this file:", file);
-
-    //     const formData = new FormData();
-    //     formData.append('teamLogo', file);
-    //     formData.append('teamName', newTeamInfo.teamName);
-    //     formData.append('folder', 'BGGTOOL-LOGOS');
-
-    //     try {
-    //         const response = await fetch('http://localhost:8080/api/uploadImage', {
-    //             method: 'POST',
-    //             body: formData
-    //         });
-
-    //         if (response.ok) {
-    //             const data = await response.json();
-    //             console.log('File uploaded successfully:', data);
-
-    //             // Ideally, update teamLogoUrl with the response data here, for example:
-    //             // newTeamInfo.teamLogoUrl = data.secure_url;  // if cloudinary or server returns URL
-    //         } else {
-    //             console.error('Error uploading file:', response.statusText);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error uploading file:', error);
-    //     }
-    // };
+    
 
 
     // EVERY time the user types in a team name it causes this to run.. this is literally ever keypress.. this is NOT ideal
@@ -316,16 +264,16 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
                                 {/* Custom File picker Part1 */}
                                 <ImageFileSelector
-                                    // team = {team}
                                     logoURL={teamLogoUrl}
-                                    // onClick={() => document.getElementById('filePickerButton').click()}
                                     onClick={() => handleFileClick(`filePickerButton-${team}`)}
-                                    // id={`filePickerButton-${team}`}
-
                                 />
 
                                 {/* Opens the component */}
-                                <CustomFilePicker onSelect={handleFileSelect} team = {team}/>
+                                <CustomFilePicker
+                                    buttonID={`filePickerButton-${team}`}
+                                    onSelect={handleFileSelect}
+                                    team = {team}
+                                />
                             </div>
                         </div>
 
@@ -480,16 +428,25 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
                                     <ImageFileSelector
                                         logoURL={player.imageUrl}
-                                        onClick={() => handleFileClick(`selectHeroImage${index}`)}
+                                        onClick={() => handleFileClick(`selectHeroImage${index}-${team}`)}
                                     />
-                                </div>
+                               
                                 <Form.Control
                                     type="file"
                                     className="d-none"
-                                    id={`selectHeroImage${index}`}
+                                    id={`selectHeroImage${index}-${team}`}
                                     onChange={(e) => handleFileChange(e, index)}
                                 />
-                                {/* <input type="file" className="d-none" id={`selectHeroImage${index}`} onChange={(e) => handleFileChange(e, index)} /> */}
+                                
+                                {/* How can we make the custom file picker work instead of the default 'form control' input type above.. */}
+                                {/* CustomFilePicker can be used direclty with ImageFileSelector component but CustomFilePicker is set up to handle team logos currently.. */}
+                                {/* <CustomFilePicker
+                                    buttonID={`selectHeroImage${index}-${team}`}
+                                    onSelect={handleFileChange}
+                                    team = {team}
+                                />
+                                 */}
+                                 </div>
                             </div>
                         </Form.Group>
                     </div>
