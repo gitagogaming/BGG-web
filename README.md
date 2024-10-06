@@ -47,7 +47,12 @@ my-react-app
 6. Navigate to `http://localhost:8080`
 
 **Pages are now accessible as usual..**<br/>
-Example: `http://localhost:8080/heroes1.html` 
+Completed Pages: 
+`http://localhost:8080/duorow.html`
+`http://localhost:8080/heroes1.html` 
+`http://localhost:8080/heroes2.html` 
+`http://localhost:8080/analystspecial.html` 
+
 
 
 ## Dependencies
