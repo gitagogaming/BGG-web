@@ -44,13 +44,13 @@ const CustomFilePicker = ({ onSelect, team, buttonID }) => {
     });
 
 
-    useEffect(() => {
-        console.log("PublicID changed:", publicId);
-    }, [publicId]);
+    // useEffect(() => {
+    //     console.log("PublicID changed:", publicId);
+    // }, [publicId]);
 
-    useEffect(() => {
-        console.log("Cloud Images:", cloudImages);
-    }, [cloudImages]);
+    // useEffect(() => {
+    //     console.log("Cloud Images:", cloudImages);
+    // }, [cloudImages]);
 
 
     const fetchItems = () => {

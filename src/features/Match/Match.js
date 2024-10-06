@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 
 import { defaultMatchData } from './defaultMatchData';
@@ -74,16 +74,15 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
     }, [matchData]); 
 
 
-    // Getting Map List from the currentGameConfig
-    const getMapList = () => {
+    const mapList = useMemo(() => {
         if (!currentGameConfig || !currentGameConfig.maps) {
-            console.error("Error: Game configuration or maps not found.");
-            return [];
+          console.error("Error: Game configuration or maps not found.");
+          return [];
         }
         const currentMaps = currentGameConfig.maps.map;
-        console.log("Current maps from the config thingy", currentMaps);
+        console.log("Fetched maps from the config thingy", currentMaps);
         return currentMaps || [];
-    };
+      }, [currentGameConfig]); // Only re-run when currentGameConfig changes
 
 
     // When map changes, we sort the avaialble maps based 
@@ -193,7 +192,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
                                 onChange={(e) => handleMapChange(index, 'selectedMap', e.target.value)}
                             >
                                 <option value="">Select Map</option>
-                                {getMapList().map((mapName, mapIndex) => (
+                                {mapList.map((mapName, mapIndex) => (
                                     <option key={mapIndex} value={mapName}>{mapName}</option>
                                 ))}
                             </Form.Control>

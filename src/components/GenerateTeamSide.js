@@ -21,9 +21,20 @@ import { useCurrentGameConfig } from '../context/currentGameConfig';
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
     const [LogoFiles, setLogoFiles] = useState([]);
-    
+
     const { currentGameConfig } = useCurrentGameConfig();
     const localURL = `http://localhost:8080`;
+
+    const [isLoading, setIsLoading] = useState(true);
+
+
+    // stops errors from happening upon initial startup due to currentGameConfig not being fully loaded
+    useEffect(() => {
+        if (currentGameConfig.roles) {
+            setIsLoading(false);
+        }
+    }, [currentGameConfig]);
+    
 
     // unsure if this is needed in the end
     useEffect(() => {
@@ -200,7 +211,9 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     }
     , []);
 
-
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
     return (
         <div>
             <div className={`grid-container  ${team === 'Team2' ? 'reverse' : ''}`}>
@@ -397,7 +410,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
 
                     {/*  Player Select Hero Image  */}
                     <div className="grid-item">
-                        <Form.Group controlId={`heroImage${index}`}>
+                        {/* <Form.Group controlId={`heroImage${index}`}> */}
+                        <Form.Group>
                             {/* <Form.Label>Image</Form.Label> */}
                             <div className="d-flex align-items-center">
                                 <div className="image-container">

@@ -143,7 +143,7 @@
           "w": 2,
           "h": 2,
           "x": 0,
-          "y": 4,
+          "y": 2,
           "i": "Caster2",
           "moved": false,
           "static": false
@@ -159,7 +159,7 @@
           "w": 2,
           "h": 2,
           "x": 0,
-          "y": 6,
+          "y": 4,
           "i": "MyText",
           "moved": false,
           "static": false
