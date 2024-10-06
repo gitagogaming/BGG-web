@@ -48,7 +48,7 @@ my-react-app
 
 **Pages are now accessible as usual..**<br/>
 
-**Completed Pages: **
+**Completed Pages:**
 - [x] `http://localhost:8080/duorow.html`
 - [x] `http://localhost:8080/heroes1.html` 
 - [x] `http://localhost:8080/heroes2.html` 
