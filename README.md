@@ -58,7 +58,7 @@ my-react-app
 - [x] `triorow.html`
 - [ ] `bracket.html`
 - [ ] `bracketdoubleelim.html`
-- [ ] `mapscreen.html`
+- [ ] `mapscreen.html`  (IN PROGRESS)
 - [ ] `replay.html`
 - [ ] `scoreboard.html`
 - [ ] `transition.html`
