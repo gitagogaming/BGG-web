@@ -7,7 +7,9 @@ import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 
 
-
+//  this needs a full rework nearly as we have some thigns we dnt want the user to be able to edit nor delete.. all the 'default' inputs.. 
+// we will need to check against that and then avoid allowing user to add more columns.. lets just keep it as it is.. file, text, color.. 
+// if user wants customization they can use the draggable general layout
 
 const handleFileClick = (id) => {
     document.getElementById(id).click();
@@ -240,18 +242,6 @@ const General = ({ saveState }) => {
                                 </div>
                             ))}
 
-                            {/* <div className="mt-3">
-                                <Dropdown as={ButtonGroup} onClick={handleDropdownClick}>
-                                    <Button variant="secondary">Add Item</Button>
-                                    <Dropdown.Toggle split variant="primary" id="dropdown-basic" />
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => addInput('text', columnName)}>Text Input</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => addInput('file', columnName)}>File Select</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => addInput('color', columnName)}>Color Select</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-
-                            </div> */}
                         </Col>
                     ))}
                 </Row>
