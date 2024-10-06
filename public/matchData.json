@@ -5,7 +5,7 @@
         "id": "BGG_C1",
         "type": "color",
         "label": "BGG_C1",
-        "value": "#FFFFFF",
+        "value": "#ffffff",
         "column": "color",
         "layout": {
           "w": 2,
@@ -105,7 +105,7 @@
         "id": "BGG_TAGLINE",
         "type": "text",
         "label": "BGG_TAGLINE",
-        "value": "Powered By Broadcast.GG",
+        "value": "The Tagline Special",
         "column": "text",
         "layout": {
           "w": 2,
@@ -149,6 +149,22 @@
           "static": false
         }
       },
+      "Host": {
+        "id": "Host",
+        "type": "text",
+        "label": "Host",
+        "value": "Hola I Host",
+        "column": "text",
+        "layout": {
+          "w": 2,
+          "h": 2,
+          "x": 0,
+          "y": 4,
+          "i": "Host",
+          "moved": false,
+          "static": false
+        }
+      },
       "MyText": {
         "id": "MyText",
         "type": "text",
@@ -159,7 +175,7 @@
           "w": 2,
           "h": 2,
           "x": 0,
-          "y": 4,
+          "y": 6,
           "i": "MyText",
           "moved": false,
           "static": false
@@ -170,11 +186,11 @@
   "teams": {
     "team1": {
       "teamName": "We Win",
-      "teamInfo": "",
+      "teamInfo": "Some team info",
       "teamLogo": "",
       "teamLogoUrl": "/uploads/teamLogos/button-pusher.jpg",
       "teamScore": 0,
-      "teamColor": "",
+      "teamColor": "#de1212",
       "teamGroup": "",
       "players": [
         {

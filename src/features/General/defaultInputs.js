@@ -142,5 +142,21 @@ export const defaultInputs = {
             "moved": false,
             "static": false
         }
-    }
+    },
+    "Host": {
+        "id": "Host",
+        "type": "text",
+        "label": "Host",
+        "value": "Host",
+        "column": "text",
+        "layout": {
+            "w": 2,
+            "h": 2,
+            "x": 0,
+            "y": 4,
+            "i": "Host",
+            "moved": false,
+            "static": false
+        }
+    },
 };

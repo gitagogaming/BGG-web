@@ -12,6 +12,7 @@ import { useCurrentGameConfig } from '../context/currentGameConfig';
 // ISSUES:
 // 1. ✅ When adding multiple images, it causes a 'refresh' of the page causing them all to unload and no longer render as expected
 // 2. ✅ When setting away team logo, it updates the home team only.
+// 3. GetHeroOptions is triggering many times when selecting a role, not ideal.. we need to get all hero options filtered proper so it doesnt do it each time
 
 // TO DO:
 // 1. Make the custom hero image selection work with the CustomFilePicker
