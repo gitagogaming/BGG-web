@@ -48,22 +48,22 @@ my-react-app
 
 **Pages are now accessible as usual..**<br/>
 Completed Pages: 
-`http://localhost:8080/duorow.html`
-`http://localhost:8080/heroes1.html` 
-`http://localhost:8080/heroes2.html` 
-`http://localhost:8080/analystspecial.html` 
-`http://localhost:8080/duosinglecam.html`
+- [x] `http://localhost:8080/duorow.html`
+- [x] `http://localhost:8080/heroes1.html` 
+- [x] `http://localhost:8080/heroes2.html` 
+- [x] `http://localhost:8080/analystspecial.html` 
+- [x] `http://localhost:8080/duosinglecam.html`
 
 Incomplete Pages
-`triocam.html`
-`triorow.html`
-`bracket.html`
-`bracketdoubleelim.html`
-`mapscreen.html`
-`replay.html`
-`scoreboard.html`
-`transition.html`
-`transitionbgg.html`
+- [] `triocam.html`
+- [] `triorow.html`
+- [] `bracket.html`
+- [] `bracketdoubleelim.html`
+- [] `mapscreen.html`
+- [] `replay.html`
+- [] `scoreboard.html`
+- [] `transition.html`
+- [] `transitionbgg.html`
 
 
 
