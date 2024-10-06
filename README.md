@@ -52,6 +52,19 @@ Completed Pages:
 `http://localhost:8080/heroes1.html` 
 `http://localhost:8080/heroes2.html` 
 `http://localhost:8080/analystspecial.html` 
+`http://localhost:8080/duosinglecam.html`
+
+Incomplete Pages
+`triocam.html`
+`triorow.html`
+`bracket.html`
+`bracketdoubleelim.html`
+`mapscreen.html`
+`replay.html`
+`scoreboard.html`
+`transition.html`
+`transitionbgg.html`
+
 
 
 
