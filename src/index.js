@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { CurrentGameConfigProvider } from './context/currentGameConfig';
+import { MatchDataProvider } from './context/MatchDataContext';
 
 
 import App from './App';
@@ -11,10 +12,12 @@ import './styles/App.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  
+
   <React.StrictMode>
-    <CurrentGameConfigProvider>
-      <App />
-    </CurrentGameConfigProvider>
+    <MatchDataProvider>
+      <CurrentGameConfigProvider>
+        <App />
+      </CurrentGameConfigProvider>
+    </MatchDataProvider>
   </React.StrictMode>
 );

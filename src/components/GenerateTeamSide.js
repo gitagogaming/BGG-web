@@ -14,12 +14,14 @@ import { useCurrentGameConfig } from '../context/currentGameConfig';
 // 2. ✅ When setting away team logo, it updates the home team only.
 
 // TO DO:
+// 1. Make the custom hero image selection work with the CustomFilePicker
 // ✅ Auto Select Hero Image when selecting a hero.
 // Add 'memo' to the mix.. seems ideal for this as it rerenders multiple times with the same info for no apparent reason
 
 const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, currentGame }) => {
     const [teamLogoUrl, setTeamLogoUrl] = useState(teamInfo.teamLogoUrl);
     const [LogoFiles, setLogoFiles] = useState([]);
+    
     const { currentGameConfig } = useCurrentGameConfig();
     const localURL = `http://localhost:8080`;
 
@@ -30,8 +32,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             setTeamInfo({ ...teamInfo, teamLogoUrl: teamLogoUrl });
         }
     }, [teamInfo]);
-
-    console.log(`GenTeamSide: We have loaded GenerateTeamSide for ${team}`);
 
 
     const renderTooltip = (message) => (props) => (
@@ -108,6 +108,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         setPlayers(newPlayers);
     };
 
+
     const handleFileChange = (event, index) => {
         const file = event.target.files[0];
         if (file) {
@@ -143,8 +144,6 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
             const formData = new FormData();
             formData.append('teamLogo', value);
             formData.append('teamName', newTeamInfo.teamName);
-
-
 
             try {
                 formData.append('folder', 'BGGTOOL-LOGOS');
@@ -182,8 +181,8 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
     };
 
 
+    // Fetching the team logo files from the server, used for 'autoComplete' for team names
     useEffect(() => {
-        // Fetching the team logo files from the server, used for 'autoComplete' for team names
         const FetchTeamLogos = async () => {
             try {
                 const response = await fetch(`${localURL}/getLogoFiles`);
@@ -200,6 +199,7 @@ const GenerateTeamSide = ({ team, players, setPlayers, teamInfo, setTeamInfo, cu
         FetchTeamLogos();
     }
     , []);
+
 
     return (
         <div>

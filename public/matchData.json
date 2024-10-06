@@ -1,184 +1,4 @@
 {
-  "teams": {
-    "team1": {
-      "teamName": "default",
-      "teamInfo": "Some team info",
-      "teamLogo": "",
-      "teamLogoUrl": "/uploads/teamLogos/2000_5fc33fa78317d-min.png.png",
-      "teamScore": 0,
-      "teamColor": "#6f0ce9",
-      "teamGroup": "",
-      "players": [
-        {
-          "player": "",
-          "playerName": "Player1111",
-          "hero": "Winston",
-          "role": "Tank",
-          "info": "",
-          "image": {},
-          "imageUrl": ""
-        },
-        {
-          "player": "",
-          "playerName": "Yoooooo",
-          "hero": "Doomfist",
-          "role": "DPS",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "SIGMAAA",
-          "hero": "Echo",
-          "role": "DPS",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Hanzo",
-          "role": "DPS",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Mercy",
-          "role": "Support",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Zenyatta",
-          "role": "Support",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        }
-      ]
-    },
-    "team2": {
-      "teamName": "TeamBs",
-      "teamInfo": "asfaf",
-      "teamLogo": "OIG3.jpg",
-      "teamLogoUrl": "/uploads/teamLogos/utility/defaultUtility.jpg",
-      "teamScore": 0,
-      "teamColor": "#e42121",
-      "teamGroup": "",
-      "players": [
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "Raze",
-          "role": "Duelist",
-          "info": "",
-          "image": {},
-          "imageUrl": ""
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        }
-      ]
-    }
-  },
-  "maps": {
-    "selectedMap": "",
-    "mapData": [
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      },
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      },
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      },
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      },
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      },
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      },
-      {
-        "map": "",
-        "team1Score": 0,
-        "team2Score": 0,
-        "completed": false
-      }
-    ]
-  },
-  "currentGame": "Overwatch",
   "general": {
     "color": {
       "BGG_C1": {
@@ -285,7 +105,7 @@
         "id": "BGG_TAGLINE",
         "type": "text",
         "label": "BGG_TAGLINE",
-        "value": "Powered By The Broadcast.GG",
+        "value": "Powered By Broadcast.GG",
         "column": "text",
         "layout": {
           "w": 2,
@@ -301,7 +121,7 @@
         "id": "Caster1",
         "type": "text",
         "label": "Caster1",
-        "value": "Caster 1saff",
+        "value": "Caster 1 Name",
         "column": "text",
         "layout": {
           "w": 2,
@@ -317,13 +137,13 @@
         "id": "Caster2",
         "type": "text",
         "label": "Caster2",
-        "value": "Caster 2",
+        "value": "fasfafafsasfasf",
         "column": "text",
         "layout": {
           "w": 2,
           "h": 2,
           "x": 0,
-          "y": 2,
+          "y": 4,
           "i": "Caster2",
           "moved": false,
           "static": false
@@ -339,12 +159,194 @@
           "w": 2,
           "h": 2,
           "x": 0,
-          "y": 4,
+          "y": 6,
           "i": "MyText",
           "moved": false,
           "static": false
         }
       }
     }
-  }
+  },
+  "teams": {
+    "team1": {
+      "teamName": "",
+      "teamInfo": "",
+      "teamLogo": "",
+      "teamLogoUrl": "/uploads/teamLogos/button-pusher.jpg",
+      "teamScore": 0,
+      "teamColor": "",
+      "teamGroup": "",
+      "players": [
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        }
+      ],
+      "Team1Logo": "/uploads/teamLogos/button-pusher.jpg"
+    },
+    "team2": {
+      "teamName": "",
+      "teamInfo": "",
+      "teamLogo": "",
+      "teamLogoUrl": "/uploads/teamLogos/default.png",
+      "teamScore": 0,
+      "teamColor": "",
+      "teamGroup": "",
+      "players": [
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "",
+          "hero": "",
+          "role": "",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        }
+      ],
+      "Team2Logo": "/uploads/teamLogos/default.png"
+    }
+  },
+  "maps": {
+    "selectedMap": "",
+    "mapData": [
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      },
+      {
+        "map": "",
+        "team1Score": 0,
+        "team2Score": 0,
+        "completed": false
+      }
+    ]
+  },
+  "currentGame": "Overwatch"
 }

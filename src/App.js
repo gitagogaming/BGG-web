@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import Match from './features/Match/Match';
 import General from './features/General/General';
 import Replays from './features/Replays/Replays';
@@ -16,6 +16,9 @@ import { useCurrentGameConfig } from './context/currentGameConfig';
 
 // finished with heros1.html - need to copy over to heroes2.html
 // starting to work on duorow.html  
+
+// we need to 'rername' matchData to like matchDataContext when we import.. and contiue onabort.apply.
+import { MatchDataContext } from './context/MatchDataContext';
 
 
 
@@ -34,6 +37,7 @@ function App() {
     const [statusMessage, setStatusMessage] = useState('');
     const [statusVariant, setStatusVariant] = useState('success'); 
 
+    const matchData = useContext(MatchDataContext);
 
 
     const exportMatchData = async () => {
@@ -55,13 +59,17 @@ function App() {
     
 
     const unifiedUpdateFunction = async (data) => {
-        const { matchData, generalData } = data;
+        const { matchTabData, generalData } = data;
     
-        if (matchData) {
+        if (matchTabData) {
             try {
                 // Ensure we're not overwriting existing data unnecessarily
-                const response = await fetch('http://localhost:8080/getFullJson');
-                const existingData = await response.json();
+                // const response = await fetch('http://localhost:8080/getFullJson');
+                // const existingData = await response.json();
+
+                // pulling from the matchData from context.. instead.. temporary.. meh
+                const existingData = matchData
+                
     
                 // Helper function to safely merge player data
                 const mergePlayerData = (existingPlayers = [], newPlayers = []) => {
@@ -73,28 +81,28 @@ function App() {
     
                 const updatedData = {
                     ...existingData,
-                    ...matchData,
+                    ...matchTabData,
                     teams: {
                         team1: {
                             ...(existingData.teams?.team1 || {}),
-                            ...(matchData.teams?.team1 || {}),
+                            ...(matchTabData.teams?.team1 || {}),
                             players: mergePlayerData(
                                 existingData.teams?.team1?.players,
-                                matchData.teams?.team1?.players
+                                matchTabData.teams?.team1?.players
                             )
                         },
                         team2: {
                             ...(existingData.teams?.team2 || {}),
-                            ...(matchData.teams?.team2 || {}),
+                            ...(matchTabData.teams?.team2 || {}),
                             players: mergePlayerData(
                                 existingData.teams?.team2?.players,
-                                matchData.teams?.team2?.players
+                                matchTabData.teams?.team2?.players
                             )
                         }
                     },
                     maps: {
                         ...(existingData.maps || {}),
-                        ...(matchData.maps || {})
+                        ...(matchTabData.maps || {})
                     }
                 };
     

@@ -13,11 +13,10 @@ const ImageFileSelector = ({ logoURL, onClick }) => {
         <Tooltip id="image-tooltip" {...props}>
             <img
                 src={isError ? defaultLogoUrl : logoURL || defaultLogoUrl}
-                alt="TeamLogo"
+                alt="Logo Preview"
                 style={{ width: '150px', height: '150px' }}
             />
             <div className="text-center text-ellipsis" style={{ direction: 'rtl'}}>
-                {/* {logoURL.split('/').pop()} */}
                 {logoURL}
             </div>
         </Tooltip>
@@ -45,24 +44,3 @@ export default ImageFileSelector;
 
 
 
-
-// // ImageFileSelector component that displays the image and calls the onClick handler when clicked
-// import React from 'react';
-
-// const ImageFileSelector = ({ logoURL, onClick}) => {
-//     const defaultLogoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Picture_icon_BLACK.svg/271px-Picture_icon_BLACK.svg.png";
-
-//     return (
-        
-//         <img
-//             // key = {team}
-//             src={logoURL || defaultLogoUrl} 
-//             alt={`TeamLogo`}
-//             className="image-preview"
-//             style = {{cursor: 'pointer'}} 
-//             onClick={onClick} 
-//         />
-//     );
-// };
-
-// export default ImageFileSelector;

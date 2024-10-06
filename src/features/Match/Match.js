@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 
 import { defaultMatchData } from './defaultMatchData';
 import GenerateTeamSide from '../../components/GenerateTeamSide';
 import { useCurrentGameConfig } from '../../context/currentGameConfig';
-
-
+import { MatchDataContext } from '../../context/MatchDataContext';
 
 
 // we still need to render hero roles/ and heros for based on 'currentGameConfig' solely..
 
-
-
-const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
+const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
     const [team1Info, setTeam1Info] = useState({});
@@ -23,52 +20,60 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
 
     const { currentGameConfig } = useCurrentGameConfig();
 
+    const matchData = useContext(MatchDataContext);
+
+
+
 
 
     // we can likely seperate this into two funcsone for setting maps and current game based on setcurentGame and then one that is used to do the actual update if
+    // Fetching Match Data from localStorage on component mount
+    // Fetching Match Data from localStorage on component mount
     useEffect(() => {
-        // Fetch the JSON data from localStorage or use DefaultMatchData
         const fetchMatchData = async () => {
             try {
                 console.log('Fetching match data...');
-                
-                // Retrieve data from localStorage
-                const response = localStorage.getItem('currentMatchData');
-                console.log('Response:', response);
-    
-                if (response) {
-                    const data = JSON.parse(response); // Parse the JSON string from localStorage
+
+                // Check if matchData is available
+                if (matchData) {
+                    console.info(`Setting match data from context`);
+                    // Perform any additional logic with matchData here
+                    const data = matchData;
                     const filledData = { ...defaultMatchData, ...data };
-    
+
                     setCurrentGame(filledData.currentGame);
                     setTeam1Players(filledData.teams.team1.players);
                     setTeam2Players(filledData.teams.team2.players);
                     setTeam1Info(filledData.teams.team1);
                     setTeam2Info(filledData.teams.team2);
                     setMaps(filledData.maps);
+
+                    setIsLoading(false); // Data is loaded
                 } else {
                     console.info('No match data found, using default data...');
-                    
-                    // Using & Storing DefaultMatchData if not found in local storage 
-                    localStorage.setItem('currentMatchData', JSON.stringify(defaultMatchData));
-    
+                    // Using DefaultMatchData if not found in local storage 
                     setCurrentGame(defaultMatchData.currentGame);
                     setTeam1Players(defaultMatchData.teams.team1.players);
                     setTeam2Players(defaultMatchData.teams.team2.players);
                     setTeam1Info(defaultMatchData.teams.team1);
                     setTeam2Info(defaultMatchData.teams.team2);
                     setMaps(defaultMatchData.maps);
+
+                    setIsLoading(false);
                 }
-    
-                setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching match data:', error);
+                // we should probably show an error screen here
+                // setIsLoading(false); // Set loading to false even if there's an error
             }
         };
-    
-        fetchMatchData();
-    }, []);
-    
+
+        if (matchData !== null && matchData !== undefined) {
+            fetchMatchData();
+        }
+    }, [matchData]); 
+
+
     // Getting Map List from the currentGameConfig
     const getMapList = () => {
         if (!currentGameConfig || !currentGameConfig.maps) {
@@ -79,7 +84,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
         console.log("Current maps from the config thingy", currentMaps);
         return currentMaps || [];
     };
-    
+
 
     // When map changes, we sort the avaialble maps based 
     const handleMapChange = (index, field, value) => {
@@ -93,11 +98,11 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
     // This needs to be replaced/merged up with other update functions
     //  This way it will also upadte the inputs/columns as well
     const generateJSON = async (event) => {
-        const matchData = {
+        const matchTabData = {
             teams: {
                 // team1: team1Data,
-                team1: {...team1Info, players: team1Players},
-                team2: {...team2Info, players: team2Players}
+                team1: { ...team1Info, players: team1Players },
+                team2: { ...team2Info, players: team2Players }
             },
             maps: {
                 selectedMap: maps.selectedMap,
@@ -108,13 +113,16 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
             },
             currentGame: currentGame
         };
-    
-        console.log("match data from match.js", matchData);
-        onUpdate({ matchData });
+
+        console.log("match data from match.js", matchTabData);
+        onUpdate({ matchTabData });
     };
 
     // Call the onGenerateJSON prop with the generateJSON function
     onGenerateJSON(generateJSON);
+
+
+
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -204,7 +212,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                                         placeholder="Team 1 Score"
                                         className='score-input'
                                     />
-                                    
+
                                     <span className="score-separator">-</span>
 
                                     {/* Team 2 Map Score */}
@@ -229,7 +237,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate}) => {
                             />
 
                         </Form.Group>
-                        
+
                     </Col>
                 ))}
             </Row>

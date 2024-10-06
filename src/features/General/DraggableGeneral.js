@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Button, OverlayTrigger, Popover, Form, Dropdown, ButtonGroup, Row, Col, DropdownButton } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faGrip, faCog, faQuestionCircle, faClipboard, faWindowClose, faLock } from '@fortawesome/free-solid-svg-icons';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
+import { defaultInputs } from './defaultInputs';
+// import { MatchDataContext } from '../../context/MatchDataContext';
+
 const ReactGridLayout = WidthProvider(RGL);
 
 // ISSUES
-// 1. When clicking to drag an item, the item moves approximately 50-100px to the right, every single time. 
+// ✅ When clicking to drag an item, the item moves approximately 50-100px to the right, every single time. 
 // 2. Making a few excessive calls to localstorage.. needs refined a bit
 // 3. When using "Toggle Overlap", the items do not retain their specific position after a reload.. likely due to how the layout is being saved
 // 4. Popover does not automatically close when user clicks around it
 //    - Solution: Figure out an alternative method or fix the current one
-// 5. when adding an input, adjusting it then adding another input the layout resets to previous.. BUT if you go to any other tab and back again before adding a new input its fine
+// ✅ when adding an input, adjusting it then adding another input the layout resets to previous.. BUT if you go to any other tab and back again before adding a new input its fine
 // 6. When naming a Color input, if its longer than 9 characters it willuse the edit button to go behind the color selector
 //    - Solution: Move the edit button somewhere that it wont be affected
 
@@ -25,6 +28,16 @@ const ReactGridLayout = WidthProvider(RGL);
 // - currently an item is refered to as general.file.FILENAMEHERE.url but if we have a parent card then it would be general.PARENTCARD.FILENAMEHERE.url instead
 // -- This would allow users to have a card that has multiple items in it that relate to one another, like player name, logo, color, tagline etc.. whatever they want
 // make some default inputs for the user to start with so they can see how it works and for colors for basic app branding colors and logo
+
+
+
+// According to "docs" we should avoid useEffect in this type of situation as its not needed.. just put in the function?? perhaps not this one.. 
+// https://react.dev/learn/you-might-not-need-an-effect
+
+
+
+
+
 
 const handleFileClick = (id) => {
     document.getElementById(id).click();
@@ -69,7 +82,6 @@ const renderTooltip = (input, handleCopy) => (
 const General = ({ onUpdate }) => {
     const columns = ["file", "text", "color"];
 
-
     const [collision, setCollision] = useState(true);
     const [overlap, setOverlap] = useState(false);
     const [horizontalCompact, setHoriztonalCompact] = useState(false);
@@ -78,6 +90,7 @@ const General = ({ onUpdate }) => {
 
     const [copySuccess, setCopySuccess] = useState(false);
     const [animationClass, setAnimationClass] = useState('');
+    
 
 
     const handleSave = () => {
@@ -101,55 +114,6 @@ const General = ({ onUpdate }) => {
             }, 2500); // Show for 2 seconds
         });
     };
-
-    // According to "docs" we should avoid useEffect in this type of situation as its not needed.. just put in the function?? perhaps not this one.. 
-    // https://react.dev/learn/you-might-not-need-an-effect
-    // useEffect(() => {
-    //     // Retrieve saved inputs from localStorage
-    //     const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
-    //     const newLayout = [];
-    //     let x = 0; // Initialize x position for default layout
-    
-    //     // Merge defaultInputs with savedInputs (savedInputs take precedence)
-    //     const mergedInputs = { ...defaultInputs, ...savedInputs };
-    
-    //     // Loop through merged inputs to construct layout
-    //     Object.keys(mergedInputs).forEach((key) => {
-    //         const input = mergedInputs[key];
-    
-    //         if (input.layout) {
-    //             // If layout exists, push it to the newLayout array
-    //             newLayout.push(input.layout);
-    //         } else {
-    //             // If layout doesn't exist, create a default one
-    //             const defaultItem = {
-    //                 id: key,
-    //                 type: input.type || "text",
-    //                 label: input.label || key,
-    //                 value: input.value || "",
-    //                 column: input.column || "text",
-    //                 layout: {
-    //                     w: 2,
-    //                     h: 2,
-    //                     x: x,
-    //                     y: 0,
-    //                     i: key,
-    //                     moved: false,
-    //                     static: false
-    //                 }
-    //             };
-    //             newLayout.push(defaultItem.layout);
-    //             x += 2; // Increment x position for the next item
-    //         }
-    //     });
-
-    //     localStorage.setItem('inputs', JSON.stringify(mergedInputs));
-    
-    //     // Save inputs and layout states
-    //     setInputs(mergedInputs);
-    //     setLayout(newLayout);
-    // }, []);
-
 
 
     const handleRemoveInput = (inputId) => {
@@ -225,6 +189,8 @@ const General = ({ onUpdate }) => {
         return Object.values(inputs).some(input => input.label.trim() === label.trim());
     };
 
+
+
     const onLayoutChange = (layout) => {
         const currentInputs = JSON.parse(localStorage.getItem('inputs')) || {};
 
@@ -295,6 +261,7 @@ const General = ({ onUpdate }) => {
     };
 
 
+
     const handleInputChange = (id, value) => {
         setInputs(prevInputs => {
             const newInputs = { ...prevInputs, [id]: { ...prevInputs[id], value } };
@@ -324,160 +291,19 @@ const General = ({ onUpdate }) => {
         }
     };
 
-    // These are default inputs we need to make sure are always present for the current implementation of the UI..
-    // The Color Branding should be LOCKED
-    // The Branding logo should be LOCKED for one of them
-    const defaultInputs = {
-        "BGG_C1": {
-            "id": "BGG_C1",
-            "type": "color",
-            "label": "BGG_C1",
-            "value": "#FFFFFF",
-            "column": "color",
-            "layout": {
-                "w": 2,
-                "h": 1,
-                "x": 10,
-                "y": 0,
-                "i": "BGG_C1",
-                "moved": false,
-                "static": true
-            }
-        },
-        "BGG_C2": {
-            "id": "BGG_C2",
-            "type": "color",
-            "label": "BGG_C2",
-            "value": "#000000",
-            "column": "color",
-            "layout": {
-                "w": 2,
-                "h": 1,
-                "x": 10,
-                "y": 1,
-                "i": "BGG_C2",
-                "moved": false,
-                "static": true
-            }
-        },
-        "BGG_C3": {
-            "id": "BGG_C3",
-            "type": "color",
-            "label": "BGG_C3",
-            "value": "#131131",
-            "column": "color",
-            "layout": {
-                "w": 2,
-                "h": 1,
-                "x": 10,
-                "y": 2,
-                "i": "BGG_C3",
-                "moved": false,
-                "static": true
-            }
-        },
-        "BGG_C4": {
-            "id": "BGG_C4",
-            "type": "color",
-            "label": "BGG_C4",
-            "value": "#C0BEE9",
-            "column": "color",
-            "layout": {
-                "w": 2,
-                "h": 1,
-                "x": 10,
-                "y": 3,
-                "i": "BGG_C4",
-                "moved": false,
-                "static": true
-            }
-        },
-        "BGG_L1": {
-            "id": "BGG_L1",
-            "type": "file",
-            "label": "BGG_L1",
-            "value": "Scoreboard/General/image15.png",
-            "column": "file",
-            "layout": {
-                "w": 2,
-                "h": 2,
-                "x": 10,
-                "y": 4,
-                "i": "BGG_L1",
-                "moved": false,
-                "static": true
-            }
-        },
-        "BGG_L2": {
-            "id": "BGG_L2",
-            "type": "file",
-            "label": "BGG_L2",
-            "value": "Scoreboard/General/image15.png",
-            "column": "file",
-            "layout": {
-                "w": 2,
-                "h": 2,
-                "x": 10,
-                "y": 6,
-                "i": "BGG_L2",
-                "moved": false,
-                "static": true
-            }
-        },
-        "BGG_TAGLINE": {
-            "id": "BGG_TAGLINE",
-            "type": "text",
-            "label": "BGG_TAGLINE",
-            "value": "Powered by Broadcast.GG",
-            "column": "text",
-            "layout": {
-                "w": 2,
-                "h": 2,
-                "x": 10,
-                "y": 8,
-                "i": "BGG_TAGLINE",
-                "moved": false,
-                "static": true
-            }
-        },
-        "Caster1": {
-            "id": "Caster1",
-            "type": "text",
-            "label": "Caster1",
-            "value": "Caster 1",
-            "column": "text",
-            "layout": {
-                "w": 2,
-                "h": 2,
-                "x": 0,
-                "y": 0,
-                "i": "Caster1",
-                "moved": false,
-                "static": false
-            }
-        },
-        "Caster2": {
-            "id": "Caster2",
-            "type": "text",
-            "label": "Caster2",
-            "value": "Caster 2",
-            "column": "text",
-            "layout": {
-                "w": 2,
-                "h": 2,
-                "x": 0,
-                "y": 2,
-                "i": "Caster2",
-                "moved": false,
-                "static": false
-            }
-        }
-    };
+
+
+    //--------- Loading saved inputs from localStorage upon initial render
+    // this is where we could be loading the inputs from the context instead of local storage
+    // BUT this also ends up converting any items made from the "General" tab which do not have a layout.. so they do...
+    // we should stillb e able to do this with the context info we are given.. same thing right ?
 
     // Retrieve saved inputs from localStorage
     const savedInputs = JSON.parse(localStorage.getItem('inputs')) || {};
     const newLayout = [];
     let x = 0; // Initialize x position for default layout
+
+    console.log("Fetched Inputs for DraggableGeneral");
 
     // Merge defaultInputs with savedInputs (savedInputs take precedence)
     const mergedInputs = { ...defaultInputs, ...savedInputs };
@@ -520,6 +346,8 @@ const General = ({ onUpdate }) => {
     
     return (
         <div >
+
+            {/* An 'Overlay' for when user copies an api route */}
             {copySuccess && (
                 <div style={{
                     position: 'fixed',
@@ -534,6 +362,7 @@ const General = ({ onUpdate }) => {
                     Copied to clipboard
                 </div>
             )}
+
             <Form >
                 <ReactGridLayout
                     className="bg-light border grid-background"
@@ -604,8 +433,10 @@ const General = ({ onUpdate }) => {
                                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Picture_icon_BLACK.svg/271px-Picture_icon_BLACK.svg.png"
                                                     alt="Placeholder Image..."
                                                     style={{
-                                                        position: 'absolute', width: '50px', height: '50px',
-                                                        bottom: -10, left: 105,
+                                                        // position: 'absolute', width: '50px', height: '50px',
+                                                        // bottom: -10, left: 105,
+                                                        position: 'relative', width: '50px', height: '50px',
+                                                        bottom: 15, left: 75,
                                                         cursor: 'pointer',
                                                         opacity: 0.5
                                                     }}
