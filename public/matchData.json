@@ -169,7 +169,7 @@
   },
   "teams": {
     "team1": {
-      "teamName": "",
+      "teamName": "We Win",
       "teamInfo": "",
       "teamLogo": "",
       "teamLogoUrl": "/uploads/teamLogos/button-pusher.jpg",
@@ -180,8 +180,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Orisa",
+          "role": "Tank",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -189,8 +189,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Echo",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -198,8 +198,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Junkrat",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -207,8 +207,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Doomfist",
+          "role": "DPS",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -216,8 +216,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Moira",
+          "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -225,8 +225,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Baptiste",
+          "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -235,7 +235,7 @@
       "Team1Logo": "/uploads/teamLogos/button-pusher.jpg"
     },
     "team2": {
-      "teamName": "",
+      "teamName": "Yolllooo",
       "teamInfo": "",
       "teamLogo": "",
       "teamLogoUrl": "/uploads/teamLogos/default.png",
@@ -245,9 +245,45 @@
       "players": [
         {
           "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
+          "playerName": "P1 Name",
+          "hero": "D.Va",
+          "role": "Tank",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "P2 Name",
+          "hero": "Doomfist",
+          "role": "DPS",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "P3 Name",
+          "hero": "Hanzo",
+          "role": "DPS",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "P4 Name",
+          "hero": "Junkrat",
+          "role": "DPS",
+          "info": "",
+          "image": null,
+          "imageUrl": null
+        },
+        {
+          "player": "",
+          "playerName": "p5 Name",
+          "hero": "Moira",
+          "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
@@ -255,44 +291,8 @@
         {
           "player": "",
           "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
-          "info": "",
-          "image": null,
-          "imageUrl": null
-        },
-        {
-          "player": "",
-          "playerName": "",
-          "hero": "",
-          "role": "",
+          "hero": "Zenyatta",
+          "role": "Support",
           "info": "",
           "image": null,
           "imageUrl": null
