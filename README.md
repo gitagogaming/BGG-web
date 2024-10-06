@@ -55,9 +55,7 @@ my-react-app
 - [x] `http://localhost:8080/analystspecial.html` 
 - [x] `http://localhost:8080/duosinglecam.html`
 - [x] `http://localhost:8080/triocam.html` - removed color border for logos/teams ? it was slanted, looked out of place
-
-**Incomplete Pages**
-- [ ] `triorow.html`
+- [x] `triorow.html`
 - [ ] `bracket.html`
 - [ ] `bracketdoubleelim.html`
 - [ ] `mapscreen.html`
@@ -65,6 +63,7 @@ my-react-app
 - [ ] `scoreboard.html`
 - [ ] `transition.html`
 - [ ] `transitionbgg.html`
+
 
 
 
