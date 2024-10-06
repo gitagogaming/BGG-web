@@ -47,7 +47,26 @@ my-react-app
 6. Navigate to `http://localhost:8080`
 
 **Pages are now accessible as usual..**<br/>
-Example: `http://localhost:8080/heroes1.html` 
+
+**Completed Pages: **
+- [x] `http://localhost:8080/duorow.html`
+- [x] `http://localhost:8080/heroes1.html` 
+- [x] `http://localhost:8080/heroes2.html` 
+- [x] `http://localhost:8080/analystspecial.html` 
+- [x] `http://localhost:8080/duosinglecam.html`
+- [x] `http://localhost:8080/triocam.html` - removed color border for logos/teams ? it was slanted, looked out of place
+
+**Incomplete Pages**
+- [ ] `triorow.html`
+- [ ] `bracket.html`
+- [ ] `bracketdoubleelim.html`
+- [ ] `mapscreen.html`
+- [ ] `replay.html`
+- [ ] `scoreboard.html`
+- [ ] `transition.html`
+- [ ] `transitionbgg.html`
+
+
 
 
 ## Dependencies
