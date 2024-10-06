@@ -40,7 +40,7 @@ my-react-app
 ## Getting Started
 
 1. Clone the repository: `git clone <repository-url>`
-2. Navigate to the project directory: `cd my-react-app`
+2. Navigate to the project directory: `cd BGG-web`
 3. Install dependencies: `npm install`
 4. Start the Dev Server: `node ./server.js`
 5. Start the application: `npm start`
