@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import Match from './features/Match/Match';
 import General from './features/General/General';
 import Replays from './features/Replays/Replays';
-import Bracket from './features/Bracket/Bracket';
+// import Bracket from './features/Bracket/Bracket';
+import Bracket from './features/Bracket/Brackets';
 import { Container, Button, Dropdown, DropdownButton, Nav } from 'react-bootstrap';
 import StatusBar from './components/UI/StatusBar'; 
 import { fetchAllConfigs } from './services/LoadGameConfig';
@@ -415,17 +416,20 @@ function App() {
                     <Nav.Item>
                         <Nav.Link className={`nav-link ${activeTab === 'match' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('match')}>Match</Nav.Link>
                     </Nav.Item>
+
                     <Nav.Item>
                         <Nav.Link className={`nav-link ${activeTab === 'general' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('general')}>General</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link className={`nav-link ${activeTab === 'replays' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('replays')}>Replays</Nav.Link>
+                        <Nav.Link className={`nav-link ${activeTab === 'generalTest' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('generalTest')}>Draggable</Nav.Link>
                     </Nav.Item>
+
                     <Nav.Item>
                         <Nav.Link className={`nav-link ${activeTab === 'bracket' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('bracket')}>Bracket</Nav.Link>
                     </Nav.Item>
+
                     <Nav.Item>
-                        <Nav.Link className={`nav-link ${activeTab === 'generalTest' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('generalTest')}>Draggable</Nav.Link>
+                        <Nav.Link className={`nav-link ${activeTab === 'replays' ? 'active' : 'text-white'}`} onClick={() => setActiveTab('replays')}>Replays</Nav.Link>
                     </Nav.Item>
                 </Nav>
                 <div className="d-none d-md-flex">
