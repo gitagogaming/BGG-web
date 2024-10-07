@@ -6,14 +6,16 @@ import General from './features/General/General';
 import Replays from './features/Replays/Replays';
 // import Bracket from './features/Bracket/Bracket';
 import Bracket from './features/Bracket/Brackets';
-import { Container, Button, Dropdown, DropdownButton, Nav } from 'react-bootstrap';
-import StatusBar from './components/UI/StatusBar'; 
+import { Container, Button, Dropdown, DropdownButton, Nav, Modal } from 'react-bootstrap';
+import StatusBar from './components/UI/StatusBar';
 import { fetchAllConfigs } from './services/LoadGameConfig';
 
 
 import GeneralTest from './features/General/DraggableGeneral';
 
 import { useCurrentGameConfig } from './context/currentGameConfig';
+import { AppProvider, useAppContext } from './context/AppContext';
+
 
 // finished with heros1.html - need to copy over to heroes2.html
 // starting to work on duorow.html  
@@ -36,9 +38,24 @@ function App() {
 
     const [uploadStatus, setUploadStatus] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
-    const [statusVariant, setStatusVariant] = useState('success'); 
+    const [statusVariant, setStatusVariant] = useState('success');
 
     const matchData = useContext(MatchDataContext);
+
+    const { triggerAction } = useAppContext();
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+    const handleResetClick = () => {
+        setShowConfirmModal(true);
+    };
+    const handleCancelClear = () => {
+        setShowConfirmModal(false);
+    };
+    const handleConfirmClear = () => {
+        triggerAction('clear-match-data');
+        setShowConfirmModal(false);
+    };
 
 
     const exportMatchData = async () => {
@@ -57,11 +74,11 @@ function App() {
             console.error('Error exporting match data:', error);
         }
     };
-    
+
 
     const unifiedUpdateFunction = async (data) => {
         const { matchTabData, generalData } = data;
-    
+
         if (matchTabData) {
             try {
                 // Ensure we're not overwriting existing data unnecessarily
@@ -70,8 +87,8 @@ function App() {
 
                 // pulling from the matchData from context.. instead.. temporary.. meh
                 const existingData = matchData
-                
-    
+
+
                 // Helper function to safely merge player data
                 const mergePlayerData = (existingPlayers = [], newPlayers = []) => {
                     return newPlayers.map((player, index) => ({
@@ -79,7 +96,7 @@ function App() {
                         ...player
                     }));
                 };
-    
+
                 const updatedData = {
                     ...existingData,
                     ...matchTabData,
@@ -106,7 +123,7 @@ function App() {
                         ...(matchTabData.maps || {})
                     }
                 };
-    
+
                 await fetch('http://localhost:8080/update-json', {
                     method: 'POST',
                     headers: {
@@ -114,7 +131,7 @@ function App() {
                     },
                     body: JSON.stringify(updatedData)
                 });
-    
+
                 console.log("Match data updated:", JSON.stringify(updatedData, null, 2));
                 localStorage.setItem('currentMatchData', JSON.stringify(updatedData));
             } catch (error) {
@@ -123,18 +140,18 @@ function App() {
                 return;
             }
         }
-    
+
         // Handle general data update
         if (generalData) {
             try {
                 const { inputs, columns } = generalData;
-    
+
                 localStorage.setItem('inputs', JSON.stringify(inputs));
                 localStorage.setItem('columns', JSON.stringify(columns));
-    
+
                 const response = await fetch('http://localhost:8080/getFullJson');
                 const existingData = await response.json();
-    
+
                 const groupedInputs = {};
                 Object.entries(inputs).forEach(([key, value]) => {
                     if (!groupedInputs[value.type]) {
@@ -142,12 +159,12 @@ function App() {
                     }
                     groupedInputs[value.type][key] = value;
                 });
-    
+
                 const updatedData = {
                     ...existingData,
                     general: groupedInputs
                 };
-    
+
                 await fetch('http://localhost:8080/update-json', {
                     method: 'POST',
                     headers: {
@@ -155,7 +172,7 @@ function App() {
                     },
                     body: JSON.stringify(updatedData)
                 });
-    
+
                 console.log("General data updated:", JSON.stringify(updatedData, null, 2));
             } catch (error) {
                 console.error("Error updating general data:", error);
@@ -163,7 +180,7 @@ function App() {
                 return;
             }
         }
-    
+
         setStatus('Data updated!', 'success');
     };
 
@@ -197,7 +214,7 @@ function App() {
         } catch (error) {
             console.error('Error loading the configs:', error);
         }
-    }; 
+    };
 
     useEffect(() => {
         loadConfigs();
@@ -209,40 +226,40 @@ function App() {
             setCurrentGameConfig(gameConfigs[currentgame]);
         }
     }
-    , [currentgame, gameConfigs]);
+        , [currentgame, gameConfigs]);
 
 
 
     const importGame = async (event) => {
-            const file = event.target.files[0];
-            if (!file) {
-                return;
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('configFile', file); // Ensure the field name matches the backend
+
+        try {
+            const response = await fetch('/upload/config', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
 
-            const formData = new FormData();
-            formData.append('configFile', file); // Ensure the field name matches the backend
+            console.log("Successfull upload..")
 
-            try {
-                const response = await fetch('/upload/config', {
-                    method: 'POST',
-                    body: formData
-                });
+            loadConfigs(); // could probably just get this list from the server on response of a new uploded config?
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                console.log("Successfull upload..")
-                
-                loadConfigs(); // could probably just get this list from the server on response of a new uploded config?
-
-                const data = await response.json();
-                setUploadStatus(data.message);
-            } catch (error) {
-                console.error('Error uploading file:', error);
-                setUploadStatus('Error uploading file');
-            }
-        };
+            const data = await response.json();
+            setUploadStatus(data.message);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setUploadStatus('Error uploading file');
+        }
+    };
 
 
     const saveState = async (inputs, columns) => {
@@ -255,51 +272,49 @@ function App() {
         //  This is fetchign fulljson from our localhost and then combining it with the current 'inputs' from the general tab and then updating the json
 
         // if (onGenerateJSON) {
-            const response = await fetch('http://localhost:8080/getFullJson');
-            const existingData = await response.json();
+        const response = await fetch('http://localhost:8080/getFullJson');
+        const existingData = await response.json();
 
-            // Group inputs by type
-            const groupedInputs = {};
-            Object.entries(inputs).forEach(([key, value]) => {
-                if (!groupedInputs[value.type]) {
-                    groupedInputs[value.type] = {};
-                }
-                groupedInputs[value.type][key] = value;
-            });
+        // Group inputs by type
+        const groupedInputs = {};
+        Object.entries(inputs).forEach(([key, value]) => {
+            if (!groupedInputs[value.type]) {
+                groupedInputs[value.type] = {};
+            }
+            groupedInputs[value.type][key] = value;
+        });
 
-            const updatedData = {
-                ...existingData,
-                general: groupedInputs
-            };
+        const updatedData = {
+            ...existingData,
+            general: groupedInputs
+        };
 
-            await fetch('http://localhost:8080/update-json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedData)
-            });
+        await fetch('http://localhost:8080/update-json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        });
 
-            console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
-    
+        console.log("Updated JSON", JSON.stringify(updatedData, null, 2));
+
     };
 
 
-    
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'match':
-                return <Match 
-                onGenerateJSON={(generateJSON) => generateJSONRef.current = generateJSON} 
-                setCurrentGame={setSelectedGame}
-                currentGame={currentgame}
-                onUpdate={unifiedUpdateFunction}
+                return <Match
+                    setCurrentGame={setSelectedGame}
+                    currentGame={currentgame}
+                    onUpdate={unifiedUpdateFunction}
 
                 />;
 
             case 'general':
-                return <General 
-                    // onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
+                return <General
                     setStatus={setStatus}
                     saveState={saveState}
                 />;
@@ -312,10 +327,9 @@ function App() {
 
             case 'generalTest':
                 return <GeneralTest
-                // onGenerateJSON={() => generateJSONRef.current && generateJSONRef.current()}
-                setStatus={setStatus}
-                saveState={saveState}
-                onUpdate={unifiedUpdateFunction}
+                    setStatus={setStatus}
+                    saveState={saveState}
+                    onUpdate={unifiedUpdateFunction}
 
                 />;
 
@@ -328,39 +342,42 @@ function App() {
         fileInputRef.current.click();
     };
 
-    const handleButtonClick = (action) => {
-        console.log(`${action} button clicked`);
-        if (action === 'Update' && generateJSONRef.current) {
-            generateJSONRef.current();
-        }
-    };
+    // const handleButtonClick = (action) => {
+    //     console.log(`${action} button clicked`);
+    //     if (action === 'Update' && generateJSONRef.current) {
+    //         generateJSONRef.current();
+    //     }
+
+    // };
 
     const renderButtons = () => {
         if (activeTab === 'match') {
             return (
                 <div className="tab-buttons d-flex align-items-center mr-2">
-                    <Button 
-                        variant="danger" 
-                        onClick={() => handleButtonClick('Reset')}
+                    <Button
+                        variant="danger"
+                        // onClick={() => triggerAction('clear-match-data')}
+                        onClick={handleResetClick}
+
                         className="tab-button"
                         size="sm"
                     >Reset
                     </Button>
-                    <Button 
+                    <Button
                         variant="secondary"
-                        onClick={() => handleButtonClick('Swap')}
+                        onClick={() => triggerAction('swap-sides')}
                         className="tab-button"
                         size="sm"
                     >Swap
                     </Button>
                     <Button
                         variant="primary"
-                        onClick={() => handleButtonClick('Update')}
+                        onClick={() => triggerAction('update-match-data')}
                         className="tab-button"
                         size="sm"
                     >Update
                     </Button>
-                    
+
                     <DropdownButton
                         id="dropdown-basic-button"
                         title="⚙️"
@@ -373,14 +390,14 @@ function App() {
 
                         <Dropdown.Divider />
 
-                            {Object.keys(gameConfigs).map((game, index) => (
-                                <Dropdown.Item
-                                    key={index}
-                                    onClick={() => setSelectedGame(game)}
-                                    active={currentgame === game}
-                                >{game}
-                                </Dropdown.Item>
-                            ))}
+                        {Object.keys(gameConfigs).map((game, index) => (
+                            <Dropdown.Item
+                                key={index}
+                                onClick={() => setSelectedGame(game)}
+                                active={currentgame === game}
+                            >{game}
+                            </Dropdown.Item>
+                        ))}
 
                         <Dropdown.Divider />
                         <Dropdown.ItemText>Export Game</Dropdown.ItemText>
@@ -402,15 +419,33 @@ function App() {
 
 
 
-    
+
     const setStatus = (message, variant) => {
         setStatusMessage(message);
         setStatusVariant(variant);
     };
 
     return (
-       
+
+
         <Container className="bg-dark px-0 pt-2">
+
+            <Modal show={showConfirmModal} onHide={handleCancelClear} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Reset Match Data</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    Are you sure you want to RESET the match data?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCancelClear}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleConfirmClear}>
+                        Reset Match Data
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <div className="d-flex justify-content-between">
                 <Nav className="pl-2 nav-tabs d-flex align-items-center flex-wrap">
                     <Nav.Item>
@@ -445,7 +480,7 @@ function App() {
 
             {/* <StatusBar message={statusMessage} variant={statusVariant} />  */}
 
-                
+
             {/* <StatusBar
                 message="Connected successfully!"
                 variant="error"
@@ -453,7 +488,7 @@ function App() {
                 status:"Connected", "error": "Naah"}} 
                 /> */}
         </Container>
-        
+
     );
 }
 

@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import { Container, Row, Col, Form, ButtonGroup, Button } from 'react-bootstrap';
 
 import { defaultMatchData } from './defaultMatchData';
 import GenerateTeamSide from '../../components/GenerateTeamSide';
 import { useCurrentGameConfig } from '../../context/currentGameConfig';
 import { MatchDataContext } from '../../context/MatchDataContext';
 
+import { useAppContext } from '../../context/AppContext';
+
+
 
 // we still need to render hero roles/ and heros for based on 'currentGameConfig' solely..
 
-const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
+const Match = ({setCurrentGame, currentGame, onUpdate }) => {
     const [team1Players, setTeam1Players] = useState([]);
     const [team2Players, setTeam2Players] = useState([]);
     const [team1Info, setTeam1Info] = useState({});
@@ -21,6 +24,45 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
     const { currentGameConfig } = useCurrentGameConfig();
 
     const matchData = useContext(MatchDataContext);
+
+    const { action, triggerAction } = useAppContext();
+
+    // For the "appContext" for button menu actions
+    useEffect(() => {
+        if (action === 'swap-sides') {
+            swapSides();
+            triggerAction(null); // Reset action
+        } else if (action === 'clear-match-data') {
+            clearMatchData();
+            triggerAction(null); // Reset action
+        } else if (action === 'update-match-data') {
+            saveMatchTab();
+            triggerAction(null); // Reset action
+        }
+    }, [action, triggerAction]);
+    
+
+    const swapSides = () => {
+        const tempTeam1Players = team1Players;
+        const tempTeam1Info = team1Info;
+
+        setTeam1Players(team2Players);
+        setTeam1Info(team2Info);
+
+        setTeam2Players(tempTeam1Players);
+        setTeam2Info(tempTeam1Info);
+    };
+
+    const clearMatchData = () => {
+        setCurrentGame(defaultMatchData.currentGame);
+        setTeam1Players(defaultMatchData.teams.team1.players);
+        setTeam2Players(defaultMatchData.teams.team2.players);
+        setTeam1Info(defaultMatchData.teams.team1);
+        setTeam2Info(defaultMatchData.teams.team2);
+        setMaps(defaultMatchData.maps);
+    };
+
+
 
 
 
@@ -96,7 +138,7 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
 
     // This needs to be replaced/merged up with other update functions
     //  This way it will also upadte the inputs/columns as well
-    const generateJSON = async (event) => {
+    const saveMatchTab = async (event) => {
         const matchTabData = {
             teams: {
                 // team1: team1Data,
@@ -112,13 +154,19 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
             },
             currentGame: currentGame
         };
-
-        console.log("match data from match.js", matchTabData);
         onUpdate({ matchTabData });
+
+        console.log("Match Tab Data Saved");
     };
 
     // Call the onGenerateJSON prop with the generateJSON function
-    onGenerateJSON(generateJSON);
+    // onGenerateJSON(generateJSON);
+
+    useEffect(() => {
+        if (maps.mapData) {
+            saveMatchTab();
+        }
+    }, [maps]);
 
 
 
@@ -128,6 +176,33 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
     }
     return (
         <Container fluid className="main-container">
+            {/* <button onClick={swapSides}>Swap Sides</button>
+            <button onClick={clearMatchData}>Clear Match Data</button>
+            <button onClick={() => saveMatchTab()}>Update</button> */}
+
+                    {/* <Button 
+                        variant="danger" 
+                        onClick={() => handleButtonClick('Reset')}
+                        className="tab-button"
+                        size="sm"
+                    >Reset
+                    </Button>
+                    <Button 
+                        variant="secondary"
+                        onClick={() => handleButtonClick('Swap')}
+                        className="tab-button"
+                        size="sm"
+                    >Swap
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={() => handleButtonClick('Update')}
+                        className="tab-button"
+                        size="sm"
+                    >Update
+                    </Button> */}
+
+            
             <Row>
 
                 {/* Team 1 Side */}
@@ -240,6 +315,31 @@ const Match = ({ onGenerateJSON, setCurrentGame, currentGame, onUpdate }) => {
                     </Col>
                 ))}
             </Row>
+
+            {/* <div className="d-flex justify-content-between mb-2">
+                <ButtonGroup>
+                    <Button 
+                        onClick={swapSides}
+                        size="sm"
+                        variant="secondary"
+                        >Swap Sides</Button>
+                    <Button 
+                        onClick={() => saveMatchTab()}
+                        size="sm"
+                        variant="primary"
+                        >Update</Button>
+                </ButtonGroup>
+
+                <Button 
+                    onClick={clearMatchData}
+                    size="sm"
+                    variant="danger"
+                    className="ml-2"
+                >
+                    Clear Match Data
+                </Button>
+            </div> */}
+
         </Container>
     );
 };

@@ -60,7 +60,7 @@ const StatusBar = ({ message, variant, connectionDetails, userLoggedIn }) => {
   );
 
   return (
-    <div className="status-bar d-flex align-items-center justify-content-between mt-2">
+    <div className="status-bar d-flex align-items-center justify-content-between">
       <div className="status-message">
         {showMessage && (
             <>

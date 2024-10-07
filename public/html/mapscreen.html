@@ -1,5 +1,20 @@
 <!DOCTYPE html>
 
+
+<!-- 
+
+TO DO:
+we need to make a position in the map selection for map mode
+- need to make sure all maps are being fetched from the proper game config folder
+-- currently they are not at all.. this way it works for MANY games
+
+IDEAS:
+...
+
+
+-->
+
+
 <head>
   <style>
     @font-face {
@@ -423,7 +438,8 @@
       font-size: 1.8em;
       border-style: solid;
       font-weight: bold;
-      text-align: center font-family: 'Rajdhani';
+      text-align: center;
+      font-family: 'Rajdhani';
       padding: 3px 15px 2px 15px;
       border-width: 0px 6px 0px 6px;
       background-color: black;
@@ -432,6 +448,9 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
+    
+
+
     /* jshint esversion: 8 */
     var element, bgColor, brightness, r, g, b, hsp;
 
@@ -476,18 +495,38 @@
     }
 
     async function interval() {
+
+      
       //Set to 1 for video functions, 0 to disable
       let enablevideo = 0;
       let blankimage = "iVBORw0KGgoAAAANSUhEUgAAAHAAAABkCAYAAABep7TGAAAABGdBTUEAALGPC/xhBQAAAEJJREFUeF7twQENAAAAwqD3T+1mDiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuBqvZAABFEy6BwAAAABJRU5ErkJggg=="
       //Get constant team data
-      let t1nametxt = await fetch('../scoreboard/match1/t1name.txt');
-      t1nametxt = await t1nametxt.text();
-      let t2nametxt = await fetch('../scoreboard/match1/t2name.txt');
-      t2nametxt = await t2nametxt.text();
-      let t1colortxt = await fetch('../scoreboard/match1/t1color.txt');
-      t1colortxt = await t1colortxt.text();
-      let t2colortxt = await fetch('../scoreboard/match1/t2color.txt');
-      t2colortxt = await t2colortxt.text();
+
+      let mapJson = await fetch(`http://localhost:8080/getValue?path=maps`);
+      mapJson = await mapJson.json();
+
+      // Fetching the 'Team Data' like color, name, logo, score
+      let teamJson = await fetch(`http://localhost:8080/getValue?path=teams`);
+      let teamsData = await teamJson.json();
+
+      // Fetching the 'General Data' like color, name, logo, score
+      let inputData = await fetch(`http://localhost:8080/getValue?path=general`);
+      let inputJson = await inputData.json();
+
+      let themeColors = inputJson.color;
+      let themeLogos = inputJson.file;
+
+      let t1nametxt = teamsData.team1.teamName
+      let t2nametxt = teamsData.team2.teamName
+      let t1colortxt = teamsData.team1.teamColor
+      let t2colortxt = teamsData.team2.teamColor
+      let tagline = inputJson.text.BGG_TAGLINE.value;
+
+      
+      let colortheme1txt = themeColors.BGG_C1.value
+      let colortheme2txt = themeColors.BGG_C2.value;
+      let colortheme3txt = themeColors.BGG_C3.value;
+      let colortheme4txt = themeColors.BGG_C4.value
 
       //Set the global team colors
       $('div').css("border-left-color", (t1colortxt));
@@ -497,13 +536,7 @@
       t2colorspan = lightOrDark(t2colortxt);
       t2colorshade = lightOrDark(t2colorspan);
 
-      //Get constant theme data
-      let colortheme1txt = await fetch('../scoreboard/general/colortheme1.txt');
-      colortheme1txt = await colortheme1txt.text();
-      let colortheme2txt = await fetch('../scoreboard/general/colortheme2.txt');
-      colortheme2txt = await colortheme2txt.text();
-      let colortheme3txt = await fetch('../scoreboard/general/colortheme3.txt');
-      colortheme3txt = await colortheme3txt.text();
+
 
       //Set theme colors
       $('body').css("border-color", (colortheme3txt));
@@ -515,191 +548,173 @@
       $('span.tertiary').css("color", (colortheme2txt));
       $('span.tertiary').css("border-color", (colortheme3txt));
 
-
-      //Loop the code for repeating functions, incrementing each time.
+    const processMapData = async (mapJson) => {
       let theincomplete = 0;
       let totalmap = 0;
-      for (let i = 0; i < 7; ++i) {
+      console.log(mapJson);
 
-
-        //Get the map type details
-        let mapgametypetxt = await fetch('../scoreboard/match1/m' + (i + 1) + 'mapgametype.txt');
-        mapgametypetxt = await mapgametypetxt.text();
-        let check = (mapgametypetxt).replace(/\n|\r/gi, "");
-        let unformat = (mapgametypetxt);
-        let node4 = $(".mapinfo" + (i + 1) + " .maptype");
-        let node5 = $(".mapwrap" + (i + 1) + ", .mapinfo" + (i + 1));
-        if (check != "") {
-          node5.css("display", "block");
-          totalmap = totalmap + 1;
-        } else {
-          node5.css("display", "none");
+      if (mapJson && mapJson.mapData) {
+        for (let i = 0; i < mapJson.mapData.length; ++i) {
+          await processMap(mapJson, i, theincomplete, totalmap);
         }
-        node4.text(unformat);
-
-        //Get the map name details
-        let maptxt = await fetch('../scoreboard/match1/m' + (i + 1) + 'map.txt');
-        maptxt = await maptxt.text();
-        if ((maptxt).replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") == "") {
-          reptext = "TBA";
-        } else {
-          reptext = (maptxt)
-        }
-        let img = "../scoreboard/maps/" + (reptext).replace(/:/g, "-").replace("TBA", (check)).replace(/ /g, "_") + ".png";
-        let video = "assets/maps/video/" + (reptext).replace("\u00fa", "u").replace("\u00f6", "o").replace(":", "").replace("TBA", "blank") + ".mp4";
-        //let reptext = (maptxt).replace("?", "TBA");
-        let node1 = $(".mapbg" + (i + 1) + " img");
-        let node3 = $(".mapbg" + (i + 1) + " video");
-        let node2 = $(".mapinfo" + (i + 1) + " .mapname");
-        if (node1.attr("src") != img) {
-          node1.attr("src", img);
-          node2.text(reptext);
-          //  if ((enablevideo) == 1) {
-          //    node3.attr("src", video);
-          //  }
-        }
-
-        //Determine and colour each map winner
-        let mapwintxt = await fetch('../scoreboard/match1/m' + (i + 1) + 'mapwin.txt');
-        mapwintxt = await mapwintxt.text();
-        let mt1scoretxt = await fetch('../scoreboard/match1/m' + (i + 1) + 't1score.txt');
-        mt1scoretxt = await mt1scoretxt.text();
-        let mt2scoretxt = await fetch('../scoreboard/match1/m' + (i + 1) + 't2score.txt');
-        mt2scoretxt = await mt2scoretxt.text();
-
-        let regex = "";
-        [
-          "gaming", "team", "e-?sports", "house", "academy", "uni(versity)?", "state", "tech", "and", "the", "of", "eu",
-        ].forEach((value) => {
-          regex += "|(" + value + ")";
-        });
-        regex = "\\b(" + regex.substring(1) + ")\\b";
-
-        let teamformatted = "<div><b>" + mapwintxt.replace(
-            new RegExp(regex, "gi"), "</b>$1<b>")
-          .replace(/&/gi, "</b>&<b>") + "</b></div>";
-        $('.mapbg' + (i + 1) + ' .mapscore .teamname').html(teamformatted);
-
-        if ((mapwintxt).replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") != "") {
-          $('.mapbg' + (i + 1) + ' img').css("filter", "greyscale(100%)");
-          $('.mapbg' + (i + 1) + ' img, .mapbg' + (i + 1) + ' video').css("opacity", "0.5");
-          $('.mapbg' + (i + 1) + ' img').css("mix-blend-mode", "Luminosity");
-          let data = await fetch("../scoreboard/match1/m" + (i + 1) + "mapwin.png");
-          data = await data.arrayBuffer();
-          //console.log(data);
-          let bytes = new Uint8Array(data);
-          let str = "";
-          for (let b of bytes) {
-            str += String.fromCharCode(b);
-          }
-          //console.log(str);
-          //console.log(btoa(str));
-          //if (btoa(str) != "iVBORw0KGgoAAAANSUhEUgAAAHAAAABkCAYAAABep7TGAAAABGdBTUEAALGPC/xhBQAAAEJJREFUeF7twQENAAAAwqD3T+1mDiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuBqvZAABFEy6BwAAAABJRU5ErkJggg==") {
-          document.querySelector(".mapbg" + (i + 1) + " .mapscore .logo").style.backgroundImage = "url(data:image/jpeg;base64," + btoa(str) + ")";
-          //  $(".mapbg" + (i + 1) + " .mapscore .logo").css("display", "block");
-          //} else {
-          //  $(".mapbg" + (i + 1) + " .mapscore .logo").css("display", "none");
-          //}
-          if ((mapwintxt) == (t1nametxt)) { // If team 1 is the winner
-            $('.mapbg' + (i + 1)).css("background-color", (t1colortxt));
-            $('.mapbg' + (i + 1) + ' .mapscore .score').html("<b>" + (mt1scoretxt).replace(/\n/gi, "").replace(/\r/gi, "") + "</b>-" + (mt2scoretxt).replace(/\n/gi, "").replace(/\r/gi, ""));
-            $('.mapbg' + (i + 1) + ' .mapscore span').css("color", (t1colorspan));
-            $('.mapbg' + (i + 1) + ' .mapscore span').css("text-shadow", "0px 0px 10px " + (t1colorshade));
-            $('.mapbg' + (i + 1) + ' img, .mapbg' + (i + 1) + ' video').css("opacity", "0.5");
-            if ((enablevideo) == 1) {
-              $('.mapbg' + (i + 1) + ' img').css("display", "block");
-              $('.mapbg' + (i + 1) + ' video').css("display", "none");
-              node3.attr("src", "");
-            }
-            //$('.mapinfo' + (i + 1) + ' .maptype').css("color", (t1colortxt));
-          } else if ((mapwintxt) == (t2nametxt)) { // If team 2 is the winner
-            $('.mapbg' + (i + 1)).css("background-color", (t2colortxt));
-            $('.mapbg' + (i + 1) + ' .mapscore .score').html((mt1scoretxt).replace(/\n/gi, "").replace(/\r/gi, "") + "-<b>" + (mt2scoretxt).replace(/\n/gi, "").replace(/\r/gi, "") + "</b>");
-            $('.mapbg' + (i + 1) + ' .mapscore span').css("color", (t2colorspan));
-            $('.mapbg' + (i + 1) + ' .mapscore span').css("text-shadow", "0px 0px 10px " + (t2colorshade));
-            $('.mapbg' + (i + 1) + ' img, .mapbg' + (i + 1) + ' video').css("opacity", "0.5");
-            if ((enablevideo) == 1) {
-              $('.mapbg' + (i + 1) + ' img').css("display", "block");
-              $('.mapbg' + (i + 1) + ' video').css("display", "none");
-              node3.attr("src", "");
-            }
-            //$('.mapinfo' + (i + 1) + ' .maptype').css("color", (t2colortxt));
-          } else if ((mapwintxt).replace(/\n/gi, "").replace(/\r/gi, "") == "DRAW") { // If it's a draw
-            $('.mapbg' + (i + 1)).css("background-color", (colortheme1txt));
-            $('.mapbg' + (i + 1) + ' .mapscore .score').html((mt1scoretxt).replace(/\n/gi, "").replace(/\r/gi, "") + "-" + (mt2scoretxt).replace(/\n/gi, "").replace(/\r/gi, ""));
-            $('.mapbg' + (i + 1) + ' .mapscore span').css("color", "white");
-            $('.mapbg' + (i + 1) + ' .mapscore span').css("text-shadow", "0px 0px 10px black");
-            $('.mapbg' + (i + 1) + ' img, .mapbg' + (i + 1) + ' video').css("opacity", "0.5");
-            if ((enablevideo) == 1) {
-              $('.mapbg' + (i + 1) + ' img').css("display", "block");
-              $('.mapbg' + (i + 1) + ' video').css("display", "none");
-              node3.attr("src", "");
-            }
-          }
-        } else if (theincomplete > 0) { // for other incomplete maps
-          theincomplete = theincomplete + 1;
-          $('.mapbg' + (i + 1) + ' img').css("filter", "greyscale(0%)");
-          $('.mapbg' + (i + 1) + ' img, .mapbg' + (i + 1) + ' video').css("opacity", "0.33");
-          $('.mapbg' + (i + 1) + ' img').css("mix-blend-mode", "normal");
-          $('.mapbg' + (i + 1)).css("background-color", (colortheme1txt));
-          $('.mapbg' + (i + 1) + ' .mapscore .score').html("");
-          $('.mapbg' + (i + 1) + ' .mapscore span').css("color", "white");
-          $('.mapbg' + (i + 1) + ' .mapscore span').css("text-shadow", "0px 0px 10px black");
-          if ((enablevideo) == 1) {
-            $('.mapbg' + (i + 1) + ' img').css("display", "block");
-            $('.mapbg' + (i + 1) + ' video').css("display", "none");
-            node3.attr("src", "");
-          }
-          document.querySelector(".mapbg" + (i + 1) + " .mapscore .logo").style.backgroundImage = "url(data:image/jpeg;base64,)";
-        } else if (theincomplete == 0) { // Check to see if it's the first incomplete map
-          theincomplete = theincomplete + 1;
-
-          $('.mapbg' + (i + 1) + ' img').css("filter", "greyscale(0%)");
-          $('.mapbg' + (i + 1) + ' img, .mapbg' + (i + 1) + ' video').css("opacity", "1");
-          $('.mapbg' + (i + 1) + ' img').css("mix-blend-mode", "normal");
-          $('.mapbg' + (i + 1)).css("background-color", (colortheme1txt));
-          $('.mapbg' + (i + 1) + ' .mapscore span').css("color", "white");
-          $('.mapbg' + (i + 1) + ' .mapscore span').css("text-shadow", "0px 0px 10px black");
-          if ((mt1scoretxt).replace(/\n/gi, "").replace(/\r/gi, "") == 0 && (mt2scoretxt).replace(/\n/gi, "").replace(/\r/gi, "") == 0) {
-            $('.mapbg' + (i + 1) + ' .mapscore .score').html("");
-          } else {
-            $('.mapbg' + (i + 1) + ' .mapscore .score').html((mt1scoretxt).replace(/\n/gi, "").replace(/\r/gi, "").replace(/ /gi, "") + "-" + (mt2scoretxt).replace(/\n/gi, "").replace(/\r/gi, ""));
-          }
-          if ((enablevideo) == 1) {
-            if ((reptext).replace(/\n/gi, "").replace(/\r/gi, "") != "TBA") {
-              $('.mapbg' + (i + 1) + ' img').css("display", "none");
-              $('.mapbg' + (i + 1) + ' video').css("display", "block");
-              if (node3.attr("src") != video) {
-                node3.attr("src", video);
-              }
-            } else {
-              $('.mapbg' + (i + 1) + ' img').css("display", "block");
-              $('.mapbg' + (i + 1) + ' video').css("display", "none");
-              node3.attr("src", "");
-            }
-          } else {
-            $('.mapbg' + (i + 1) + ' img').css("display", "block");
-            $('.mapbg' + (i + 1) + ' video').css("display", "none");
-            node3.attr("src", "");
-          }
-          document.querySelector(".mapbg" + (i + 1) + " .mapscore .logo").style.backgroundImage = "url(data:image/jpeg;base64,)";
-        }
-
-
-        //End the loop
       }
+    };
 
-      for (let g = 0; g < 2; ++g) {
-        let data = await fetch("../scoreboard/general/image" + ((g * 14) + 1) + ".png");
-        data = await data.arrayBuffer();
-        //console.log(data);
-        let bytes = new Uint8Array(data);
-        let str = "";
-        for (let b of bytes) {
-          str += String.fromCharCode(b);
-        }
-        document.querySelector(".image" + (g + 1)).style.backgroundImage = "url(data:image/jpeg;base64," + btoa(str) + ")";
+    const processMap = async (mapJson, i, theincomplete, totalmap) => {
+      const mapData = mapJson.mapData[i];
+      
+      await updateMapTypeDetails(i, totalmap);
+      updateMapNameDetails(mapData, i);
+      const mapwintxt = determineWinner(mapData);
+      updateTeamName(i, mapwintxt);
+      await updateMapDisplay(i, mapData, mapwintxt, theincomplete);
+    };
+
+    const updateMapTypeDetails = async (i, totalmap) => {
+      let mapgametypetxt = await fetch(`../scoreboard/match1/m${i + 1}mapgametype.txt`);
+      mapgametypetxt = await mapgametypetxt.text();
+      let check = mapgametypetxt.replace(/\n|\r/gi, "");
+      let node4 = $(`.mapinfo${i + 1} .maptype`);
+      let node5 = $(`.mapwrap${i + 1}, .mapinfo${i + 1}`);
+      
+      if (check !== "") {
+        node5.css("display", "block");
+        totalmap++;
+      } else {
+        node5.css("display", "none");
       }
+      node4.text(mapgametypetxt);
+    };
+
+    const updateMapNameDetails = (mapData, i) => {
+      let maptxt = mapData.selectedMap;
+      let reptext = maptxt.replace(/\\/gi, "/").replace(/\"/gi, "\\\"").replace(/\n/gi, "").replace(/\r/gi, "") === "" ? "TBA" : maptxt;
+      let img = `../scoreboard/maps/${reptext.replace(/:/g, "-").replace("TBA", mapData.mapGameType).replace(/ /g, "_")}.png`;
+      let video = `assets/maps/video/${reptext.replace("\u00fa", "u").replace("\u00f6", "o").replace(":", "").replace("TBA", "blank")}.mp4`;
+      
+      let node1 = $(`.mapbg${i + 1} img`);
+      let node2 = $(`.mapinfo${i + 1} .mapname`);
+      
+      if (node1.attr("src") !== img) {
+        node1.attr("src", img);
+        node2.text(reptext);
+      }
+    };
+
+    const determineWinner = (mapData) => {
+      if (mapData.completed) {
+        if (mapData.team1Score > mapData.team2Score) return t1nametxt;
+        if (mapData.team1Score < mapData.team2Score) return t2nametxt;
+        return "DRAW";
+      }
+      return "";
+    };
+
+    const updateTeamName = (i, mapwintxt) => {
+      let regex = "\\b(gaming|team|e-?sports|house|academy|uni(versity)?|state|tech|and|the|of|eu)\\b";
+      let teamformatted = `<div><b>${mapwintxt.replace(new RegExp(regex, "gi"), "</b>$1<b>").replace(/&/gi, "</b>&<b>")}</b></div>`;
+      $(`.mapbg${i + 1} .mapscore .teamname`).html(teamformatted);
+    };
+
+    const updateMapDisplay = async (i, mapData, mapwintxt, theincomplete) => {
+      const mapBg = $(`.mapbg${i + 1}`);
+      const mapScore = mapBg.find('.mapscore');
+      const mt1scoretxt = String(mapData.team1Score);
+      const mt2scoretxt = String(mapData.team2Score);
+
+      if (mapwintxt !== "") {
+        await updateCompletedMap(i, mapBg, mapScore, mapwintxt, mt1scoretxt, mt2scoretxt);
+      } else if (theincomplete > 0) {
+        updateIncompleteMap(i, mapBg, mapScore);
+      } else {
+        updateFirstIncompleteMap(i, mapBg, mapScore, mt1scoretxt, mt2scoretxt);
+      }
+    };
+
+    const updateCompletedMap = async (i, mapBg, mapScore, mapwintxt, mt1scoretxt, mt2scoretxt) => {
+      mapBg.find('img').css({"filter": "greyscale(100%)", "opacity": "0.5", "mix-blend-mode": "Luminosity"});
+      
+      let data = await fetch(`../scoreboard/match1/m${i + 1}mapwin.png`);
+      data = await data.arrayBuffer();
+      let str = String.fromCharCode.apply(null, new Uint8Array(data));
+      document.querySelector(`.mapbg${i + 1} .mapscore .logo`).style.backgroundImage = `url(data:image/jpeg;base64,${btoa(str)})`;
+
+      if (mapwintxt === t1nametxt) {
+        updateWinnerDisplay(mapBg, mapScore, t1colortxt, t1colorspan, t1colorshade, mt1scoretxt, mt2scoretxt, teamsData.team1.teamLogoUrl);
+      } else if (mapwintxt === t2nametxt) {
+        updateWinnerDisplay(mapBg, mapScore, t2colortxt, t2colorspan, t2colorshade, mt2scoretxt, mt1scoretxt, teamsData.team2.teamLogoUrl);
+      } else {
+        updateDrawDisplay(mapBg, mapScore, mt1scoretxt, mt2scoretxt);
+      }
+    };
+
+    const updateWinnerDisplay = (mapBg, mapScore, color, colorspan, colorshade, winnerScore, loserScore, logoUrl) => {
+      mapBg.css("background-color", color);
+      mapScore.find('.score').html(`<b>${winnerScore}</b>-${loserScore}`);
+      mapScore.find('span').css({"color": colorspan, "text-shadow": `0px 0px 10px ${colorshade}`});
+      mapScore.find('.logo').css("background-image", `url(${logoUrl})`);
+    };
+
+    const updateDrawDisplay = (mapBg, mapScore, mt1scoretxt, mt2scoretxt) => {
+      mapBg.css("background-color", colortheme1txt);
+      mapScore.find('.score').html(`${mt1scoretxt}-${mt2scoretxt}`);
+      mapScore.find('span').css({"color": "white", "text-shadow": "0px 0px 10px black"});
+    };
+
+    const updateIncompleteMap = (i, mapBg, mapScore) => {
+      mapBg.find('img').css({"filter": "greyscale(0%)", "opacity": "0.33", "mix-blend-mode": "normal"});
+      mapBg.css("background-color", colortheme1txt);
+      mapScore.find('.score').html("");
+      mapScore.find('span').css({"color": "white", "text-shadow": "0px 0px 10px black"});
+      document.querySelector(`.mapbg${i + 1} .mapscore .logo`).style.backgroundImage = "url(data:image/jpeg;base64,)";
+    };
+
+    const updateFirstIncompleteMap = (i, mapBg, mapScore, mt1scoretxt, mt2scoretxt) => {
+      mapBg.find('img').css({"filter": "greyscale(0%)", "opacity": "1", "mix-blend-mode": "normal"});
+      mapBg.css("background-color", colortheme1txt);
+      mapScore.find('span').css({"color": "white", "text-shadow": "0px 0px 10px black"});
+      
+      if (mt1scoretxt === "0" && mt2scoretxt === "0") {
+        mapScore.find('.score').html("");
+      } else {
+        mapScore.find('.score').html(`${mt1scoretxt}-${mt2scoretxt}`);
+      }
+      
+      document.querySelector(`.mapbg${i + 1} .mapscore .logo`).style.backgroundImage = "url(data:image/jpeg;base64,)";
+    };
+
+
+    processMapData(mapJson);
+
+      
+    async function setDynamicBackgroundImages() {
+      try {
+        // Set the background images dynamically
+        if (themeLogos.BGG_L1 && themeLogos.BGG_L1.value) {
+          document.querySelector(".tournament.image1").style.backgroundImage = `url(/${themeLogos.BGG_L1.value})`;
+        }
+        if (themeLogos.BGG_L2 && themeLogos.BGG_L2.value) {
+          document.querySelector(".channel.image2").style.backgroundImage = `url(/${themeLogos.BGG_L2.value})`;
+        }
+      } catch (error) {
+        console.error('Failed to fetch or set background images:', error);
+      }
+    }
+    setDynamicBackgroundImages();
+
+
+    async function setTagline() {
+        try {
+            document.querySelector(".tertiary").textContent = tagline;
+            console.log("Tagline: " + tagline);
+        } catch (error) {
+            console.error('Failed to fetch or set tagline:', error);
+        }
+    }
+
+    setTagline();
+
+    
 
       //$('.scoreboard span').text("First to " + (Math.floor(totalmap / 2) + 1));
       $('.scoreboard span').text("Map Set");
@@ -709,7 +724,7 @@
     //Set the refresh rate in milliseconds
     $(() => {
       interval();
-      setInterval(interval, 1000);
+      setInterval(interval, 3000);
     });
   </script>
 
@@ -813,11 +828,13 @@
       </div>
     </div>
   </div>
+
   <div class="footer">
     <div class="tournament image1"></div>
     <div class="tagline">
       <div>
-        <span class="tertiary">Powered by Broadcast.gg</span></div>
+        <span class="tertiary">Powered by Broadcast.gg</span>
+      </div>
     </div>
     <div class="channel image2"></div>
   </div>

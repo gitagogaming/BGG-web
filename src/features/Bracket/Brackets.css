@@ -58,12 +58,12 @@
 
 
 .team-input img {
-    width: 36px;
-    height: 36px;
+    width: 31px;
+    height: 31px;
 }
 
 
-.team-input input {
+.team-input select {
     width: 100%;
     padding: 5px;
     text-align: center;
